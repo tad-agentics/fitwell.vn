@@ -1,0 +1,6 @@
+# FitWell robots.txt
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://fitwell.vn/sitemap.xml

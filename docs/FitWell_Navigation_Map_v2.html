@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitWell v2.0 — Navigation Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #041E3A;
+  --white: #FFFFFF;
+  --bg: #F7F7F8;
+  --border: #E2E4E8;
+  --muted: #9D9FA3;
+  --gold: #8C693B;
+  --amber: #D97706;
+  --risk: #DC2626;
+  --green: #059669;
+  --new: #7C3AED;
+  --redesign: #2563EB;
+  --update: #0891B2;
+}
+body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--bg); color: var(--navy); padding: 32px; }
+h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 32px; }
+
+/* Legend */
+.legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; padding: 16px; background: var(--white); border: 1px solid var(--border); }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.legend-dot--new { background: var(--new); }
+.legend-dot--redesign { background: var(--redesign); }
+.legend-dot--update { background: var(--update); }
+.legend-dot--unchanged { background: var(--border); }
+.legend-dot--state { background: var(--navy); opacity: 0.3; }
+
+/* Stats bar */
+.stats { display: flex; gap: 24px; margin-bottom: 32px; }
+.stat { text-align: center; }
+.stat-num { font-family: 'IBM Plex Mono', monospace; font-size: 28px; font-weight: 600; color: var(--navy); line-height: 1; }
+.stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+
+/* Flow sections */
+.flow-section { margin-bottom: 40px; }
+.flow-title {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--navy);
+  padding-bottom: 8px; border-bottom: 2px solid var(--navy); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.flow-title .count { color: var(--muted); font-weight: 400; }
+
+/* Screen cards */
+.flow-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; align-items: stretch; }
+.arrow { display: flex; align-items: center; color: var(--muted); font-size: 16px; padding: 0 2px; flex-shrink: 0; }
+
+.screen {
+  background: var(--white); border: 1px solid var(--border); padding: 12px 14px;
+  min-width: 180px; max-width: 240px; position: relative; flex-shrink: 0;
+  transition: box-shadow 150ms;
+}
+.screen:hover { box-shadow: 0 2px 8px rgba(4,30,58,0.08); }
+.screen--wide { max-width: 280px; }
+.screen--state { border-left: 3px solid rgba(4,30,58,0.2); }
+
+/* Status badges */
+.screen-badge {
+  font-family: 'IBM Plex Mono', monospace; font-size: 8px; font-weight: 500;
+  letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 6px;
+  display: inline-block; margin-bottom: 6px;
+}
+.badge--new { background: var(--new); color: var(--white); }
+.badge--redesign { background: var(--redesign); color: var(--white); }
+.badge--update { background: var(--update); color: var(--white); }
+.badge--unchanged { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+.badge--state { background: rgba(4,30,58,0.08); color: var(--navy); }
+.badge--embed { background: rgba(4,30,58,0.04); color: var(--muted); border: 1px solid var(--border); }
+.badge--route { background: var(--navy); color: var(--white); }
+
+.screen-id {
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--muted);
+  margin-bottom: 4px;
+}
+.screen-name { font-size: 13px; font-weight: 600; color: var(--navy); line-height: 1.3; margin-bottom: 4px; }
+.screen-route { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--muted); margin-bottom: 6px; }
+.screen-detail { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.screen-exits { margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--border); }
+.screen-exits .exit {
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--navy);
+  margin-bottom: 3px; display: flex; gap: 4px;
+}
+.exit-arrow { color: var(--muted); }
+
+/* Variant stack */
+.variant-stack { display: flex; flex-direction: column; gap: 4px; }
+.variant {
+  background: var(--bg); border: 1px solid var(--border); padding: 8px 10px;
+  font-size: 11px;
+}
+.variant-label { font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
+
+/* Connector lines (simplified with borders) */
+.connector-group {
+  display: flex; flex-direction: column; gap: 6px;
+  padding-left: 24px; border-left: 2px solid var(--border);
+  margin-left: 16px; margin-bottom: 12px;
+}
+
+/* Home state machine */
+.state-machine { background: var(--white); border: 1px solid var(--border); padding: 20px; margin-bottom: 16px; }
+.state-machine-title {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--navy); margin-bottom: 12px;
+}
+.state-row {
+  display: flex; gap: 8px; align-items: center; padding: 8px 0;
+  border-bottom: 1px solid var(--border); font-size: 12px;
+}
+.state-row:last-child { border-bottom: none; }
+.state-priority {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600;
+  color: var(--white); background: var(--navy); width: 20px; height: 20px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.state-name { font-weight: 600; flex: 1; min-width: 160px; }
+.state-trigger { font-size: 11px; color: var(--muted); flex: 2; }
+.state-badge { margin-left: auto; }
+
+/* Push notification map */
+.push-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+.push-card { background: var(--white); border: 1px solid var(--border); padding: 12px; }
+.push-when { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+.push-label { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.push-target { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--navy); }
+
+/* Bottom nav */
+.nav-bar {
+  display: flex; gap: 2px; background: var(--white); border: 1px solid var(--border); padding: 12px; margin-bottom: 16px;
+}
+.nav-tab {
+  flex: 1; text-align: center; padding: 8px; font-size: 11px; font-weight: 500;
+  border: 1px solid var(--border); background: var(--bg);
+}
+.nav-tab .tab-route { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--muted); margin-top: 2px; }
+
+/* Condition flow */
+.condition-branch { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.branch {
+  background: var(--bg); border: 1px solid var(--border); padding: 6px 10px;
+  font-size: 10px; line-height: 1.4;
+}
+.branch-label { font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.branch-target { font-weight: 600; color: var(--navy); }
+
+@media (max-width: 768px) {
+  body { padding: 16px; }
+  .flow-row { flex-direction: column; }
+  .arrow { transform: rotate(90deg); align-self: center; }
+  .screen { max-width: 100%; min-width: 0; }
+  .stats { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<h1>FitWell v2.0 — Navigation Map</h1>
+<p class="subtitle">50 Figma frames · 7 user flows · all entry/exit points</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot legend-dot--new"></div>New v2.0</div>
+  <div class="legend-item"><div class="legend-dot legend-dot--redesign"></div>Redesigned</div>
+  <div class="legend-item"><div class="legend-dot legend-dot--update"></div>Content updated</div>
+  <div class="legend-item"><div class="legend-dot legend-dot--unchanged"></div>Unchanged</div>
+  <div class="legend-item"><div class="legend-dot legend-dot--state"></div>Home state variant</div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num">50</div><div class="stat-label">Total frames</div></div>
+  <div class="stat"><div class="stat-num">4</div><div class="stat-label">New screens</div></div>
+  <div class="stat"><div class="stat-num">4</div><div class="stat-label">Redesigned</div></div>
+  <div class="stat"><div class="stat-num">12</div><div class="stat-label">Updated</div></div>
+  <div class="stat"><div class="stat-num">7</div><div class="stat-label">Home states</div></div>
+  <div class="stat"><div class="stat-num">7</div><div class="stat-label">Push entries</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- FLOW A: AUTH                            -->
+<!-- ═══════════════════════════════════════ -->
+<div class="flow-section">
+  <div class="flow-title">Flow A — Authentication <span class="count">4 screens</span></div>
+  
+  <div class="flow-row">
+    <div class="screen">
+      <span class="screen-badge badge--unchanged">Unchanged</span>
+      <div class="screen-id">M2</div>
+      <div class="screen-name">Register</div>
+      <div class="screen-route">/auth/register</div>
+      <div class="screen-detail">Landing page CTA → here. Email + password + magic link option.</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> /onboarding (success)</div>
+        <div class="exit"><span class="exit-arrow">→</span> /auth/login ("Đã có tài khoản?")</div>
+      </div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen">
+      <span class="screen-badge badge--unchanged">Unchanged</span>
+      <div class="screen-id">M3</div>
+      <div class="screen-name">Login (Magic Link)</div>
+      <div class="screen-route">/auth/login</div>
+      <div class="screen-detail">Email input → send magic link. Also password fallback.</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> /auth/magic-link-sent</div>
+        <div class="exit"><span class="exit-arrow">→</span> /auth/register ("Đăng ký")</div>
+      </div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen">
+      <span class="screen-badge badge--unchanged">Unchanged</span>
+      <div class="screen-id">M4</div>
+      <div class="screen-name">Magic Link Sent</div>
+      <div class="screen-route">/auth/magic-link-sent</div>
+      <div class="screen-detail">Confirmation. 60s resend cooldown. Link valid 10 min.</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> /onboarding or /home (via email link)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- FLOW B: ONBOARDING                      -->
+<!-- ═══════════════════════════════════════ -->
+<div class="flow-section">
+  <div class="flow-title">Flow B — Onboarding <span class="count">8 screens · 5 steps (was 4)</span></div>
+  
+  <div class="flow-row">
+    <div class="screen">
+      <span class="screen-badge badge--unchanged">Unchanged</span>
+      <div class="screen-id">S1</div>
+      <div class="screen-name">Step 1: Language</div>
+      <div class="screen-route">/onboarding (embed)</div>
+      <div class="screen-detail">Navy bg. Tiếng Việt / English. Sets profiles.language.</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen">
+      <span class="screen-badge badge--new">New v2.0</span>
+      <div class="screen-id">N1</div>
+      <div class="screen-name">Step 2a: Condition Declaration</div>
+      <div class="screen-route">/onboarding (embed)</div>
+      <div class="screen-detail">Multi-select: Gout / Cholesterol / Back pain / Unsure. Writes primary_conditions[].</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> Step 2b: Biomarker Input</div>
+      </div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen">
+      <span class="screen-badge badge--update">Updated</span>
+      <div class="screen-id">S2</div>
+      <div class="screen-name">Step 2b: Biomarker Input</div>
+      <div class="screen-route">/onboarding (embed)</div>
+      <div class="screen-detail">Dropdown sorted by declared conditions. Skip option retained.</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen">
+      <span class="screen-badge badge--update">Updated</span>
+      <div class="screen-id">S3</div>
+      <div class="screen-name">Aha Intercept</div>
+      <div class="screen-route">/onboarding (embed, conditional)</div>
+      <div class="screen-detail">4 variants by condition: Gout / Cholesterol / Back pain / Multi-condition.</div>
+    </div>
+  </div>
+
+  <div class="flow-row">
+    <div class="screen" style="max-width: 300px;">
+      <span class="screen-badge badge--redesign">Redesigned</span>
+      <div class="screen-id">S4</div>
+      <div class="screen-name">Step 3: Life Pattern (5 sub-screens)</div>
+      <div class="screen-route">/onboarding (embed)</div>
+      <div class="screen-detail">
+        4a: Desk hours (dưới 6 / 6–8 / 8+)<br>
+        4b: Eating out frequency<br>
+        4c: Back/neck pain frequency ← NEW<br>
+        4d: Highest-risk environment (multi-select, max 2) ← NEW<br>
+        4e: Account usage (solo / + partner)
+      </div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> If 4e = partner → /household/invite</div>
+        <div class="exit"><span class="exit-arrow">→</span> Else → Step 4</div>
+      </div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen">
+      <span class="screen-badge badge--redesign">Redesigned</span>
+      <div class="screen-id">S5</div>
+      <div class="screen-name">Step 4: Activation Event</div>
+      <div class="screen-route">/onboarding (embed)</div>
+      <div class="screen-detail">4 options (was 3): Bữa ăn nhiều / Nhậu / Ngày làm việc dày ← NEW / Sáng mai.</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> /onboarding/a2hs</div>
+      </div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen">
+      <span class="screen-badge badge--unchanged">Unchanged</span>
+      <div class="screen-id">M1</div>
+      <div class="screen-name">A2HS Prompt</div>
+      <div class="screen-route">/onboarding/a2hs</div>
+      <div class="screen-detail">Safari share button guide. Push subscription attempt. Skip available.</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> /home</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- FLOW C: HOME STATE MACHINE              -->
+<!-- ═══════════════════════════════════════ -->
+<div class="flow-section">
+  <div class="flow-title">Flow C — Home Screen State Machine <span class="count">/home · 7 conditional states</span></div>
+
+  <div class="state-machine">
+    <div class="state-machine-title">Evaluated top-down on every /home load. First matching state renders.</div>
+    
+    <div class="state-row">
+      <div class="state-priority">1</div>
+      <div class="state-name">Sunday Brief Takeover</div>
+      <div class="state-trigger">day = Sun AND brief_unread</div>
+      <div class="state-badge"><span class="screen-badge badge--unchanged" style="margin: 0;">S7</span></div>
+    </div>
+    <div class="state-row">
+      <div class="state-priority">2</div>
+      <div class="state-name">Monday Brief Intercept</div>
+      <div class="state-trigger">day = Mon AND brief_unread AND weeks ≥ 4</div>
+      <div class="state-badge"><span class="screen-badge badge--unchanged" style="margin: 0;">M8</span></div>
+    </div>
+    <div class="state-row">
+      <div class="state-priority">3</div>
+      <div class="state-name">Active Recovery</div>
+      <div class="state-trigger">active_recovery_protocol.status = 'active'</div>
+      <div class="state-badge"><span class="screen-badge badge--update" style="margin: 0;">M6 Updated</span></div>
+    </div>
+    <div class="state-row">
+      <div class="state-priority">4</div>
+      <div class="state-name">Pre-Situation Countdown</div>
+      <div class="state-trigger">scheduled_event AND event_time − now < 5h</div>
+      <div class="state-badge"><span class="screen-badge badge--unchanged" style="margin: 0;">M5</span></div>
+    </div>
+    <div class="state-row">
+      <div class="state-priority">5</div>
+      <div class="state-name">Pre-Sleep Wind-Down</div>
+      <div class="state-trigger">time ≥ 21:00 AND presleep_enabled</div>
+      <div class="state-badge"><span class="screen-badge badge--unchanged" style="margin: 0;">S21</span></div>
+    </div>
+    <div class="state-row">
+      <div class="state-priority">6</div>
+      <div class="state-name">Midday Desk</div>
+      <div class="state-trigger">13:00–16:00, weekday, no recovery</div>
+      <div class="state-badge"><span class="screen-badge badge--unchanged" style="margin: 0;">S6</span></div>
+    </div>
+    <div class="state-row">
+      <div class="state-priority">7</div>
+      <div class="state-name">Clean Day (default)</div>
+      <div class="state-trigger">None of above</div>
+      <div class="state-badge"><span class="screen-badge badge--unchanged" style="margin: 0;">M7</span></div>
+    </div>
+  </div>
+
+  <p style="font-size: 12px; color: var(--muted); margin-bottom: 16px;">Each state exits to specific flows. All states show bottom nav.</p>
+
+  <div class="flow-row" style="flex-wrap: wrap; gap: 8px;">
+    <div class="screen screen--state" style="min-width: 160px;">
+      <span class="screen-badge badge--state">State 1</span>
+      <div class="screen-id">S7</div>
+      <div class="screen-name">Sunday Brief</div>
+      <div class="screen-detail">Full brief replaces home. Must mark read to proceed.</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> Mark read → Clean Day</div>
+      </div>
+    </div>
+    <div class="screen screen--state" style="min-width: 160px;">
+      <span class="screen-badge badge--state">State 2</span>
+      <div class="screen-id">M8</div>
+      <div class="screen-name">Monday Intercept</div>
+      <div class="screen-detail">Brief preview card. Week 4+ only.</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> /brief ("XEM TÓM TẮT")</div>
+        <div class="exit"><span class="exit-arrow">→</span> Skip → morning check-in</div>
+      </div>
+    </div>
+    <div class="screen screen--state" style="min-width: 160px;">
+      <span class="screen-badge badge--update">State 3 · Updated</span>
+      <div class="screen-id">M6</div>
+      <div class="screen-name">Active Recovery</div>
+      <div class="screen-detail">v2.0: Variants for heavy_night, long_desk, stress_day recovery types.</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> Timer flow ("BẮT ĐẦU")</div>
+      </div>
+    </div>
+    <div class="screen screen--state" style="min-width: 160px;">
+      <span class="screen-badge badge--state">State 4</span>
+      <div class="screen-id">M5</div>
+      <div class="screen-name">Pre-Dinner Countdown</div>
+      <div class="screen-detail">Navy hero card. Risk dots. Countdown timer.</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> /scenario/:id ("XEM KỊCH BẢN")</div>
+      </div>
+    </div>
+    <div class="screen screen--state" style="min-width: 160px;">
+      <span class="screen-badge badge--state">State 5</span>
+      <div class="screen-id">S21</div>
+      <div class="screen-name">Pre-Sleep</div>
+      <div class="screen-detail">Sẵn rồi / Thêm 20 phút</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> Sleep priming timer flow</div>
+      </div>
+    </div>
+    <div class="screen screen--state" style="min-width: 160px;">
+      <span class="screen-badge badge--state">State 6</span>
+      <div class="screen-id">S6</div>
+      <div class="screen-name">Morning / Midday</div>
+      <div class="screen-detail">Check-in card prompt. Morning baseline or midday desk.</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> /checkin/morning or /midday</div>
+      </div>
+    </div>
+    <div class="screen screen--state" style="min-width: 160px;">
+      <span class="screen-badge badge--state">State 7 · Default</span>
+      <div class="screen-id">M7</div>
+      <div class="screen-name">Clean Day</div>
+      <div class="screen-detail">Weekly mini-calendar + scenario search + pattern insight (wk 4+).</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> /brief · /scenario/search</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- FLOW D: CHECK-IN                        -->
+<!-- ═══════════════════════════════════════ -->
+<div class="flow-section">
+  <div class="flow-title">Flow D — Check-In (4 triggers) <span class="count">9 screens</span></div>
+
+  <!-- Morning -->
+  <p style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--navy); margin-bottom: 8px; font-weight: 600;">D1 — Morning Baseline · /checkin/morning</p>
+  <div class="flow-row">
+    <div class="screen">
+      <span class="screen-badge badge--unchanged">Unchanged</span>
+      <div class="screen-id">S8a</div>
+      <div class="screen-name">Q1: Sleep Quality</div>
+      <div class="screen-detail">Ngon / Chập chờn / Kém</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen">
+      <span class="screen-badge badge--update">Updated</span>
+      <div class="screen-id">S8b</div>
+      <div class="screen-name">Q2: Body Feeling</div>
+      <div class="screen-detail">4 options (was 3):<br>Ổn / Cứng / <strong>Đau · Khó chịu ← NEW</strong> / Mệt</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> If (stiff/sore) + back_pain → N2</div>
+        <div class="exit"><span class="exit-arrow">→</span> Else → Protocol selection</div>
+      </div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen">
+      <span class="screen-badge badge--new">New v2.0</span>
+      <div class="screen-id">N2</div>
+      <div class="screen-name">Q3: Back Pain Score</div>
+      <div class="screen-detail">Conditional. Only if back_pain declared.<br>4-point scale: Không đau / Nhẹ / Vừa / Nhiều</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> Protocol selection</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post-event -->
+  <p style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--navy); margin: 16px 0 8px; font-weight: 600;">D2 — Post-Event · /checkin/post-event</p>
+  <div class="flow-row">
+    <div class="screen">
+      <span class="screen-badge badge--redesign">Redesigned</span>
+      <div class="screen-id">S9</div>
+      <div class="screen-name">Q1: Intensity</div>
+      <div class="screen-detail">"Tối/Ngày qua thế nào?" (updated question text)<br>Nặng / Vừa / Nhẹ</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> Heavy/Medium → N3 (event type)</div>
+        <div class="exit"><span class="exit-arrow">→</span> Light → Protocol</div>
+      </div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen">
+      <span class="screen-badge badge--new">New v2.0</span>
+      <div class="screen-id">N3</div>
+      <div class="screen-name">Q2: Event Type</div>
+      <div class="screen-detail">6 options, 2-column grid:<br>Bữa ăn nhiều / Đêm nhậu / Ngày làm việc dài / Ngày căng thẳng / Công tác / Ngủ kém</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> Recovery protocol (duration by type × intensity)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Midday -->
+  <p style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--navy); margin: 16px 0 8px; font-weight: 600;">D3 — Midday Desk · /checkin/midday</p>
+  <div class="flow-row">
+    <div class="screen">
+      <span class="screen-badge badge--update">Updated</span>
+      <div class="screen-id">S10</div>
+      <div class="screen-name">Afternoon State</div>
+      <div class="screen-detail">4 options (was 3):<br>Tập trung / Uể oải / Căng thẳng / <strong>Lưng tức ← NEW</strong></div>
+      <div class="condition-branch">
+        <div class="branch"><div class="branch-label">Tập trung</div><div class="branch-target">→ Silent dismiss</div></div>
+        <div class="branch"><div class="branch-label">Uể oải</div><div class="branch-target">→ desk_break → metabolic_reset</div></div>
+        <div class="branch"><div class="branch-label">Căng thẳng</div><div class="branch-target">→ stress_mental → desk_break</div></div>
+        <div class="branch"><div class="branch-label">Lưng tức</div><div class="branch-target">→ spinal_decompression (priority)</div></div>
+      </div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen">
+      <span class="screen-badge badge--unchanged">Unchanged</span>
+      <div class="screen-id">S11</div>
+      <div class="screen-name">Context Selector</div>
+      <div class="screen-detail">Văn phòng / Riêng tư / Đang di chuyển. One tap → timer.</div>
+    </div>
+  </div>
+
+  <!-- Pre-sleep -->
+  <p style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--navy); margin: 16px 0 8px; font-weight: 600;">D4 — Pre-Sleep · /checkin/presleep</p>
+  <div class="flow-row">
+    <div class="screen">
+      <span class="screen-badge badge--unchanged">Unchanged</span>
+      <div class="screen-id">S21</div>
+      <div class="screen-name">Wind-Down</div>
+      <div class="screen-detail">Sẵn rồi / Thêm 20 phút. Max 2 attempts.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- FLOW E: MICRO-ACTION TIMER              -->
+<!-- ═══════════════════════════════════════ -->
+<div class="flow-section">
+  <div class="flow-title">Flow E — Micro-Action Timer + Recovery <span class="count">5 screens</span></div>
+
+  <div class="flow-row">
+    <div class="screen">
+      <span class="screen-badge badge--update">Updated</span>
+      <div class="screen-id">S12</div>
+      <div class="screen-name">Timer: Pre-Start</div>
+      <div class="screen-route">Full-screen navy</div>
+      <div class="screen-detail">v2.0: Example badge changed to SPINAL DECOMPRESSION. Video thumbnail bg + navy overlay. 8-category badge system.</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen">
+      <span class="screen-badge badge--unchanged">Unchanged</span>
+      <div class="screen-id">S13</div>
+      <div class="screen-name">Timer: Running</div>
+      <div class="screen-detail">Video plays full-bleed. Timer top-right. Rep counter. Tap = pause.</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen">
+      <span class="screen-badge badge--unchanged">Unchanged</span>
+      <div class="screen-id">M9</div>
+      <div class="screen-name">Timer: Complete</div>
+      <div class="screen-detail">Checkmark. "Xong. Tốt lắm." Auto-advance 2s bar. Tap = skip.</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> Next action pre-start (if multi-action)</div>
+        <div class="exit"><span class="exit-arrow">→</span> /home (if last action)</div>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--navy); margin: 16px 0 8px; font-weight: 600;">Recovery Protocol (wraps timer flow over multiple days)</p>
+  <div class="flow-row">
+    <div class="screen">
+      <span class="screen-badge badge--update">Updated</span>
+      <div class="screen-id">S17</div>
+      <div class="screen-name">Recovery Day 1</div>
+      <div class="screen-route">/recovery (renders on home)</div>
+      <div class="screen-detail">v2.0: Variant eyebrows per event_type: POST-EVENT / SPINAL / CORTISOL / METABOLIC RECOVERY. Variable day count by type × intensity.</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen">
+      <span class="screen-badge badge--unchanged">Unchanged</span>
+      <div class="screen-id">S18</div>
+      <div class="screen-name">Day 2 Paywall</div>
+      <div class="screen-detail">Free tier gate. "XEM GÓI →" or "Để sau."</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> /pricing (S22)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- FLOW F: SCENARIO PLAYBOOK               -->
+<!-- ═══════════════════════════════════════ -->
+<div class="flow-section">
+  <div class="flow-title">Flow F — Scenario Playbook <span class="count">4 screens</span></div>
+
+  <div class="flow-row">
+    <div class="screen">
+      <span class="screen-badge badge--update">Updated</span>
+      <div class="screen-id">S15</div>
+      <div class="screen-name">Scenario Search</div>
+      <div class="screen-route">/scenario/search</div>
+      <div class="screen-detail">v2.0: New filter chips:<br>TẤT CẢ / HẢI SẢN & NHẬU / BỮA ĂN / VĂN PHÒNG / CĂNG THẲNG / CÔNG TÁC<br>Results show condition_tags. Ranked by primary_conditions match.</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen" style="max-width: 280px;">
+      <span class="screen-badge badge--redesign">Redesigned</span>
+      <div class="screen-id">S16</div>
+      <div class="screen-name">Playbook: Food/Drink</div>
+      <div class="screen-route">/scenario/:id</div>
+      <div class="screen-detail">v2.0: Section 3 → "CHIẾN LƯỢC BỮA ĂN" (was "CHIẾN LƯỢC UỐNG"). Condition context line added. Section 5 → "NẾU BẠN ĐÃ Ở ĐÓ RỒI."</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> "VÀO RỒI" → logs scenario_session → /home (arms recovery)</div>
+      </div>
+    </div>
+    <div class="screen" style="max-width: 280px;">
+      <span class="screen-badge badge--new">New v2.0</span>
+      <div class="screen-id">N4</div>
+      <div class="screen-name">Playbook: Desk/Stress</div>
+      <div class="screen-route">/scenario/:id (variant)</div>
+      <div class="screen-detail">Navy header (no food image). "TRƯỚC KHI BẮT ĐẦU" replaces "TRƯỚC KHI ĐẾN." "LỊCH NGHỈ NGƠI" timeline replaces meal strategy. Break protocol timing.</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> "VÀO RỒI" → logs scenario_session → /home</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- FLOW G: WEEKLY BRIEF                    -->
+<!-- ═══════════════════════════════════════ -->
+<div class="flow-section">
+  <div class="flow-title">Flow G — Weekly Intelligence Brief <span class="count">1 screen + 2 home states</span></div>
+
+  <div class="flow-row">
+    <div class="screen" style="max-width: 300px;">
+      <span class="screen-badge badge--update">Updated</span>
+      <div class="screen-id">S14</div>
+      <div class="screen-name">Weekly Brief</div>
+      <div class="screen-route">/brief</div>
+      <div class="screen-detail">v2.0: Multi-condition risk calendar (lưng + căng thẳng on Tue, hải sản on Thu). Tier examples updated for back pain + desk patterns. Insight engine now cross-links conditions.</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> "Đặt nhắc" → schedules push</div>
+        <div class="exit"><span class="exit-arrow">→</span> Bottom nav → any tab</div>
+      </div>
+    </div>
+  </div>
+  <p style="font-size: 11px; color: var(--muted); margin-top: 8px;">Delivery: Generated Sun 20:00. Home takeover Sun (S7). Monday intercept wk 4+ (M8). Push governor-exempt.</p>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- FLOW H: ACTION LIBRARY                  -->
+<!-- ═══════════════════════════════════════ -->
+<div class="flow-section">
+  <div class="flow-title">Flow H — Action Library <span class="count">1 screen</span></div>
+  
+  <div class="flow-row">
+    <div class="screen" style="max-width: 320px;">
+      <span class="screen-badge badge--update">Updated</span>
+      <div class="screen-id">AL</div>
+      <div class="screen-name">Action Library Browse</div>
+      <div class="screen-route">/actions</div>
+      <div class="screen-detail">v2.0: 9 filter chips (TẤT CẢ + 8 categories). "24 hành động · 8 danh mục." 3 new thumbnails for kitchen + outdoor additions. Context filter: Văn phòng / Riêng tư / Di chuyển.</div>
+      <div class="screen-exits">
+        <div class="exit"><span class="exit-arrow">→</span> Tap thumbnail → Timer pre-start (S12)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- FLOW I: HOUSEHOLD                       -->
+<!-- ═══════════════════════════════════════ -->
+<div class="flow-section">
+  <div class="flow-title">Flow I — Household Partner <span class="count">3 screens</span></div>
+
+  <div class="flow-row">
+    <div class="screen">
+      <span class="screen-badge badge--unchanged">Unchanged</span>
+      <div class="screen-id">M12</div>
+      <div class="screen-name">Invite Link</div>
+      <div class="screen-route">/household/invite</div>
+      <div class="screen-detail">QR code + copy link + Zalo share. Privacy reassurance. 72h expiry.</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="screen">
+      <span class="screen-badge badge--update">Updated</span>
+      <div class="screen-id">S19</div>
+      <div class="screen-name">Partner Home View</div>
+      <div class="screen-route">/home (partner role)</div>
+      <div class="screen-detail">v2.0: Condition-specific stocking guidance. Gout pantry / Cholesterol substitutions / Back pain floor prep. Multi-condition risk calendar.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- FLOW J: PROFILE + PAYMENT               -->
+<!-- ═══════════════════════════════════════ -->
+<div class="flow-section">
+  <div class="flow-title">Flow J — Profile, Payment, Settings <span class="count">4 screens</span></div>
+
+  <div class="flow-row">
+    <div class="screen">
+      <span class="screen-badge badge--update">Updated</span>
+      <div class="screen-id">S20</div>
+      <div class="screen-name">Profile & Settings</div>
+      <div class="screen-route">/profile</div>
+      <div class="screen-detail">v2.0: New "Tình trạng sức khỏe" section (condition chips, editable). Biomarker sort by conditions. Links to /household/invite.</div>
+    </div>
+    <div class="screen">
+      <span class="screen-badge badge--unchanged">Unchanged</span>
+      <div class="screen-id">S22</div>
+      <div class="screen-name">Pricing</div>
+      <div class="screen-route">/pricing</div>
+      <div class="screen-detail">3 plans: Quarterly / Annual / Household. Recovery Box add-on.</div>
+    </div>
+    <div class="screen">
+      <span class="screen-badge badge--unchanged">Unchanged</span>
+      <div class="screen-id">M10</div>
+      <div class="screen-name">Payment Success</div>
+      <div class="screen-route">/payment/success</div>
+    </div>
+    <div class="screen">
+      <span class="screen-badge badge--unchanged">Unchanged</span>
+      <div class="screen-id">M11</div>
+      <div class="screen-name">Payment Cancel</div>
+      <div class="screen-route">/payment/cancel</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- BOTTOM NAV                              -->
+<!-- ═══════════════════════════════════════ -->
+<div class="flow-section">
+  <div class="flow-title">Bottom Navigation <span class="count">Persistent on all main screens</span></div>
+  
+  <div class="nav-bar">
+    <div class="nav-tab"><strong>Tối nay</strong><div class="tab-route">/scenario/search</div></div>
+    <div class="nav-tab"><strong>Check-in</strong><div class="tab-route">/checkin</div></div>
+    <div class="nav-tab"><strong>Hành động</strong><div class="tab-route">/actions</div></div>
+    <div class="nav-tab"><strong>Tuần này</strong><div class="tab-route">/brief</div><div style="font-size: 9px; color: var(--amber); margin-top: 2px;">● unread dot Sun+Mon</div></div>
+    <div class="nav-tab"><strong>Tôi</strong><div class="tab-route">/profile</div></div>
+  </div>
+  <p style="font-size: 11px; color: var(--muted);">Not shown on: auth screens, onboarding, timer (full-screen), check-in flow, A2HS prompt, payment confirmation.</p>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- PUSH NOTIFICATIONS                      -->
+<!-- ═══════════════════════════════════════ -->
+<div class="flow-section">
+  <div class="flow-title">Push Notification Deep Links <span class="count">7 entry points</span></div>
+  
+  <div class="push-grid">
+    <div class="push-card">
+      <div class="push-when">Daily · User's morning time</div>
+      <div class="push-label">Morning Baseline</div>
+      <div class="push-target">→ /checkin/morning</div>
+    </div>
+    <div class="push-card">
+      <div class="push-when">Weekdays · 14:00</div>
+      <div class="push-label">Midday Desk</div>
+      <div class="push-target">→ /checkin/midday</div>
+    </div>
+    <div class="push-card">
+      <div class="push-when">2h before event</div>
+      <div class="push-label">Pre-Game (governor exempt)</div>
+      <div class="push-target">→ /scenario/:id</div>
+    </div>
+    <div class="push-card">
+      <div class="push-when">User pref · default 21:30</div>
+      <div class="push-label">Pre-Sleep</div>
+      <div class="push-target">→ /checkin/presleep</div>
+    </div>
+    <div class="push-card">
+      <div class="push-when">07:00 day after Heavy/Medium</div>
+      <div class="push-label">Recovery Day 2/3</div>
+      <div class="push-target">→ /home (Active Recovery state)</div>
+    </div>
+    <div class="push-card">
+      <div class="push-when">Sunday 20:00 (governor exempt)</div>
+      <div class="push-label">Weekly Brief</div>
+      <div class="push-target">→ /brief</div>
+    </div>
+    <div class="push-card">
+      <div class="push-when">Monday 07:00 · week 4+</div>
+      <div class="push-label">Monday Brief Intercept</div>
+      <div class="push-target">→ /brief/intercept</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- COMPLETE SCREEN INDEX                   -->
+<!-- ═══════════════════════════════════════ -->
+<div class="flow-section">
+  <div class="flow-title">Complete Screen Index <span class="count">50 frames</span></div>
+  
+  <table style="width: 100%; border-collapse: collapse; font-size: 12px; background: var(--white); border: 1px solid var(--border);">
+    <thead>
+      <tr style="border-bottom: 2px solid var(--navy); text-align: left;">
+        <th style="padding: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em;">ID</th>
+        <th style="padding: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em;">Screen</th>
+        <th style="padding: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em;">Route</th>
+        <th style="padding: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em;">Type</th>
+        <th style="padding: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em;">v2.0 Status</th>
+        <th style="padding: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em;">Flow</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">M2</td><td style="padding: 6px 8px;">Register</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/auth/register</td><td style="padding: 6px 8px;">Route</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">A</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">M3</td><td style="padding: 6px 8px;">Login (Magic Link)</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/auth/login</td><td style="padding: 6px 8px;">Route</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">A</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">M4</td><td style="padding: 6px 8px;">Magic Link Sent</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/auth/magic-link-sent</td><td style="padding: 6px 8px;">Route</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">A</td></tr>
+      <tr style="border-bottom: 1px solid var(--border); background: rgba(124,58,237,0.04);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--new); font-weight: 600;">N1</td><td style="padding: 6px 8px; font-weight: 600;">Condition Declaration</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/onboarding (step 2a)</td><td style="padding: 6px 8px;">Embed</td><td style="padding: 6px 8px;"><span class="screen-badge badge--new" style="margin: 0; font-size: 8px;">NEW</span></td><td style="padding: 6px 8px;">B</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">S1</td><td style="padding: 6px 8px;">Language Selection</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/onboarding (step 1)</td><td style="padding: 6px 8px;">Embed</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">B</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--update);">S2</td><td style="padding: 6px 8px;">Biomarker Input</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/onboarding (step 2b)</td><td style="padding: 6px 8px;">Embed</td><td style="padding: 6px 8px;"><span class="screen-badge badge--update" style="margin: 0; font-size: 8px;">UPD</span></td><td style="padding: 6px 8px;">B</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--update);">S3</td><td style="padding: 6px 8px;">Aha Intercept (4 variants)</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/onboarding (conditional)</td><td style="padding: 6px 8px;">Embed</td><td style="padding: 6px 8px;"><span class="screen-badge badge--update" style="margin: 0; font-size: 8px;">UPD</span></td><td style="padding: 6px 8px;">B</td></tr>
+      <tr style="border-bottom: 1px solid var(--border); background: rgba(37,99,235,0.04);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--redesign); font-weight: 600;">S4</td><td style="padding: 6px 8px; font-weight: 600;">Life Pattern (5 sub-screens)</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/onboarding (step 3)</td><td style="padding: 6px 8px;">Embed</td><td style="padding: 6px 8px;"><span class="screen-badge badge--redesign" style="margin: 0; font-size: 8px;">REDO</span></td><td style="padding: 6px 8px;">B</td></tr>
+      <tr style="border-bottom: 1px solid var(--border); background: rgba(37,99,235,0.04);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--redesign); font-weight: 600;">S5</td><td style="padding: 6px 8px; font-weight: 600;">Activation Event (4 options)</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/onboarding (step 4)</td><td style="padding: 6px 8px;">Embed</td><td style="padding: 6px 8px;"><span class="screen-badge badge--redesign" style="margin: 0; font-size: 8px;">REDO</span></td><td style="padding: 6px 8px;">B</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">M1</td><td style="padding: 6px 8px;">A2HS Prompt</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/onboarding/a2hs</td><td style="padding: 6px 8px;">Route</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">B</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">S6</td><td style="padding: 6px 8px;">Home: Morning State</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/home (state 6)</td><td style="padding: 6px 8px;">State</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">C</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">S7</td><td style="padding: 6px 8px;">Home: Sunday Brief</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/home (state 1)</td><td style="padding: 6px 8px;">State</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">C</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">M5</td><td style="padding: 6px 8px;">Home: Pre-Dinner Countdown</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/home (state 4)</td><td style="padding: 6px 8px;">State</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">C</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--update);">M6</td><td style="padding: 6px 8px;">Home: Active Recovery</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/home (state 3)</td><td style="padding: 6px 8px;">State</td><td style="padding: 6px 8px;"><span class="screen-badge badge--update" style="margin: 0; font-size: 8px;">UPD</span></td><td style="padding: 6px 8px;">C</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">M7</td><td style="padding: 6px 8px;">Home: Clean Day</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/home (state 7)</td><td style="padding: 6px 8px;">State</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">C</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">M8</td><td style="padding: 6px 8px;">Home: Monday Intercept</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/home (state 2)</td><td style="padding: 6px 8px;">State</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">C</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">S21</td><td style="padding: 6px 8px;">Home: Pre-Sleep / Check-in</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/home (state 5) · /checkin/presleep</td><td style="padding: 6px 8px;">State</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">C, D</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--update);">S8</td><td style="padding: 6px 8px;">Morning Check-in (2–3 screens)</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/checkin/morning</td><td style="padding: 6px 8px;">Embed</td><td style="padding: 6px 8px;"><span class="screen-badge badge--update" style="margin: 0; font-size: 8px;">UPD</span></td><td style="padding: 6px 8px;">D</td></tr>
+      <tr style="border-bottom: 1px solid var(--border); background: rgba(124,58,237,0.04);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--new); font-weight: 600;">N2</td><td style="padding: 6px 8px; font-weight: 600;">Back Pain Score (conditional)</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/checkin/morning (Q3)</td><td style="padding: 6px 8px;">Embed</td><td style="padding: 6px 8px;"><span class="screen-badge badge--new" style="margin: 0; font-size: 8px;">NEW</span></td><td style="padding: 6px 8px;">D</td></tr>
+      <tr style="border-bottom: 1px solid var(--border); background: rgba(37,99,235,0.04);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--redesign); font-weight: 600;">S9</td><td style="padding: 6px 8px; font-weight: 600;">Post-Event Intensity</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/checkin/post-event</td><td style="padding: 6px 8px;">Embed</td><td style="padding: 6px 8px;"><span class="screen-badge badge--redesign" style="margin: 0; font-size: 8px;">REDO</span></td><td style="padding: 6px 8px;">D</td></tr>
+      <tr style="border-bottom: 1px solid var(--border); background: rgba(124,58,237,0.04);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--new); font-weight: 600;">N3</td><td style="padding: 6px 8px; font-weight: 600;">Post-Event Type Selector</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/checkin/post-event (Q2)</td><td style="padding: 6px 8px;">Embed</td><td style="padding: 6px 8px;"><span class="screen-badge badge--new" style="margin: 0; font-size: 8px;">NEW</span></td><td style="padding: 6px 8px;">D</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--update);">S10</td><td style="padding: 6px 8px;">Midday Desk Check-in</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/checkin/midday</td><td style="padding: 6px 8px;">Embed</td><td style="padding: 6px 8px;"><span class="screen-badge badge--update" style="margin: 0; font-size: 8px;">UPD</span></td><td style="padding: 6px 8px;">D</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">S11</td><td style="padding: 6px 8px;">Context Selector</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">(embed in action flow)</td><td style="padding: 6px 8px;">Embed</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">D, E</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--update);">S12</td><td style="padding: 6px 8px;">Timer: Pre-Start</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">(embed, full-screen)</td><td style="padding: 6px 8px;">Embed</td><td style="padding: 6px 8px;"><span class="screen-badge badge--update" style="margin: 0; font-size: 8px;">UPD</span></td><td style="padding: 6px 8px;">E</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">S13</td><td style="padding: 6px 8px;">Timer: Running</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">(embed, full-screen)</td><td style="padding: 6px 8px;">Embed</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">E</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">M9</td><td style="padding: 6px 8px;">Timer: Complete</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">(embed, full-screen)</td><td style="padding: 6px 8px;">Embed</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">E</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--update);">S17</td><td style="padding: 6px 8px;">Recovery Day 1 (variants)</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/home (via Active Recovery)</td><td style="padding: 6px 8px;">State</td><td style="padding: 6px 8px;"><span class="screen-badge badge--update" style="margin: 0; font-size: 8px;">UPD</span></td><td style="padding: 6px 8px;">E</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">S18</td><td style="padding: 6px 8px;">Day 2 Paywall</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/recovery (gated)</td><td style="padding: 6px 8px;">Route</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">E</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--update);">S15</td><td style="padding: 6px 8px;">Scenario Search</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/scenario/search</td><td style="padding: 6px 8px;">Route</td><td style="padding: 6px 8px;"><span class="screen-badge badge--update" style="margin: 0; font-size: 8px;">UPD</span></td><td style="padding: 6px 8px;">F</td></tr>
+      <tr style="border-bottom: 1px solid var(--border); background: rgba(37,99,235,0.04);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--redesign); font-weight: 600;">S16</td><td style="padding: 6px 8px; font-weight: 600;">Playbook: Food/Drink</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/scenario/:id</td><td style="padding: 6px 8px;">Route</td><td style="padding: 6px 8px;"><span class="screen-badge badge--redesign" style="margin: 0; font-size: 8px;">REDO</span></td><td style="padding: 6px 8px;">F</td></tr>
+      <tr style="border-bottom: 1px solid var(--border); background: rgba(124,58,237,0.04);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--new); font-weight: 600;">N4</td><td style="padding: 6px 8px; font-weight: 600;">Playbook: Desk/Stress</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/scenario/:id (variant)</td><td style="padding: 6px 8px;">Route</td><td style="padding: 6px 8px;"><span class="screen-badge badge--new" style="margin: 0; font-size: 8px;">NEW</span></td><td style="padding: 6px 8px;">F</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--update);">S14</td><td style="padding: 6px 8px;">Weekly Brief</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/brief</td><td style="padding: 6px 8px;">Route</td><td style="padding: 6px 8px;"><span class="screen-badge badge--update" style="margin: 0; font-size: 8px;">UPD</span></td><td style="padding: 6px 8px;">G</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--update);">AL</td><td style="padding: 6px 8px;">Action Library Browse</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/actions</td><td style="padding: 6px 8px;">Route</td><td style="padding: 6px 8px;"><span class="screen-badge badge--update" style="margin: 0; font-size: 8px;">UPD</span></td><td style="padding: 6px 8px;">H</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">M12</td><td style="padding: 6px 8px;">Household Invite</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/household/invite</td><td style="padding: 6px 8px;">Route</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">I</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--update);">S19</td><td style="padding: 6px 8px;">Partner Home View</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/home (partner role)</td><td style="padding: 6px 8px;">State</td><td style="padding: 6px 8px;"><span class="screen-badge badge--update" style="margin: 0; font-size: 8px;">UPD</span></td><td style="padding: 6px 8px;">I</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--update);">S20</td><td style="padding: 6px 8px;">Profile & Settings</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/profile</td><td style="padding: 6px 8px;">Route</td><td style="padding: 6px 8px;"><span class="screen-badge badge--update" style="margin: 0; font-size: 8px;">UPD</span></td><td style="padding: 6px 8px;">J</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">S22</td><td style="padding: 6px 8px;">Pricing</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/pricing</td><td style="padding: 6px 8px;">Route</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">J</td></tr>
+      <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">M10</td><td style="padding: 6px 8px;">Payment Success</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/payment/success</td><td style="padding: 6px 8px;">Route</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">J</td></tr>
+      <tr><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted);">M11</td><td style="padding: 6px 8px;">Payment Cancel</td><td style="padding: 6px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">/payment/cancel</td><td style="padding: 6px 8px;">Route</td><td style="padding: 6px 8px;">—</td><td style="padding: 6px 8px;">J</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p style="font-size: 11px; color: var(--muted); margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);">
+  FitWell v2.0 Navigation Map · 50 frames across 10 flows · Generated from FitWell_TechUX_Spec_v2_0.md + FitWell_OnePager_v2.md
+</p>
+
+</body>
+</html>

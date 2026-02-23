@@ -1,0 +1,20 @@
+<svg width="640" height="640" viewBox="0 0 640 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Maskable icon - 80% safe zone (512px centered in 640px) -->
+  <!-- Navy background extends to full bleed -->
+  <rect width="640" height="640" fill="#041E3A"/>
+  
+  <!-- Icon content in safe zone (64px margin all sides) -->
+  <g transform="translate(320, 320)">
+    <!-- Vertical bar -->
+    <rect x="-32" y="-120" width="24" height="240" fill="#FFFFFF"/>
+    
+    <!-- Top horizontal -->
+    <rect x="-32" y="-120" width="120" height="24" fill="#FFFFFF"/>
+    
+    <!-- Middle horizontal (shorter) -->
+    <rect x="-32" y="-12" width="80" height="24" fill="#FFFFFF"/>
+    
+    <!-- Subtle accent line - gold -->
+    <rect x="96" y="-120" width="4" height="240" fill="#8C693B"/>
+  </g>
+</svg>

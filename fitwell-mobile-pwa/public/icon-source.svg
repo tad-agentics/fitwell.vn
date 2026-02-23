@@ -1,0 +1,21 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- FitWell App Icon - Ralph Lauren inspired minimalist design -->
+  <!-- Navy background with white geometric mark -->
+  <rect width="512" height="512" fill="#041E3A"/>
+  
+  <!-- Central "F" mark - inspired by wellness and fitness -->
+  <!-- Uses geometric shapes to create a minimal, authoritative symbol -->
+  <g transform="translate(256, 256)">
+    <!-- Vertical bar -->
+    <rect x="-32" y="-120" width="24" height="240" fill="#FFFFFF"/>
+    
+    <!-- Top horizontal -->
+    <rect x="-32" y="-120" width="120" height="24" fill="#FFFFFF"/>
+    
+    <!-- Middle horizontal (shorter) -->
+    <rect x="-32" y="-12" width="80" height="24" fill="#FFFFFF"/>
+    
+    <!-- Subtle accent line - gold -->
+    <rect x="96" y="-120" width="4" height="240" fill="#8C693B"/>
+  </g>
+</svg>

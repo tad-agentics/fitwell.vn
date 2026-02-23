@@ -1,0 +1,181 @@
+/* FitWell Custom Styles - Ralph Lauren Inspired */
+
+:root {
+  /* Ralph Lauren inspired palette: understated, authoritative */
+  --fitwell-navy: #1a1d29;
+  --fitwell-charcoal: #2d2f3a;
+  --fitwell-slate: #6b6d7a;
+  --fitwell-dove: #9a9ba5;
+  --fitwell-stone: #e8e8eb;
+  --fitwell-ivory: #f8f8f9;
+  --fitwell-white: #ffffff;
+  --fitwell-red: #8b2626;
+  --fitwell-green: #2d5832;
+  
+  /* Typography scale - restrained */
+  --fitwell-text-xs: 11px;
+  --fitwell-text-sm: 13px;
+  --fitwell-text-base: 15px;
+  --fitwell-text-lg: 17px;
+  --fitwell-text-xl: 21px;
+  --fitwell-text-2xl: 28px;
+  --fitwell-text-3xl: 34px;
+  
+  /* Spacing - generous whitespace */
+  --fitwell-space-xs: 8px;
+  --fitwell-space-sm: 16px;
+  --fitwell-space-md: 24px;
+  --fitwell-space-lg: 32px;
+  --fitwell-space-xl: 48px;
+  --fitwell-space-2xl: 64px;
+}
+
+/* Global typography - authority through restraint */
+.fitwell-app {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.011em;
+}
+
+.fitwell-heading-primary {
+  font-size: var(--fitwell-text-3xl);
+  font-weight: 400;
+  letter-spacing: -0.022em;
+  line-height: 1.2;
+}
+
+.fitwell-heading-secondary {
+  font-size: var(--fitwell-text-2xl);
+  font-weight: 400;
+  letter-spacing: -0.019em;
+  line-height: 1.25;
+}
+
+.fitwell-heading-tertiary {
+  font-size: var(--fitwell-text-xl);
+  font-weight: 400;
+  letter-spacing: -0.014em;
+  line-height: 1.3;
+}
+
+.fitwell-body-large {
+  font-size: var(--fitwell-text-lg);
+  font-weight: 400;
+  letter-spacing: -0.011em;
+  line-height: 1.5;
+}
+
+.fitwell-body {
+  font-size: var(--fitwell-text-base);
+  font-weight: 400;
+  letter-spacing: -0.008em;
+  line-height: 1.5;
+}
+
+.fitwell-body-small {
+  font-size: var(--fitwell-text-sm);
+  font-weight: 400;
+  letter-spacing: -0.006em;
+  line-height: 1.45;
+}
+
+.fitwell-label {
+  font-size: var(--fitwell-text-xs);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+/* No shadows, no gradients - only borders */
+.fitwell-border {
+  border: 1px solid var(--fitwell-stone);
+}
+
+.fitwell-border-top {
+  border-top: 1px solid var(--fitwell-stone);
+}
+
+.fitwell-border-bottom {
+  border-bottom: 1px solid var(--fitwell-stone);
+}
+
+.fitwell-border-subtle {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Button styles - minimal, restrained */
+.fitwell-button-primary {
+  background-color: var(--fitwell-navy);
+  color: var(--fitwell-white);
+  border: none;
+  padding: 16px 24px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.fitwell-button-primary:hover {
+  background-color: var(--fitwell-charcoal);
+}
+
+.fitwell-button-secondary {
+  background-color: transparent;
+  color: var(--fitwell-navy);
+  border: 1px solid var(--fitwell-navy);
+  padding: 16px 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fitwell-button-secondary:hover {
+  background-color: var(--fitwell-navy);
+  color: var(--fitwell-white);
+}
+
+.fitwell-button-ghost {
+  background-color: transparent;
+  color: var(--fitwell-slate);
+  border: none;
+  padding: 16px 24px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.fitwell-button-ghost:hover {
+  color: var(--fitwell-navy);
+}
+
+/* Input styles */
+.fitwell-input {
+  background-color: var(--fitwell-white);
+  border: 1px solid var(--fitwell-stone);
+  color: var(--fitwell-navy);
+  padding: 14px 16px;
+  font-size: var(--fitwell-text-base);
+  font-weight: 400;
+  letter-spacing: -0.008em;
+  transition: border-color 0.2s ease;
+}
+
+.fitwell-input:focus {
+  outline: none;
+  border-color: var(--fitwell-navy);
+}
+
+.fitwell-input::placeholder {
+  color: var(--fitwell-dove);
+}
+
+/* Status indicators - subtle colors */
+.fitwell-status-elevated {
+  color: var(--fitwell-red);
+}
+
+.fitwell-status-normal {
+  color: var(--fitwell-green);
+}
+
+.fitwell-status-neutral {
+  color: var(--fitwell-slate);
+}

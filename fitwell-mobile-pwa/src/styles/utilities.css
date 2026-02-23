@@ -1,0 +1,699 @@
+/**
+ * FitWell Utility Classes
+ * Reusable CSS classes following Guidelines.md design system
+ * All classes use CSS variables from theme.css for consistency
+ */
+
+/* ============================================
+   LAYOUT UTILITIES
+   ============================================ */
+
+.fw-full {
+  width: 100%;
+  height: 100%;
+}
+
+.fw-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.fw-container {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.fw-safe-bottom {
+  padding-bottom: calc(48px + env(safe-area-inset-bottom));
+}
+
+.fw-safe-top {
+  padding-top: calc(56px + env(safe-area-inset-top));
+}
+
+/* ============================================
+   BUTTON UTILITIES
+   ============================================ */
+
+.fw-btn-reset {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.fw-btn-primary {
+  width: 100%;
+  height: 56px;
+  background-color: var(--navy);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 150ms ease-out;
+}
+
+.fw-btn-primary:hover {
+  background-color: var(--navy-hover);
+}
+
+.fw-btn-primary:disabled {
+  background-color: var(--grey-surface);
+  color: var(--grey-text);
+  border: 1px solid var(--grey-warm);
+  cursor: not-allowed;
+}
+
+.fw-btn-secondary {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--navy);
+  padding: 0 0 2px 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  line-height: 1.0;
+  transition: opacity 150ms ease-out;
+}
+
+.fw-btn-secondary:hover {
+  opacity: 0.8;
+}
+
+.fw-btn-ghost {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--grey-text);
+  cursor: pointer;
+  line-height: 1.5;
+  transition: opacity 150ms ease-out;
+}
+
+.fw-btn-ghost:hover {
+  opacity: 0.7;
+}
+
+.fw-btn-nav {
+  background: none;
+  border: none;
+  cursor: pointer;
+  min-width: 48px;
+  height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0;
+}
+
+/* ============================================
+   CARD UTILITIES
+   ============================================ */
+
+.fw-card {
+  background-color: var(--white);
+  border: 1px solid var(--grey-warm);
+  border-radius: 4px;
+  padding: 24px;
+}
+
+.fw-card-selectable {
+  background-color: var(--white);
+  border: 1px solid var(--grey-warm);
+  border-radius: 4px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 120ms ease-out;
+}
+
+.fw-card-selectable:hover {
+  border-color: var(--navy);
+}
+
+.fw-card-selected {
+  background-color: #F0F4F8;
+  border: 2px solid var(--navy);
+  border-left: 4px solid var(--navy);
+}
+
+.fw-card-compact {
+  background-color: var(--white);
+  border: 1px solid var(--grey-warm);
+  border-radius: 4px;
+  padding: 16px;
+}
+
+/* ============================================
+   TYPOGRAPHY UTILITIES
+   ============================================ */
+
+.fw-display-xl {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1.0;
+  letter-spacing: 0;
+  color: var(--navy);
+}
+
+.fw-display-l {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0;
+  color: var(--navy);
+}
+
+.fw-heading-1 {
+  font-family: var(--font-ui);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--navy);
+}
+
+.fw-heading-2 {
+  font-family: var(--font-ui);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--navy);
+}
+
+.fw-body-l {
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--navy);
+}
+
+.fw-body-m {
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--navy);
+}
+
+.fw-body-s {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--navy);
+}
+
+.fw-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.0;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fw-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.0;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+
+.fw-micro {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--grey-text);
+}
+
+/* ============================================
+   COLOR UTILITIES
+   ============================================ */
+
+.fw-text-navy {
+  color: var(--navy);
+}
+
+.fw-text-white {
+  color: var(--white);
+}
+
+.fw-text-muted,
+.fw-text-grey {
+  color: var(--grey-text);
+}
+
+.fw-text-gold {
+  color: var(--gold);
+}
+
+.fw-text-amber {
+  color: var(--amber);
+}
+
+.fw-text-risk {
+  color: var(--risk);
+}
+
+.fw-text-success {
+  color: var(--success);
+}
+
+.fw-bg-navy {
+  background-color: var(--navy);
+}
+
+.fw-bg-white {
+  background-color: var(--white);
+}
+
+.fw-bg-surface {
+  background-color: var(--grey-surface);
+}
+
+/* ============================================
+   BADGE UTILITIES
+   ============================================ */
+
+.fw-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 8px;
+  border-radius: 2px;
+  display: inline-block;
+  line-height: 1.0;
+}
+
+.fw-badge-navy {
+  background-color: var(--navy);
+  color: var(--white);
+}
+
+.fw-badge-gold {
+  background-color: var(--gold);
+  color: var(--white);
+}
+
+.fw-badge-outline {
+  background-color: transparent;
+  border: 1px solid var(--grey-warm);
+  color: var(--grey-text);
+}
+
+/* ============================================
+   CHECK-IN UTILITIES
+   ============================================ */
+
+.fw-check-in-option {
+  width: 100%;
+  min-height: 72px;
+  background-color: var(--white);
+  border: 1px solid var(--grey-warm);
+  border-radius: 4px;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 120ms ease-out;
+  position: relative;
+}
+
+.fw-check-in-option-selected {
+  background-color: #F0F4F8;
+  border: 2px solid var(--navy);
+  border-left: 4px solid var(--navy);
+}
+
+/* Colored dot accents for specific options */
+.fw-check-in-option-accent-green::before,
+.fw-check-in-option-accent-amber::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.fw-check-in-option-accent-green::before {
+  background-color: #059669;
+}
+
+.fw-check-in-option-accent-amber::before {
+  background-color: #D97706;
+}
+
+.fw-progress-bar {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+}
+
+/* ============================================
+   BOTTOM NAVIGATION
+   ============================================ */
+
+.fw-bottom-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background-color: var(--white);
+  border-top: 1px solid var(--grey-warm);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.fw-bottom-nav-label {
+  font-family: var(--font-ui);
+  font-size: 10px;
+}
+
+.fw-bottom-nav-label-active {
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.fw-bottom-nav-label-inactive {
+  font-weight: 400;
+  color: var(--grey-text);
+}
+
+/* ============================================
+   OVERLAY UTILITIES
+   ============================================ */
+
+.fw-overlay-navy {
+  background-color: rgba(4, 30, 58, 0.82);
+}
+
+.fw-overlay-navy-light {
+  background-color: rgba(4, 30, 58, 0.40);
+}
+
+.fw-overlay-dark {
+  background-color: rgba(4, 30, 58, 0.72);
+}
+
+/* ============================================
+   BORDER UTILITIES
+   ============================================ */
+
+.fw-border {
+  border: 1px solid var(--grey-warm);
+}
+
+.fw-border-navy {
+  border: 1px solid var(--navy);
+}
+
+.fw-border-top {
+  border-top: 1px solid var(--grey-warm);
+}
+
+.fw-border-bottom {
+  border-bottom: 1px solid var(--grey-warm);
+}
+
+.fw-divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--grey-warm);
+  border: none;
+}
+
+/* ============================================
+   SPACING UTILITIES
+   ============================================ */
+
+.fw-gap-1 { gap: 4px; }
+.fw-gap-2 { gap: 8px; }
+.fw-gap-3 { gap: 12px; }
+.fw-gap-4 { gap: 16px; }
+.fw-gap-5 { gap: 20px; }
+.fw-gap-6 { gap: 24px; }
+.fw-gap-8 { gap: 32px; }
+.fw-gap-10 { gap: 40px; }
+.fw-gap-12 { gap: 48px; }
+
+.fw-p-4 { padding: 16px; }
+.fw-p-5 { padding: 20px; }
+.fw-p-6 { padding: 24px; }
+.fw-p-8 { padding: 32px; }
+
+.fw-px-5 { padding-left: 20px; padding-right: 20px; }
+.fw-px-6 { padding-left: 24px; padding-right: 24px; }
+
+.fw-py-4 { padding-top: 16px; padding-bottom: 16px; }
+.fw-py-5 { padding-top: 20px; padding-bottom: 20px; }
+.fw-py-6 { padding-top: 24px; padding-bottom: 24px; }
+
+.fw-mt-8 { margin-top: 32px; }
+.fw-mt-10 { margin-top: 40px; }
+.fw-mb-8 { margin-bottom: 32px; }
+.fw-mb-12 { margin-bottom: 48px; }
+
+/* ============================================
+   FLEX UTILITIES
+   ============================================ */
+
+.fw-flex {
+  display: flex;
+}
+
+.fw-flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.fw-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fw-flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fw-flex-start {
+  display: flex;
+  align-items: flex-start;
+}
+
+/* ============================================
+   TRANSITION UTILITIES
+   ============================================ */
+
+.fw-transition-fast {
+  transition: all 120ms ease-out;
+}
+
+.fw-transition-standard {
+  transition: all 150ms ease-out;
+}
+
+.fw-transition-medium {
+  transition: all 200ms ease-out;
+}
+
+.fw-transition-slow {
+  transition: all 300ms ease-out;
+}
+
+.fw-transition-overlay {
+  transition: background-color 400ms ease-out;
+}
+
+/* ============================================
+   VIDEO/IMAGE UTILITIES
+   ============================================ */
+
+.fw-video-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.fw-img-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ============================================
+   PROGRESS INDICATOR
+   ============================================ */
+
+.fw-progress-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.fw-progress-dot-active {
+  background-color: var(--navy);
+}
+
+.fw-progress-dot-inactive {
+  background-color: var(--grey-warm);
+}
+
+.fw-progress-dot-white-active {
+  background-color: var(--white);
+}
+
+.fw-progress-dot-white-inactive {
+  background-color: rgba(255, 255, 255, 0.30);
+}
+
+/* ============================================
+   RISK LEVEL INDICATORS
+   ============================================ */
+
+.fw-risk-low {
+  color: var(--success);
+}
+
+.fw-risk-medium {
+  color: var(--amber);
+}
+
+.fw-risk-high {
+  color: var(--risk);
+}
+
+.fw-risk-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.fw-risk-dot-low {
+  background-color: var(--success);
+}
+
+.fw-risk-dot-medium {
+  background-color: var(--amber);
+}
+
+.fw-risk-dot-high {
+  background-color: var(--risk);
+}
+
+/* ============================================
+   ANIMATION UTILITIES
+   ============================================ */
+
+@keyframes fw-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fw-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fw-slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes fw-slide-down {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+
+.fw-fade-in {
+  animation: fw-fade-in 150ms ease-out;
+}
+
+.fw-fade-out {
+  animation: fw-fade-out 150ms ease-out;
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+.fw-tap-target {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.fw-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ============================================
+   TIMER SPECIFIC
+   ============================================ */
+
+.fw-timer-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.fw-timer-number {
+  font-family: var(--font-display);
+  font-size: 72px;
+  font-weight: 400;
+  color: var(--white);
+  line-height: 1.0;
+  letter-spacing: 0;
+}
+
+.fw-timer-number-small {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 400;
+  color: var(--white);
+  line-height: 1.0;
+  letter-spacing: 0;
+}

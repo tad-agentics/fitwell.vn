@@ -1,0 +1,9 @@
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Be+Vietnam+Pro:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+/* Font Family Variables */
+:root {
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-ui: 'Be Vietnam Pro', Helvetica, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+}
