@@ -1,12 +1,21 @@
 import React from 'react';
+import { useHousehold, useCheckins } from '@/hooks/useSupabaseQuery';
+import { useAuthStore } from '@/store/authStore';
 
 interface HouseholdPartnerHomeScreenProps {
   onNavigate: (screen: string) => void;
 }
 
-export function HouseholdPartnerHomeScreen({
-  onNavigate,
-}: HouseholdPartnerHomeScreenProps) {
+export function HouseholdPartnerHomeScreen({ onNavigate }: HouseholdPartnerHomeScreenProps) {
+  const session = useAuthStore((s) => s.session);
+  const userId = session?.user?.id;
+  const { data: household } = useHousehold(userId);
+  const { data: recentCheckins } = useCheckins(household?.owner_id, 30);
+
+  // Derive metrics from check-in data
+  const checkinCount = recentCheckins?.length ?? 0;
+  const heavyEvents = recentCheckins?.filter((c) => c.event_intensity === 'heavy').length ?? 0;
+
   return (
     <div
       style={{
@@ -14,7 +23,7 @@ export function HouseholdPartnerHomeScreen({
         height: '100%',
         backgroundColor: '#F5F5F5',
         overflow: 'auto',
-        paddingBottom: '72px', // Bottom nav clearance
+        paddingBottom: '72px',
       }}
     >
       <div style={{ padding: '40px 20px 32px' }}>
@@ -60,77 +69,9 @@ export function HouseholdPartnerHomeScreen({
             TUẦN NÀY
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {/* Risk item 1 - Medium */}
-            <div
-              style={{
-                backgroundColor: '#FFFFFF',
-                border: '1px solid #EBEBF0',
-                borderRadius: '4px',
-                padding: '16px 20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '15px',
-                    fontWeight: 600,
-                    color: '#041E3A',
-                    lineHeight: '1.3',
-                  }}
-                >
-                  Thứ Tư: bữa tối công việc
-                </div>
-              </div>
-              <div
-                style={{
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  backgroundColor: '#D97706',
-                  flexShrink: 0,
-                }}
-              />
-            </div>
-
-            {/* Risk item 2 - High */}
-            <div
-              style={{
-                backgroundColor: '#FFFFFF',
-                border: '1px solid #EBEBF0',
-                borderRadius: '4px',
-                padding: '16px 20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '15px',
-                    fontWeight: 600,
-                    color: '#041E3A',
-                    lineHeight: '1.3',
-                  }}
-                >
-                  Thứ Năm: nhậu (rủi ro cao)
-                </div>
-              </div>
-              <div
-                style={{
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  backgroundColor: '#DC2626',
-                  flexShrink: 0,
-                }}
-              />
+          <div className="fw-card">
+            <div className="fw-body-m fw-text-grey">
+              Thông tin lịch rủi ro sẽ được cập nhật khi người thân hoàn thành check-in.
             </div>
           </div>
         </div>
@@ -160,83 +101,27 @@ export function HouseholdPartnerHomeScreen({
             }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {/* Trữ */}
               <div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '15px',
-                    fontWeight: 600,
-                    color: '#041E3A',
-                    lineHeight: '1.4',
-                    marginBottom: '6px',
-                  }}
-                >
+                <div style={{ fontFamily: 'var(--font-ui)', fontSize: '15px', fontWeight: 600, color: '#041E3A', lineHeight: '1.4', marginBottom: '6px' }}>
                   Trữ: nước khoáng, rau xanh, đậu hũ
                 </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '13px',
-                    fontWeight: 400,
-                    color: '#9D9FA3',
-                    lineHeight: '1.5',
-                  }}
-                >
-                  H��� trợ phục hồi sau sự kiện Thứ Năm
+                <div style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', fontWeight: 400, color: '#9D9FA3', lineHeight: '1.5' }}>
+                  Hỗ trợ phục hồi sau sự kiện
                 </div>
               </div>
-
-              {/* Tránh mua */}
               <div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '15px',
-                    fontWeight: 600,
-                    color: '#DC2626',
-                    lineHeight: '1.4',
-                    marginBottom: '6px',
-                  }}
-                >
+                <div style={{ fontFamily: 'var(--font-ui)', fontSize: '15px', fontWeight: 600, color: '#DC2626', lineHeight: '1.4', marginBottom: '6px' }}>
                   Tránh mua: nội tạng, đồ ăn chế biến
                 </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '13px',
-                    fontWeight: 400,
-                    color: '#9D9FA3',
-                    lineHeight: '1.5',
-                  }}
-                >
+                <div style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', fontWeight: 400, color: '#9D9FA3', lineHeight: '1.5' }}>
                   Gây tổn thương gan khi kết hợp với rượu
                 </div>
               </div>
-
-              {/* Sáng Thứ Sáu */}
               <div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '15px',
-                    fontWeight: 600,
-                    color: '#041E3A',
-                    lineHeight: '1.4',
-                    marginBottom: '6px',
-                  }}
-                >
-                  Sáng Thứ Sáu: cháo hoặc súp nhẹ nếu cần
+                <div style={{ fontFamily: 'var(--font-ui)', fontSize: '15px', fontWeight: 600, color: '#041E3A', lineHeight: '1.4', marginBottom: '6px' }}>
+                  Sáng hôm sau: cháo hoặc súp nhẹ nếu cần
                 </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '13px',
-                    fontWeight: 400,
-                    color: '#9D9FA3',
-                    lineHeight: '1.5',
-                  }}
-                >
+                <div style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', fontWeight: 400, color: '#9D9FA3', lineHeight: '1.5' }}>
                   Dễ tiêu hóa, giúp dạ dày phục hồi
                 </div>
               </div>
@@ -268,114 +153,21 @@ export function HouseholdPartnerHomeScreen({
               padding: '20px',
             }}
           >
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '20px',
-              }}
-            >
-              {/* Check-ins completed */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
               <div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '28px',
-                    fontWeight: 600,
-                    color: '#041E3A',
-                    lineHeight: '1.2',
-                    marginBottom: '4px',
-                  }}
-                >
-                  12/14
+                <div style={{ fontFamily: 'var(--font-ui)', fontSize: '28px', fontWeight: 600, color: '#041E3A', lineHeight: '1.2', marginBottom: '4px' }}>
+                  {checkinCount}
                 </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '13px',
-                    fontWeight: 400,
-                    color: '#9D9FA3',
-                  }}
-                >
+                <div style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', fontWeight: 400, color: '#9D9FA3' }}>
                   Check-ins
                 </div>
               </div>
-
-              {/* Actions completed */}
               <div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '28px',
-                    fontWeight: 600,
-                    color: '#041E3A',
-                    lineHeight: '1.2',
-                    marginBottom: '4px',
-                  }}
-                >
-                  18
+                <div style={{ fontFamily: 'var(--font-ui)', fontSize: '28px', fontWeight: 600, color: '#041E3A', lineHeight: '1.2', marginBottom: '4px' }}>
+                  {heavyEvents}
                 </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '13px',
-                    fontWeight: 400,
-                    color: '#9D9FA3',
-                  }}
-                >
-                  Hành động
-                </div>
-              </div>
-
-              {/* Risk events */}
-              <div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '28px',
-                    fontWeight: 600,
-                    color: '#041E3A',
-                    lineHeight: '1.2',
-                    marginBottom: '4px',
-                  }}
-                >
-                  2
-                </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '13px',
-                    fontWeight: 400,
-                    color: '#9D9FA3',
-                  }}
-                >
+                <div style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', fontWeight: 400, color: '#9D9FA3' }}>
                   Sự kiện cao
-                </div>
-              </div>
-
-              {/* Recovery score */}
-              <div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '28px',
-                    fontWeight: 600,
-                    color: '#059669',
-                    lineHeight: '1.2',
-                    marginBottom: '4px',
-                  }}
-                >
-                  85%
-                </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '13px',
-                    fontWeight: 400,
-                    color: '#9D9FA3',
-                  }}
-                >
-                  Phục hồi
                 </div>
               </div>
             </div>

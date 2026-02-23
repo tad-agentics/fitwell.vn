@@ -1,21 +1,53 @@
 import React from 'react';
 import { Check } from 'lucide-react';
+import { useSubscription } from '@/hooks/useSupabaseQuery';
+import { useAuthStore } from '@/store/authStore';
 
 interface PaymentSuccessScreenProps {
   onNavigate: (screen: string) => void;
 }
 
-export function PaymentSuccessScreen({
-  onNavigate,
-}: PaymentSuccessScreenProps) {
-  // Mock data
-  const plan = {
-    name: 'GÓI CÁ NHÂN — NĂM',
-    price: '1,490,000₫/năm',
-    validUntil: '22/02/2027',
-    features: ['Kế hoạch phục hồi 12 tuần', 'Kịch bản không giới hạn', 'Theo dõi tiến độ']
-  };
-  const onContinue = () => onNavigate('home');
+const PLAN_NAMES: Record<string, string> = {
+  individual_monthly: 'GÓI CÁ NHÂN — THÁNG',
+  individual_quarterly: 'GÓI CÁ NHÂN — QUÝ',
+  household_annual: 'GÓI GIA ĐÌNH — NĂM',
+};
+
+const PLAN_FEATURES: Record<string, string[]> = {
+  individual_monthly: ['Kế hoạch phục hồi 12 tuần', 'Kịch bản không giới hạn', 'Theo dõi tiến độ'],
+  individual_quarterly: ['Kế hoạch phục hồi 12 tuần', 'Kịch bản không giới hạn', 'Theo dõi tiến độ', 'Báo cáo tuần nâng cao'],
+  household_annual: ['Tất cả tính năng cá nhân', 'Household Partner view', 'Chuẩn bị tại nhà cho người thân'],
+};
+
+function formatPrice(amount: number, currency: string): string {
+  if (currency === 'VND') {
+    return `${amount.toLocaleString('vi-VN')}₫`;
+  }
+  return `${amount} ${currency}`;
+}
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
+}
+
+export function PaymentSuccessScreen({ onNavigate }: PaymentSuccessScreenProps) {
+  const session = useAuthStore((s) => s.session);
+  const { data: subscription } = useSubscription(session?.user?.id);
+
+  const planName = subscription
+    ? (PLAN_NAMES[subscription.plan] ?? subscription.plan.toUpperCase())
+    : 'GÓI CÁ NHÂN';
+  const price = subscription
+    ? formatPrice(subscription.amount, subscription.currency)
+    : '';
+  const validUntil = subscription?.expires_at
+    ? formatDate(subscription.expires_at)
+    : '';
+  const features = subscription
+    ? (PLAN_FEATURES[subscription.plan] ?? PLAN_FEATURES.individual_monthly)
+    : PLAN_FEATURES.individual_monthly;
+
   return (
     <div
       style={{
@@ -37,7 +69,7 @@ export function PaymentSuccessScreen({
           maxWidth: '340px',
         }}
       >
-        {/* Success icon - circle with checkmark */}
+        {/* Success icon */}
         <div
           style={{
             width: '64px',
@@ -50,16 +82,9 @@ export function PaymentSuccessScreen({
             marginBottom: '24px',
           }}
         >
-          <Check
-            size={32}
-            style={{
-              color: '#FFFFFF',
-              strokeWidth: 2,
-            }}
-          />
+          <Check size={32} style={{ color: '#FFFFFF', strokeWidth: 2 }} />
         </div>
 
-        {/* Headline */}
         <h1
           style={{
             fontFamily: 'var(--font-ui)',
@@ -85,7 +110,6 @@ export function PaymentSuccessScreen({
             marginBottom: '32px',
           }}
         >
-          {/* Plan name */}
           <div
             style={{
               fontFamily: 'var(--font-mono)',
@@ -98,83 +122,46 @@ export function PaymentSuccessScreen({
               lineHeight: '1.0',
             }}
           >
-            {plan.name}
+            {planName}
           </div>
 
-          {/* Price */}
-          <div
-            style={{
-              fontFamily: 'var(--font-ui)',
-              fontSize: '22px',
-              fontWeight: 600,
-              color: '#041E3A',
-              marginBottom: '4px',
-              lineHeight: '1.3',
-            }}
-          >
-            {plan.price}
-          </div>
+          {price && (
+            <div
+              style={{
+                fontFamily: 'var(--font-ui)',
+                fontSize: '22px',
+                fontWeight: 600,
+                color: '#041E3A',
+                marginBottom: '4px',
+                lineHeight: '1.3',
+              }}
+            >
+              {price}
+            </div>
+          )}
 
-          {/* Validity */}
-          <div
-            style={{
-              fontFamily: 'var(--font-ui)',
-              fontSize: '13px',
-              fontWeight: 400,
-              color: '#9D9FA3',
-              marginBottom: '16px',
-              lineHeight: '1.5',
-            }}
-          >
-            Có hiệu lực đến {plan.validUntil}
-          </div>
+          {validUntil && (
+            <div
+              style={{
+                fontFamily: 'var(--font-ui)',
+                fontSize: '13px',
+                fontWeight: 400,
+                color: '#9D9FA3',
+                marginBottom: '16px',
+                lineHeight: '1.5',
+              }}
+            >
+              Có hiệu lực đến {validUntil}
+            </div>
+          )}
 
-          {/* Divider */}
-          <div
-            style={{
-              height: '1px',
-              backgroundColor: '#EBEBF0',
-              marginBottom: '16px',
-            }}
-          />
+          <div style={{ height: '1px', backgroundColor: '#EBEBF0', marginBottom: '16px' }} />
 
-          {/* Unlocked features list */}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-            }}
-          >
-            {plan.features.map((feature, index) => (
-              <div
-                key={index}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                }}
-              >
-                {/* Checkmark */}
-                <Check
-                  size={16}
-                  style={{
-                    color: '#059669',
-                    strokeWidth: 2,
-                    flexShrink: 0,
-                  }}
-                />
-
-                {/* Feature text */}
-                <span
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '15px',
-                    fontWeight: 400,
-                    color: '#041E3A',
-                    lineHeight: '1.5',
-                  }}
-                >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {features.map((feature, index) => (
+              <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Check size={16} style={{ color: '#059669', strokeWidth: 2, flexShrink: 0 }} />
+                <span style={{ fontFamily: 'var(--font-ui)', fontSize: '15px', fontWeight: 400, color: '#041E3A', lineHeight: '1.5' }}>
                   {feature}
                 </span>
               </div>
@@ -182,9 +169,8 @@ export function PaymentSuccessScreen({
           </div>
         </div>
 
-        {/* Primary CTA */}
         <button
-          onClick={onContinue}
+          onClick={() => onNavigate('home')}
           style={{
             width: '100%',
             height: '56px',
@@ -204,7 +190,6 @@ export function PaymentSuccessScreen({
           Bắt đầu sử dụng
         </button>
 
-        {/* Receipt note */}
         <p
           style={{
             fontFamily: 'var(--font-ui)',
