@@ -47,6 +47,8 @@ fitwell.vn/
 │   ├── FitWell_DesignSystem.md    # Design system (Ralph Lauren-inspired)
 │   ├── FitWell_Navigation_Map_v2.html  # 50 frames across 10 flows
 │   └── FitWell_Production_Plan.md # 8-phase production plan (~23 weeks)
+├── landing/                       # Marketing landing page (static HTML)
+│   └── index.html                 # FitWell landing v5 — deploy to Vercel
 ├── fitwell-mobile-pwa/            # React PWA prototype
 │   ├── src/app/components/        # 50+ screen components
 │   ├── src/app/components/ui/     # shadcn/ui primitives
@@ -66,6 +68,10 @@ fitwell.vn/
 See [`docs/FitWell_Production_Plan.md`](docs/FitWell_Production_Plan.md) for the complete build roadmap.
 
 ## Development
+
+**Landing page (static):** Serve `landing/index.html` locally or deploy the `landing/` folder to Vercel (set Root Directory to `landing`).
+
+**PWA app:**
 
 ```bash
 cd fitwell-mobile-pwa

@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitWell — Cơ thể bạn đang chịu tải chuyên nghiệp. Nó cần được bảo trì chuyên nghiệp.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Be+Vietnam+Pro:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #041E3A;
+  --navy-90: rgba(4,30,58,0.92);
+  --navy-hover: #0A3055;
+  --white: #FFFFFF;
+  --bg: #F5F5F5;
+  --border: #EBEBF0;
+  --muted: #9D9FA3;
+  --gold: #8C693B;
+  --amber: #D97706;
+  --risk: #DC2626;
+  --green: #059669;
+  --fd: 'DM Serif Display', Georgia, serif;
+  --fu: 'Be Vietnam Pro', Helvetica, sans-serif;
+  --fm: 'IBM Plex Mono', 'Courier New', monospace;
+}
+body { font-family: var(--fu); color: var(--navy); background: var(--white); -webkit-font-smoothing: antialiased; overflow-x: hidden; line-height: 1.6; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+img { max-width: 100%; display: block; }
+
+/* ── Typography ── */
+.eyebrow { font-family: var(--fm); font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.eyebrow--light { color: rgba(255,255,255,0.45); }
+h1 { font-family: var(--fd); font-size: 44px; font-weight: 400; line-height: 1.1; }
+h2 { font-size: 28px; font-weight: 700; line-height: 1.25; }
+h3 { font-size: 18px; font-weight: 600; line-height: 1.3; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 52px; padding: 0 28px; border-radius: 4px; border: none; cursor: pointer;
+  font-family: var(--fm); font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  text-decoration: none; transition: all 150ms;
+}
+.btn--white { background: var(--white); color: var(--navy); }
+.btn--white:hover { background: var(--bg); }
+.btn--navy { background: var(--navy); color: var(--white); }
+.btn--navy:hover { background: var(--navy-hover); }
+.btn--outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+.btn--outline:hover { border-color: rgba(255,255,255,0.5); }
+
+/* ══════════════════════════════════════ */
+/* NAV                                    */
+/* ══════════════════════════════════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 56px;
+  background: var(--navy); display: flex; align-items: center; justify-content: space-between; padding: 0 32px;
+  transform: translateY(-100%); transition: transform 200ms ease-out;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.nav.visible { transform: translateY(0); }
+.nav-logo { font-family: var(--fm); font-size: 13px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white); text-decoration: none; }
+.nav .btn { height: 40px; padding: 0 20px; font-size: 10px; }
+
+/* ══════════════════════════════════════ */
+/* HERO — Empathy-first, then product    */
+/* ══════════════════════════════════════ */
+.hero { background: var(--navy); padding: 120px 0 72px; position: relative; overflow: hidden; }
+.hero::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: rgba(255,255,255,0.06);
+}
+.hero-inner { display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: center; }
+.hero-text .eyebrow { margin-bottom: 20px; }
+.hero-h1 { color: var(--white); margin-bottom: 20px; }
+.hero-p { font-size: 17px; color: rgba(255,255,255,0.55); line-height: 1.75; margin-bottom: 32px; max-width: 520px; }
+.hero-p em { color: rgba(255,255,255,0.8); font-style: normal; font-weight: 500; }
+.hero-ctas { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.hero-note { font-size: 12px; color: var(--muted); margin-top: 16px; }
+
+/* ══════════════════════════════════════ */
+/* PHONE MOCKUP                          */
+/* ══════════════════════════════════════ */
+.phone {
+  width: 270px; border-radius: 32px; overflow: hidden; position: relative;
+  background: #000; flex-shrink: 0;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.08), 0 24px 48px rgba(0,0,0,0.3);
+}
+.phone--sm { width: 230px; }
+.phone-notch {
+  width: 80px; height: 18px; background: #000; border-radius: 0 0 10px 10px;
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 10;
+}
+.phone-screen { margin: 5px; border-radius: 27px; overflow: hidden; position: relative; background: var(--white); }
+
+/* ── In-phone UI ── */
+.scr { padding: 36px 14px 16px; min-height: 440px; display: flex; flex-direction: column; }
+.phone--sm .scr { min-height: 380px; padding: 32px 12px 14px; }
+
+.scr-badge {
+  font-family: var(--fm); font-size: 7px; font-weight: 500; letter-spacing: 0.06em;
+  text-transform: uppercase; display: inline-block; padding: 2px 7px; border-radius: 2px; margin-bottom: 8px;
+}
+.scr-badge--amber { background: rgba(217,119,6,0.1); color: var(--amber); }
+.scr-badge--navy { background: var(--navy); color: var(--white); }
+.scr-badge--muted { background: var(--bg); color: var(--muted); }
+.scr-badge--green { background: rgba(5,150,105,0.08); color: var(--green); }
+.scr-badge--risk { background: rgba(220,38,38,0.06); color: var(--risk); }
+
+.scr-title { font-size: 16px; font-weight: 600; color: var(--navy); line-height: 1.3; margin-bottom: 6px; }
+.scr-sub { font-size: 11px; color: var(--muted); line-height: 1.5; margin-bottom: 10px; }
+.scr-divider { height: 1px; background: var(--border); margin: 8px 0; }
+
+/* Rule rows */
+.scr-rule { display: flex; gap: 6px; align-items: baseline; margin-bottom: 8px; font-size: 11px; line-height: 1.4; color: var(--navy); }
+.scr-rule-num { font-family: var(--fm); font-size: 8px; color: var(--muted); flex-shrink: 0; margin-top: 1px; }
+.scr-avoid { background: rgba(220,38,38,0.05); border-left: 2px solid var(--risk); padding: 6px 8px; margin-top: 4px; font-size: 10px; color: var(--risk); line-height: 1.4; }
+
+/* Check-in */
+.scr-q { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 10px; }
+.scr-options { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
+.scr-opt {
+  font-family: var(--fm); font-size: 9px; font-weight: 500; letter-spacing: 0.04em;
+  padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border); color: var(--muted); background: var(--white);
+}
+.scr-opt--sel { background: var(--navy); color: var(--white); border-color: var(--navy); }
+
+/* Timer / dark screen */
+.scr--dark { background: var(--navy); }
+.scr--dark .scr-title { color: var(--white); }
+.scr--dark .scr-sub { color: rgba(255,255,255,0.4); }
+.scr-timer { font-family: var(--fd); font-size: 48px; color: var(--white); text-align: center; line-height: 1; margin: 12px 0 8px; }
+.scr-timer-dots { display: flex; gap: 5px; justify-content: center; margin-bottom: 10px; }
+.scr-timer-dots .d { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.15); }
+.scr-timer-dots .d--on { background: var(--white); }
+.scr-timer-cta {
+  font-family: var(--fm); font-size: 9px; font-weight: 500; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--white); text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.5); display: inline-block; padding-bottom: 1px;
+  margin: 0 auto; width: fit-content;
+}
+.scr-rationale { font-size: 10px; color: rgba(255,255,255,0.4); line-height: 1.5; text-align: center; margin-top: 8px; max-width: 200px; margin-left: auto; margin-right: auto; }
+
+/* Video bg */
+.scr-videobg {
+  position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border-radius: 27px; overflow: hidden;
+  background: linear-gradient(170deg, #5a5a5a 0%, #4a4038 50%, #353030 100%);
+}
+.scr-videobg::before { content: ''; position: absolute; inset: 0; background: rgba(4,30,58,0.8); }
+.scr-figure {
+  position: absolute; bottom: 24%; left: 50%; transform: translateX(-50%);
+  width: 50px; height: 120px; background: rgba(30,30,30,0.25); border-radius: 25px 25px 14px 14px; filter: blur(3px);
+}
+
+/* Bottom bar */
+.scr-bar {
+  margin-top: auto; padding-top: 6px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-around;
+}
+.scr-bar .t { font-family: var(--fm); font-size: 6px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); text-align: center; padding: 3px 0; }
+.scr-bar .t--a { color: var(--navy); }
+
+/* Risk dots */
+.rdots { display: flex; gap: 3px; margin-bottom: 4px; }
+.rdots i { width: 4px; height: 4px; border-radius: 50%; background: var(--risk); display: block; }
+.rdots i.off { background: var(--border); }
+
+/* Sticky CTA */
+.scr-cta-bar { margin-top: auto; text-align: center; padding-top: 6px; }
+.scr-cta-btn {
+  display: inline-block; font-family: var(--fm); font-size: 8px; font-weight: 500;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--white);
+  background: var(--navy); padding: 8px 16px; border-radius: 4px;
+}
+
+/* ══════════════════════════════════════ */
+/* RECOGNITION SECTION                   */
+/* ══════════════════════════════════════ */
+.recognition { padding: 80px 0 64px; background: var(--white); }
+.recog-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; margin-top: 40px; }
+.recog-card { background: var(--bg); padding: 28px 24px; position: relative; }
+.recog-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+}
+.recog-card--uric::before { background: var(--risk); }
+.recog-card--chol::before { background: var(--amber); }
+.recog-card--back::before { background: var(--navy); }
+.recog-icon { font-size: 28px; margin-bottom: 12px; line-height: 1; }
+.recog-card h3 { margin-bottom: 8px; }
+.recog-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+.recog-card .stat { font-family: var(--fd); font-size: 32px; color: var(--navy); display: block; margin-bottom: 8px; }
+
+/* ══════════════════════════════════════ */
+/* THREE PHONES — product reveal         */
+/* ══════════════════════════════════════ */
+.product { padding: 80px 0; background: var(--bg); }
+.phones-row { display: flex; justify-content: center; gap: 24px; align-items: flex-start; margin-top: 48px; }
+.phone-col { display: flex; flex-direction: column; align-items: center; }
+.phone-label { margin-top: 16px; text-align: center; max-width: 230px; }
+.phone-label .when { font-family: var(--fm); font-size: 9px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.phone-label .what { font-size: 14px; font-weight: 600; color: var(--navy); line-height: 1.35; }
+.phone-label .desc { font-size: 12px; color: var(--muted); line-height: 1.5; margin-top: 4px; }
+.phone-arrow { display: flex; align-items: center; padding-top: 180px; color: var(--border); font-size: 20px; }
+
+/* ══════════════════════════════════════ */
+/* SYSTEM SECTION                        */
+/* ══════════════════════════════════════ */
+.system { padding: 80px 0; background: var(--white); }
+.sys-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 40px; }
+.sys-card { background: var(--bg); padding: 28px 24px; border-left: 2px solid var(--border); }
+.sys-card .num { font-family: var(--fm); font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.sys-card h3 { margin-bottom: 8px; }
+.sys-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+/* ══════════════════════════════════════ */
+/* BRIEF PREVIEW                         */
+/* ══════════════════════════════════════ */
+.brief { padding: 80px 0; background: var(--bg); }
+.brief-inner { display: grid; grid-template-columns: 1fr 400px; gap: 48px; align-items: start; margin-top: 40px; }
+.brief-card { background: var(--white); border: 1px solid var(--border); padding: 20px; }
+.brief-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.brief-row:last-child { border-bottom: none; }
+.r-lo { color: var(--green); } .r-md { color: var(--amber); } .r-hi { color: var(--risk); font-weight: 600; }
+.brief-insight { margin-top: 12px; padding: 14px; background: var(--bg); font-size: 14px; line-height: 1.65; }
+.brief-tier { font-family: var(--fm); font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+
+/* ══════════════════════════════════════ */
+/* COMPARISON                            */
+/* ══════════════════════════════════════ */
+.compare { padding: 80px 0; background: var(--white); }
+.comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 40px; }
+.comp-card { padding: 24px; background: var(--bg); }
+.comp-old { font-size: 14px; color: var(--muted); line-height: 1.55; margin-bottom: 8px; text-decoration: line-through; text-decoration-color: var(--border); }
+.comp-new { font-size: 14px; color: var(--navy); line-height: 1.55; font-weight: 500; }
+
+/* ══════════════════════════════════════ */
+/* SCIENCE                               */
+/* ══════════════════════════════════════ */
+.science { padding: 64px 0; background: var(--navy); color: var(--white); }
+.science p { font-size: 15px; color: rgba(255,255,255,0.55); line-height: 1.7; max-width: 720px; margin-top: 16px; }
+.science em { color: rgba(255,255,255,0.8); font-style: normal; }
+
+/* ══════════════════════════════════════ */
+/* PRICING                               */
+/* ══════════════════════════════════════ */
+.pricing { padding: 80px 0; background: var(--bg); }
+.price-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; margin-top: 40px; }
+.price-card { background: var(--white); padding: 28px 24px; position: relative; }
+.price-card--featured { border-top: 2px solid var(--navy); }
+.price-card .plan-name { font-family: var(--fm); font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.price-card .price { font-size: 24px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.price-card .period { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+.price-card .features { list-style: none; }
+.price-card .features li { font-size: 13px; color: var(--navy); padding: 5px 0; border-bottom: 1px solid var(--border); }
+.price-card .features li:last-child { border-bottom: none; }
+.price-card .features li::before { content: '✓ '; color: var(--green); }
+.price-badge { font-family: var(--fm); font-size: 8px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; display: inline-block; margin-bottom: 8px; }
+.price-badge--best { background: var(--navy); color: var(--white); }
+.price-badge--gold { background: rgba(140,105,59,0.1); color: var(--gold); }
+
+/* ══════════════════════════════════════ */
+/* PARTNER SECTION                       */
+/* ══════════════════════════════════════ */
+.partner { padding: 72px 0; background: var(--white); border-top: 1px solid var(--border); }
+.partner-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+
+/* ══════════════════════════════════════ */
+/* FOOTER CTA                            */
+/* ══════════════════════════════════════ */
+.footer-cta { padding: 80px 0; background: var(--navy); text-align: center; }
+.footer-cta h2 { color: var(--white); margin-bottom: 12px; }
+.footer-cta p { font-size: 15px; color: rgba(255,255,255,0.5); margin-bottom: 32px; max-width: 480px; margin-left: auto; margin-right: auto; }
+
+.footer { padding: 24px 0; background: var(--navy); border-top: 1px solid rgba(255,255,255,0.06); text-align: center; }
+.footer p { font-size: 12px; color: var(--muted); }
+
+/* ══════════════════════════════════════ */
+/* RESPONSIVE                            */
+/* ══════════════════════════════════════ */
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-inner .phone { display: none; }
+  h1 { font-size: 34px; }
+  h2 { font-size: 24px; }
+  .recog-grid, .sys-grid, .comp-grid, .price-grid { grid-template-columns: 1fr; }
+  .phones-row { flex-direction: column; align-items: center; }
+  .phone-arrow { display: none; }
+  .brief-inner { grid-template-columns: 1fr; }
+  .partner-inner { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .wrap { padding: 0 20px; }
+  h1 { font-size: 28px; }
+  .phone--sm { width: 260px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ -->
+<!-- STICKY NAV                            -->
+<!-- ══════════════════════════════════════ -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo">FitWell</a>
+  <a href="#pricing" class="btn btn--white">Bắt đầu miễn phí</a>
+</nav>
+
+<!-- ══════════════════════════════════════ -->
+<!-- HERO                                  -->
+<!-- ══════════════════════════════════════ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+
+      <div class="hero-text">
+        <div class="eyebrow eyebrow--light">FitWell</div>
+        <h1 class="hero-h1">Kết quả xét nghiệm<br>đã báo động.<br>Bây giờ thì sao?</h1>
+        <p class="hero-p">
+          Axit uric cao. Mỡ máu vượt ngưỡng. Lưng cứng mỗi sáng. Bác sĩ bảo <em>"ăn uống cẩn thận, bớt ngồi."</em> Nhưng lịch họp vẫn dày, bữa tối công việc vẫn liên tục, và cái lưng thì vẫn phải ngồi 10 tiếng mỗi ngày.
+        </p>
+        <p class="hero-p" style="margin-top: -16px;">
+          FitWell không bảo bạn thay đổi cuộc sống. FitWell cho bạn <em>những việc cụ thể, dưới 5 phút</em>, đúng lúc cơ thể cần nhất — trước bữa ăn nặng, sau ngày ngồi nhiều, sáng hôm sau khi lưng cứng.
+        </p>
+        <div class="hero-ctas">
+          <a href="#pricing" class="btn btn--white">Bắt đầu miễn phí</a>
+          <a href="#product" class="btn btn--outline">Xem app hoạt động</a>
+        </div>
+        <p class="hero-note">Miễn phí · Không cần thẻ · 2 phút thiết lập</p>
+      </div>
+
+      <!-- Hero phone: Morning check-in -->
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="scr">
+            <div class="scr-badge scr-badge--navy">MORNING BASELINE</div>
+            <div class="scr-q">Cơ thể buổi sáng?</div>
+            <div class="scr-options">
+              <span class="scr-opt">Ổn</span>
+              <span class="scr-opt scr-opt--sel">Cứng</span>
+              <span class="scr-opt" style="border-color: var(--amber); color: var(--amber);">Đau</span>
+              <span class="scr-opt">Mệt</span>
+            </div>
+            <div class="scr-divider"></div>
+            <div class="scr-sub" style="font-style: italic;">"Cứng" → Bài thư giãn thắt lưng 3 phút. Ngay bây giờ.</div>
+            <div style="margin-top: 12px; padding: 10px; background: var(--bg); border-radius: 4px;">
+              <div style="font-family: var(--fm); font-size: 7px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px;">SPINAL DECOMPRESSION</div>
+              <div style="font-size: 12px; font-weight: 600; color: var(--navy);">Nằm Thư Giãn Thắt Lưng</div>
+              <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">3 phút · Video hướng dẫn</div>
+            </div>
+            <div class="scr-bar">
+              <span class="t">Tối nay</span>
+              <span class="t t--a">Check-in</span>
+              <span class="t">Hành động</span>
+              <span class="t">Tuần này</span>
+              <span class="t">Tôi</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ -->
+<!-- RECOGNITION — "Anh có thấy mình?"    -->
+<!-- ══════════════════════════════════════ -->
+<section class="recognition">
+  <div class="wrap">
+    <div class="eyebrow" style="margin-bottom: 12px;">3 VẤN ĐỀ — 1 NGUYÊN NHÂN GỐC</div>
+    <h2>Gout, mỡ máu, đau lưng<br>trông như 3 bệnh khác nhau.</h2>
+    <p style="font-size: 16px; color: var(--muted); line-height: 1.65; max-width: 640px; margin-top: 12px;">Nhưng thực ra chúng là 3 đầu ra của cùng một hệ thống bị quá tải: ngồi nhiều, ăn ngoài liên tục, căng thẳng kéo dài, và ngủ không đủ. Sửa hệ thống — dù chỉ từng bước nhỏ — và cả 3 chỉ số đều chuyển.</p>
+
+    <div class="recog-grid">
+      <div class="recog-card recog-card--uric">
+        <span class="stat">7.2</span>
+        <h3>Axit uric cao / Gout</h3>
+        <p>Khớp ngón chân nhức buổi sáng. Bữa hải sản tuần trước vẫn còn tác động. Bác sĩ bảo kiêng — nhưng tiệc công ty tuần này lại có tôm hùm.</p>
+      </div>
+      <div class="recog-card recog-card--chol">
+        <span class="stat">4.8</span>
+        <h3>Mỡ máu / Cholesterol</h3>
+        <p>LDL vượt ngưỡng. Triglycerides tăng. Không uống rượu nhiều, nhưng cơm văn phòng, bữa tối công việc, và stress kéo dài đã đủ đẩy chỉ số lên.</p>
+      </div>
+      <div class="recog-card recog-card--back">
+        <span class="stat">10h</span>
+        <h3>Đau lưng mãn tính</h3>
+        <p>Thứ Ba họp cả ngày, Thứ Tư sáng lưng cứng đơ. Cứ lặp lại mỗi tuần. Chưa đến mức phải mổ — nhưng mỗi tuần đều tệ hơn tuần trước một chút.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ -->
+<!-- PRODUCT REVEAL — 3 phones            -->
+<!-- ══════════════════════════════════════ -->
+<section class="product" id="product">
+  <div class="wrap">
+    <div style="text-align: center; margin-bottom: 8px;">
+      <div class="eyebrow">FITWELL HOẠT ĐỘNG NHƯ THẾ NÀO</div>
+    </div>
+    <h2 style="text-align: center;">Mở app. Xem cần làm gì. Làm theo. Xong.</h2>
+    <p style="text-align: center; font-size: 15px; color: var(--muted); margin-top: 8px;">Không food log. Không chương trình gym. Không đếm calo. Chỉ những hành động cụ thể, dưới 5 phút, đúng lúc.</p>
+
+    <div class="phones-row">
+
+      <!-- PHONE 1: Scenario playbook (desk marathon) -->
+      <div class="phone-col">
+        <div class="phone phone--sm">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="scr">
+              <div class="scr-badge scr-badge--muted">VĂN PHÒNG</div>
+              <div class="scr-title">Ngày Làm Việc 10 Tiếng</div>
+              <div class="rdots"><i></i><i></i><i></i><i class="off"></i><i class="off"></i></div>
+              <div style="font-size: 9px; color: var(--muted); margin-bottom: 8px;">Nguy cơ: lưng + căng thẳng</div>
+              <div style="font-family: var(--fm); font-size: 7px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--navy); margin-bottom: 4px;">3 QUY TẮC HÔM NAY</div>
+              <div class="scr-rule"><span class="scr-rule-num">01</span>Đứng dậy mỗi 90 phút — dù chỉ 30 giây</div>
+              <div class="scr-rule"><span class="scr-rule-num">02</span>Ăn trưa ngoài bàn, đi bộ 5 phút sau ăn</div>
+              <div class="scr-rule"><span class="scr-rule-num">03</span>Thở 4-7-8 sau cuộc họp căng thẳng</div>
+              <div class="scr-avoid">Tránh: Ngồi liên tục hơn 2 tiếng mà không đứng</div>
+              <div class="scr-cta-bar">
+                <span class="scr-cta-btn">VÀO RỒI</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-label">
+          <div class="when">Trước khi bắt đầu</div>
+          <div class="what">Kịch bản cho mỗi tình huống</div>
+          <div class="desc">Ngày desk dài, bữa hải sản, tiệc cưới, tuần deadline — mỗi tình huống có chiến lược riêng.</div>
+        </div>
+      </div>
+
+      <div class="phone-arrow">→</div>
+
+      <!-- PHONE 2: Morning check-in with back pain -->
+      <div class="phone-col">
+        <div class="phone phone--sm">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="scr">
+              <div class="scr-badge scr-badge--navy">MORNING BASELINE</div>
+              <div class="scr-q">Bạn ngủ thế nào?</div>
+              <div class="scr-options" style="margin-bottom: 8px;">
+                <span class="scr-opt scr-opt--sel">Chập chờn</span>
+                <span class="scr-opt">Ngon</span>
+                <span class="scr-opt">Kém</span>
+              </div>
+              <div class="scr-q">Cơ thể buổi sáng?</div>
+              <div class="scr-options" style="margin-bottom: 8px;">
+                <span class="scr-opt">Ổn</span>
+                <span class="scr-opt" style="border-color: var(--amber); color: var(--amber); background: rgba(217,119,6,0.04);">Đau</span>
+                <span class="scr-opt scr-opt--sel">Cứng</span>
+                <span class="scr-opt">Mệt</span>
+              </div>
+              <div class="scr-divider"></div>
+              <div style="font-size: 10px; color: var(--muted); line-height: 1.4; margin-bottom: 6px;">Lưng đau bao nhiêu?</div>
+              <div style="display: flex; gap: 4px;">
+                <span style="font-size: 9px; padding: 6px 8px; background: var(--bg); border-radius: 4px; color: var(--green);">Không đau</span>
+                <span style="font-size: 9px; padding: 6px 8px; background: var(--bg); border-radius: 4px;">Nhẹ</span>
+                <span style="font-size: 9px; padding: 6px 10px; background: var(--navy); border-radius: 4px; color: var(--white);">Vừa</span>
+                <span style="font-size: 9px; padding: 6px 8px; background: var(--bg); border-radius: 4px; color: var(--risk);">Nhiều</span>
+              </div>
+              <div class="scr-bar" style="margin-top: auto;">
+                <span class="t">Tối nay</span>
+                <span class="t t--a">Check-in</span>
+                <span class="t">Hành động</span>
+                <span class="t">Tuần này</span>
+                <span class="t">Tôi</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-label">
+          <div class="when">Mỗi sáng · 10 giây</div>
+          <div class="what">Check-in: 2 câu hỏi, 4 tap</div>
+          <div class="desc">FitWell đọc câu trả lời và chọn đúng bài tập cho tình trạng hôm nay. Không phải tập giống nhau mỗi ngày.</div>
+        </div>
+      </div>
+
+      <div class="phone-arrow">→</div>
+
+      <!-- PHONE 3: Timer with video -->
+      <div class="phone-col">
+        <div class="phone phone--sm">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="scr scr--dark" style="position: relative;">
+              <div class="scr-videobg">
+                <div class="scr-figure"></div>
+              </div>
+              <div style="position: relative; z-index: 2;">
+                <div style="display: flex; gap: 6px; margin-bottom: 12px;">
+                  <div class="scr-badge scr-badge--muted" style="background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5);">SPINAL DECOMPRESSION</div>
+                  <div class="scr-badge scr-badge--muted" style="background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5);">RIÊNG TƯ</div>
+                </div>
+                <div class="scr-title" style="text-align: center;">Nằm Thư Giãn<br>Thắt Lưng</div>
+                <div class="scr-timer">02:43</div>
+                <div class="scr-timer-dots">
+                  <span class="d d--on"></span><span class="d"></span><span class="d"></span>
+                </div>
+                <div class="scr-timer-cta">XONG RỒI</div>
+                <div class="scr-rationale">8 tiếng ngồi nén đĩa L4-L5 thêm ~30%. Bài này giải nén. Nằm sàn, gối lên ngực.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-label">
+          <div class="when">Ngay sau check-in</div>
+          <div class="what">Video hướng dẫn + timer</div>
+          <div class="desc">Làm theo video, bấm xong. 2–5 phút. Không cần tạ, không cần phòng gym. Sàn nhà là đủ.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ -->
+<!-- SYSTEM — How it works                 -->
+<!-- ══════════════════════════════════════ -->
+<section class="system">
+  <div class="wrap">
+    <div class="eyebrow" style="margin-bottom: 12px;">HỆ THỐNG FITWELL</div>
+    <h2>Không chỉ lúc đi nhậu.<br>FitWell bao phủ cả tuần.</h2>
+    <p style="font-size: 15px; color: var(--muted); max-width: 560px; margin-top: 8px;">Bữa hải sản chỉ là một kiểu rủi ro. Còn ngày ngồi 10 tiếng, tuần deadline căng thẳng, và giấc ngủ tệ — tất cả đều đẩy chỉ số lên mà bạn không hay biết.</p>
+
+    <div class="sys-grid">
+      <div class="sys-card">
+        <div class="num">01 · KỊCH BẢN</div>
+        <h3>20 tình huống thực tế</h3>
+        <p>Nhậu hải sản, BBQ Hàn, tiệc cưới, bữa trưa công việc, ngày họp liên tục, tuần deadline, công tác khách sạn — mỗi tình huống có kịch bản riêng với 3 quy tắc và 1 thứ cần tránh.</p>
+      </div>
+      <div class="sys-card">
+        <div class="num">02 · CHECK-IN</div>
+        <h3>4 điểm chạm mỗi ngày</h3>
+        <p>Sáng: ngủ thế nào, cơ thể thế nào. Trưa: buổi chiều đang ổn không. Tối: sẵn sàng nghỉ chưa. Sau sự kiện: nặng hay nhẹ. Mỗi câu trả lời chọn đúng bài tập cho bạn.</p>
+      </div>
+      <div class="sys-card">
+        <div class="num">03 · HÀNH ĐỘNG</div>
+        <h3>24 bài tập ngắn, 8 nhóm</h3>
+        <p>Quản lý axit uric. Reset chuyển hóa lipid. Giải nén cột sống. Giảm cortisol. Phục hồi sau sự kiện. Mỗi bài 2–5 phút, video hướng dẫn, không cần dụng cụ. Có bài làm ngay ở văn phòng.</p>
+      </div>
+      <div class="sys-card">
+        <div class="num">04 · BÁO CÁO TUẦN</div>
+        <h3>60 giây biết hết tuần trước</h3>
+        <p>Mỗi Chủ Nhật: lịch rủi ro tuần tới, pattern phát hiện từ data check-in, và gợi ý can thiệp. Tuần 13 trở đi: FitWell dự đoán được khi nào bạn sắp flare.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ -->
+<!-- WEEKLY BRIEF PREVIEW                  -->
+<!-- ══════════════════════════════════════ -->
+<section class="brief">
+  <div class="wrap">
+    <div class="eyebrow" style="margin-bottom: 12px;">BÁO CÁO THÔNG MINH</div>
+    <h2>FitWell học từ data của bạn.<br>Càng dùng, càng chính xác.</h2>
+
+    <div class="brief-inner">
+      <div>
+        <p style="font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 20px;">
+          Sau 4 tuần, FitWell phát hiện pattern: "3 trong 4 ngày Thứ Ba, bạn báo lưng cứng buổi chiều — và cả 3 đều là sau ngày ngồi hơn 8 tiếng."
+        </p>
+        <p style="font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 20px;">
+          Sau 90 ngày: "Gout flare xuất hiện 3 lần — đều trong vòng 48 giờ sau bữa hải sản. Khi bạn uống 500ml nước sáng sớm, không flare. Khi không uống, flare 2 lần."
+        </p>
+        <p style="font-size: 15px; color: var(--navy); line-height: 1.7; font-weight: 500;">
+          Data của bạn có ý kiến. FitWell biến ý kiến đó thành hành động.
+        </p>
+      </div>
+      <div>
+        <div class="brief-card">
+          <div class="brief-tier">TUẦN NÀY — CỬA SỔ RỦI RO</div>
+          <div class="brief-row"><span>Thứ Hai</span><span class="r-lo">● Thấp</span></div>
+          <div class="brief-row"><span>Thứ Ba</span><span class="r-md">● Trung bình — lịch họp dày</span></div>
+          <div class="brief-row"><span>Thứ Tư</span><span class="r-md">● Trung bình — bữa trưa công việc</span></div>
+          <div class="brief-row"><span>Thứ Năm</span><span class="r-hi">● CAO — tiệc hải sản + deadline</span></div>
+          <div class="brief-row"><span>Thứ Sáu</span><span class="r-md">● Phục hồi</span></div>
+          <div class="brief-row"><span>Cuối tuần</span><span class="r-lo">● Thấp</span></div>
+        </div>
+        <div class="brief-insight">
+          <div class="brief-tier">INSIGHT · TUẦN 9</div>
+          Điểm đau lưng buổi chiều giảm ~40% vào những ngày bạn làm bài giải nén thắt lưng buổi sáng. Đã thêm nhắc nhở Thứ Ba 7:15.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ -->
+<!-- COMPARISON                            -->
+<!-- ══════════════════════════════════════ -->
+<section class="compare">
+  <div class="wrap">
+    <div class="eyebrow" style="margin-bottom: 12px;">TẠI SAO FITWELL KHÁC</div>
+    <h2>Không phải app wellness thông thường.</h2>
+
+    <div class="comp-grid">
+      <div class="comp-card">
+        <div class="comp-old">Ghi chép bữa ăn hàng ngày</div>
+        <div class="comp-new">→ 3 tap mỗi sáng. Không food log.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-old">Chương trình gym 45 phút</div>
+        <div class="comp-new">→ Bài tập 2–5 phút, video hướng dẫn, làm tại nhà hoặc văn phòng.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-old">Kiêng hoàn toàn thức ăn ngon</div>
+        <div class="comp-new">→ Chiến lược trước + sau bữa ăn. Vẫn ăn, nhưng có chuẩn bị.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-old">3 app cho 3 bệnh riêng biệt</div>
+        <div class="comp-new">→ 1 hệ thống xử lý nguyên nhân gốc chung cho cả 3.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-old">Lời khuyên chung chung: "bớt ngồi"</div>
+        <div class="comp-new">→ "Đứng dậy, bài Doorframe Chest Opener 2 phút. Video đây."</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-old">Chỉ xử lý khi flare / đau</div>
+        <div class="comp-new">→ Bao phủ cả tuần: ngày bình thường, ngày rủi ro, ngày phục hồi.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ -->
+<!-- SCIENCE                               -->
+<!-- ══════════════════════════════════════ -->
+<section class="science">
+  <div class="wrap">
+    <div class="eyebrow eyebrow--light">CƠ SỞ KHOA HỌC</div>
+    <h2 style="color: var(--white); margin-top: 12px;">Không phải lời khuyên từ internet.</h2>
+    <p>
+      Tất cả kịch bản đều được phát triển cùng <em>chuyên gia dinh dưỡng đã đăng ký</em>. Mọi bài tập đều do <em>chuyên viên vật lý trị liệu có chứng chỉ</em> thiết kế. Cơ chế dựa trên nghiên cứu về chuyển hóa postprandial, động học axit uric, phục hồi HRV, điều hòa cortisol, và cơ sinh học cột sống thắt lưng.
+    </p>
+    <p style="margin-top: 12px;">
+      FitWell <em>không thay thế bác sĩ</em>. Đây là hệ thống hành vi — bổ sung cho điều trị y khoa, không thay thế.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ -->
+<!-- PARTNER                               -->
+<!-- ══════════════════════════════════════ -->
+<section class="partner">
+  <div class="wrap">
+    <div class="partner-inner">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 12px;">GÓI GIA ĐÌNH</div>
+        <h2>Cho người đã tìm đến đây vì người thân.</h2>
+        <p style="font-size: 15px; color: var(--muted); line-height: 1.7; margin-top: 12px;">
+          Nhiều tài khoản FitWell được mở bởi vợ hoặc người thân — người đã ngồi cùng trong phòng khám, người đã search "chồng uric acid cao kiêng gì" lúc nửa đêm.
+        </p>
+        <p style="font-size: 15px; color: var(--muted); line-height: 1.7; margin-top: 12px;">
+          Gói Gia đình cho bạn một view song song: cần trữ gì ở nhà tuần này, chuẩn bị gì trước tuần rủi ro cao, và lịch rủi ro của người thân. Bạn không kiểm soát chế độ ăn — bạn tạo điều kiện để phục hồi thực sự hoạt động.
+        </p>
+      </div>
+      <div>
+        <div style="background: var(--bg); padding: 24px; border: 1px solid var(--border);">
+          <div style="font-family: var(--fm); font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px;">CHUẨN BỊ TẠI NHÀ · TUẦN NÀY</div>
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 4px;">Gút · Axit uric</div>
+            <div style="font-size: 13px; color: var(--muted); line-height: 1.5;">Trữ nước khoáng, rau xanh, đậu hũ. Tránh mua nội tạng, tôm.</div>
+          </div>
+          <div style="height: 1px; background: var(--border); margin: 12px 0;"></div>
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 4px;">Lưng</div>
+            <div style="font-size: 13px; color: var(--muted); line-height: 1.5;">Dọn 2m² sàn trống cho bài tập sáng. Thứ Ba + Thứ Năm: ngày rủi ro cao.</div>
+          </div>
+          <div style="height: 1px; background: var(--border); margin: 12px 0;"></div>
+          <div>
+            <div style="font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 4px;">Sáng phục hồi nếu Thứ Năm nặng</div>
+            <div style="font-size: 13px; color: var(--muted); line-height: 1.5;">Cháo nhẹ + 500ml nước ấm trước 8h. Không cà phê trước khi uống nước.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ -->
+<!-- PRICING                               -->
+<!-- ══════════════════════════════════════ -->
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="eyebrow" style="margin-bottom: 12px;">GÓI ĐĂNG KÝ</div>
+    <h2>Bắt đầu miễn phí. Nâng cấp khi thấy hiệu quả.</h2>
+    <p style="font-size: 15px; color: var(--muted); margin-top: 8px;">Trải nghiệm miễn phí gồm 1 kịch bản đầy đủ + 2 lần check-in + bài tập Ngày 1. Không cần thẻ.</p>
+
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="plan-name">Cá nhân · Quý</div>
+        <div class="price">490,000₫</div>
+        <div class="period">mỗi quý</div>
+        <ul class="features">
+          <li>Toàn bộ kịch bản (20+)</li>
+          <li>Check-in 4 trigger</li>
+          <li>24 bài tập video</li>
+          <li>Phục hồi Ngày 1–3</li>
+          <li>Báo cáo tuần + insight</li>
+        </ul>
+      </div>
+      <div class="price-card price-card--featured">
+        <div class="price-badge price-badge--best">Tiết kiệm nhất</div>
+        <div class="plan-name">Cá nhân · Năm</div>
+        <div class="price">1,490,000₫</div>
+        <div class="period">mỗi năm · tiết kiệm 470K</div>
+        <ul class="features">
+          <li>Tất cả tính năng Quý</li>
+          <li>Wearable translation</li>
+          <li>Báo cáo biomarker 90 + 180 ngày</li>
+          <li>Pattern prediction (tuần 13+)</li>
+        </ul>
+      </div>
+      <div class="price-card">
+        <div class="price-badge price-badge--gold">Gia đình</div>
+        <div class="plan-name">2 người · Năm</div>
+        <div class="price">2,490,000₫</div>
+        <div class="period">mỗi năm · 2 tài khoản</div>
+        <ul class="features">
+          <li>Tất cả tính năng Năm</li>
+          <li>Home Environment Module</li>
+          <li>Lịch rủi ro cho người thân</li>
+          <li>Hướng dẫn chuẩn bị tại nhà</li>
+        </ul>
+      </div>
+    </div>
+
+    <p style="font-size: 13px; color: var(--muted); margin-top: 20px; text-align: center;">
+      Add-on: Recovery Box — 350,000₫/tháng — electrolytes, magnesium, omega-3 theo profile tình trạng.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ -->
+<!-- FOOTER CTA                            -->
+<!-- ══════════════════════════════════════ -->
+<section class="footer-cta">
+  <div class="wrap">
+    <h2>Cơ thể bạn đang chịu tải chuyên nghiệp.<br>Nó cần được bảo trì chuyên nghiệp.</h2>
+    <p>2 phút thiết lập. Nhập kết quả xét nghiệm, chọn tình trạng, nhận kịch bản đầu tiên.</p>
+    <a href="#pricing" class="btn btn--white">Bắt đầu miễn phí</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <p>FitWell · Hệ thống bảo trì sức khỏe cho người đi làm Việt Nam</p>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════ -->
+<!-- SCRIPTS                               -->
+<!-- ══════════════════════════════════════ -->
+<script>
+// Sticky nav on scroll
+const nav = document.getElementById('nav');
+let lastY = 0;
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (y > 400) { nav.classList.add('visible'); }
+  else { nav.classList.remove('visible'); }
+  lastY = y;
+});
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>
