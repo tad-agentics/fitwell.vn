@@ -1,16 +1,65 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useAuthStore } from '@/store/authStore';
+import { useBiomarkers, useUpdateProfile } from '@/hooks/useSupabaseQuery';
+import { supabase } from '@/lib/supabase';
+import type { Language, ConditionType } from '@/types';
 
 interface ProfileSettingsScreenProps {
   onNavigate: (screen: string) => void;
 }
 
+const CONDITION_LABELS: Record<ConditionType, string> = {
+  gout: 'Axit uric',
+  cholesterol: 'Mỡ máu',
+  back_pain: 'Đau lưng',
+  unsure: 'Chưa chắc',
+};
+
+const MARKER_LABELS: Record<string, string> = {
+  'uric-acid': 'Axit uric',
+  triglycerides: 'Mỡ máu (Triglyceride)',
+  ast: 'Men gan (AST)',
+  alt: 'Men gan (ALT)',
+  hba1c: 'HbA1c',
+  hdl: 'HDL',
+  ldl: 'LDL Cholesterol',
+  'fasting-glucose': 'Đường huyết (Glucose)',
+};
+
 export function ProfileSettingsScreen({ onNavigate }: ProfileSettingsScreenProps) {
-  const [language, setLanguage] = useState<'vi' | 'en'>('vi');
-  const [notifications, setNotifications] = useState({
-    morningTime: '07:00',
-    middayEnabled: true,
-    preSleepEnabled: true,
-  });
+  const profile = useAuthStore((s) => s.profile);
+  const session = useAuthStore((s) => s.session);
+  const setProfile = useAuthStore((s) => s.setProfile);
+  const signOut = useAuthStore((s) => s.signOut);
+  const userId = session?.user?.id;
+  const { data: biomarkers } = useBiomarkers(userId);
+  const updateProfile = useUpdateProfile();
+
+  const displayName = profile?.email?.split('@')[0] ?? 'User';
+
+  const handleLanguageChange = async (lang: Language) => {
+    if (!userId) return;
+    updateProfile.mutate(
+      { userId, updates: { language: lang } },
+      { onSuccess: (data) => setProfile(data as any) },
+    );
+  };
+
+  const handleToggle = async (field: string, value: boolean) => {
+    if (!userId) return;
+    updateProfile.mutate(
+      { userId, updates: { [field]: value } },
+      { onSuccess: (data) => setProfile(data as any) },
+    );
+  };
+
+  const handleMorningTimeChange = async (time: string) => {
+    if (!userId) return;
+    updateProfile.mutate(
+      { userId, updates: { morning_time: time } },
+      { onSuccess: (data) => setProfile(data as any) },
+    );
+  };
 
   return (
     <div
@@ -19,7 +68,7 @@ export function ProfileSettingsScreen({ onNavigate }: ProfileSettingsScreenProps
         height: '100%',
         backgroundColor: '#F5F5F5',
         overflow: 'auto',
-        paddingBottom: '72px', // Bottom nav clearance
+        paddingBottom: '72px',
       }}
     >
       <div style={{ padding: '40px 20px 32px' }}>
@@ -35,7 +84,7 @@ export function ProfileSettingsScreen({ onNavigate }: ProfileSettingsScreenProps
               margin: 0,
             }}
           >
-            Nguyễn Văn Minh
+            {displayName}
           </h1>
           <div
             style={{
@@ -46,11 +95,11 @@ export function ProfileSettingsScreen({ onNavigate }: ProfileSettingsScreenProps
               marginTop: '4px',
             }}
           >
-            minh.nguyen@email.com
+            {profile?.email ?? ''}
           </div>
         </div>
 
-        {/* Section: Tình trạng sức khỏe - NEW */}
+        {/* Section: Tình trạng sức khỏe */}
         <div style={{ marginBottom: '16px' }}>
           <div
             style={{
@@ -74,53 +123,37 @@ export function ProfileSettingsScreen({ onNavigate }: ProfileSettingsScreenProps
               padding: '20px',
             }}
           >
-            {/* Condition chips */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
-              <div
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '10px',
-                  fontWeight: 400,
-                  color: '#041E3A',
-                  backgroundColor: '#F5F5F5',
-                  border: '1px solid #EBEBF0',
-                  borderRadius: '2px',
-                  padding: '6px 8px',
-                }}
-              >
-                Axit uric
-              </div>
-              <div
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '10px',
-                  fontWeight: 400,
-                  color: '#041E3A',
-                  backgroundColor: '#F5F5F5',
-                  border: '1px solid #EBEBF0',
-                  borderRadius: '2px',
-                  padding: '6px 8px',
-                }}
-              >
-                Mỡ máu
-              </div>
-              <div
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '10px',
-                  fontWeight: 400,
-                  color: '#041E3A',
-                  backgroundColor: '#F5F5F5',
-                  border: '1px solid #EBEBF0',
-                  borderRadius: '2px',
-                  padding: '6px 8px',
-                }}
-              >
-                Đau lưng
-              </div>
+              {(profile?.primary_conditions ?? []).map((condition) => (
+                <div
+                  key={condition}
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '10px',
+                    fontWeight: 400,
+                    color: '#041E3A',
+                    backgroundColor: '#F5F5F5',
+                    border: '1px solid #EBEBF0',
+                    borderRadius: '2px',
+                    padding: '6px 8px',
+                  }}
+                >
+                  {CONDITION_LABELS[condition as ConditionType] ?? condition}
+                </div>
+              ))}
+              {(!profile?.primary_conditions || profile.primary_conditions.length === 0) && (
+                <div
+                  style={{
+                    fontFamily: 'var(--font-ui)',
+                    fontSize: '13px',
+                    color: '#9D9FA3',
+                  }}
+                >
+                  Chưa khai báo
+                </div>
+              )}
             </div>
 
-            {/* Change link */}
             <button
               onClick={() => onNavigate('onboarding')}
               style={{
@@ -165,208 +198,67 @@ export function ProfileSettingsScreen({ onNavigate }: ProfileSettingsScreenProps
               padding: '20px',
             }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {/* Biomarker 1 */}
+            {biomarkers && biomarkers.length > 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {biomarkers.map((bm, i) => (
+                  <div
+                    key={bm.id}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-start',
+                      paddingBottom: i < biomarkers.length - 1 ? '16px' : undefined,
+                      borderBottom: i < biomarkers.length - 1 ? '1px solid #EBEBF0' : undefined,
+                    }}
+                  >
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontFamily: 'var(--font-ui)',
+                          fontSize: '15px',
+                          fontWeight: 600,
+                          color: '#041E3A',
+                          marginBottom: '4px',
+                        }}
+                      >
+                        {MARKER_LABELS[bm.marker_type] ?? bm.marker_type}
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: '11px',
+                          fontWeight: 400,
+                          color: '#9D9FA3',
+                        }}
+                      >
+                        {new Date(bm.recorded_at).toLocaleDateString('vi-VN')}
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: 'var(--font-ui)',
+                        fontSize: '17px',
+                        fontWeight: 600,
+                        color: '#041E3A',
+                      }}
+                    >
+                      {bm.value} {bm.unit}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
               <div
                 style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-start',
-                  paddingBottom: '16px',
-                  borderBottom: '1px solid #EBEBF0',
+                  fontFamily: 'var(--font-ui)',
+                  fontSize: '13px',
+                  color: '#9D9FA3',
+                  lineHeight: '1.5',
                 }}
               >
-                <div style={{ flex: 1 }}>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-ui)',
-                      fontSize: '15px',
-                      fontWeight: 600,
-                      color: '#041E3A',
-                      marginBottom: '4px',
-                    }}
-                  >
-                    Men gan (ALT)
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '11px',
-                      fontWeight: 400,
-                      color: '#9D9FA3',
-                    }}
-                  >
-                    15/1/2026 · Bệnh viện Chợ Rẫy
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-ui)',
-                      fontSize: '17px',
-                      fontWeight: 600,
-                      color: '#DC2626',
-                    }}
-                  >
-                    68 U/L
-                  </div>
-                  <div
-                    style={{
-                      backgroundColor: '#FEF2F2',
-                      border: '1px solid #FEE2E2',
-                      borderRadius: '2px',
-                      padding: '4px 8px',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '9px',
-                      fontWeight: 400,
-                      color: '#DC2626',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                    }}
-                  >
-                    CAO
-                  </div>
-                </div>
+                Chưa có kết quả xét nghiệm nào.
               </div>
-
-              {/* Biomarker 2 */}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-start',
-                  paddingBottom: '16px',
-                  borderBottom: '1px solid #EBEBF0',
-                }}
-              >
-                <div style={{ flex: 1 }}>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-ui)',
-                      fontSize: '15px',
-                      fontWeight: 600,
-                      color: '#041E3A',
-                      marginBottom: '4px',
-                    }}
-                  >
-                    Mỡ máu (Triglyceride)
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '11px',
-                      fontWeight: 400,
-                      color: '#9D9FA3',
-                    }}
-                  >
-                    15/1/2026 · Bệnh viện Chợ Rẫy
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-ui)',
-                      fontSize: '17px',
-                      fontWeight: 600,
-                      color: '#D97706',
-                    }}
-                  >
-                    245 mg/dL
-                  </div>
-                  <div
-                    style={{
-                      backgroundColor: '#FEF9F5',
-                      border: '1px solid #FED7AA',
-                      borderRadius: '2px',
-                      padding: '4px 8px',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '9px',
-                      fontWeight: 400,
-                      color: '#D97706',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                    }}
-                  >
-                    TRUNG
-                  </div>
-                </div>
-              </div>
-
-              {/* Biomarker 3 */}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-start',
-                }}
-              >
-                <div style={{ flex: 1 }}>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-ui)',
-                      fontSize: '15px',
-                      fontWeight: 600,
-                      color: '#041E3A',
-                      marginBottom: '4px',
-                    }}
-                  >
-                    Đường huyết (Glucose)
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '11px',
-                      fontWeight: 400,
-                      color: '#9D9FA3',
-                    }}
-                  >
-                    15/1/2026 · Bệnh viện Chợ Rẫy
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-ui)',
-                      fontSize: '17px',
-                      fontWeight: 600,
-                      color: '#059669',
-                    }}
-                  >
-                    98 mg/dL
-                  </div>
-                  <div
-                    style={{
-                      backgroundColor: '#F0FDF4',
-                      border: '1px solid #BBF7D0',
-                      borderRadius: '2px',
-                      padding: '4px 8px',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '9px',
-                      fontWeight: 400,
-                      color: '#059669',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                    }}
-                  >
-                    BT
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Note about sorting */}
-            <div
-              style={{
-                fontFamily: 'var(--font-ui)',
-                fontSize: '11px',
-                fontWeight: 400,
-                color: '#9D9FA3',
-                marginTop: '12px',
-                lineHeight: '1.4',
-              }}
-            >
-              Sắp xếp theo tình trạng đã khai báo — axit uric đầu tiên nếu bạn chọn gout.
-            </div>
+            )}
           </div>
         </div>
 
@@ -440,13 +332,6 @@ export function ProfileSettingsScreen({ onNavigate }: ProfileSettingsScreenProps
                 fontWeight: 500,
                 color: '#041E3A',
                 cursor: 'pointer',
-                transition: 'background-color 120ms ease-out',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#EBEBF0';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#F5F5F5';
               }}
             >
               Nâng cấp gói Household
@@ -503,13 +388,6 @@ export function ProfileSettingsScreen({ onNavigate }: ProfileSettingsScreenProps
                 fontWeight: 500,
                 color: '#041E3A',
                 cursor: 'pointer',
-                transition: 'background-color 120ms ease-out',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#EBEBF0';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#F5F5F5';
               }}
             >
               Gửi lời mời
@@ -543,37 +421,35 @@ export function ProfileSettingsScreen({ onNavigate }: ProfileSettingsScreenProps
           >
             <div style={{ display: 'flex', gap: '12px' }}>
               <button
-                onClick={() => setLanguage('vi')}
+                onClick={() => handleLanguageChange('vi')}
                 style={{
                   flex: 1,
                   height: '44px',
-                  backgroundColor: language === 'vi' ? '#041E3A' : '#F5F5F5',
-                  border: language === 'vi' ? 'none' : '1px solid #EBEBF0',
+                  backgroundColor: profile?.language === 'vi' ? '#041E3A' : '#F5F5F5',
+                  border: profile?.language === 'vi' ? 'none' : '1px solid #EBEBF0',
                   borderRadius: '4px',
                   fontFamily: 'var(--font-ui)',
                   fontSize: '13px',
                   fontWeight: 500,
-                  color: language === 'vi' ? '#FFFFFF' : '#041E3A',
+                  color: profile?.language === 'vi' ? '#FFFFFF' : '#041E3A',
                   cursor: 'pointer',
-                  transition: 'all 120ms ease-out',
                 }}
               >
                 Tiếng Việt
               </button>
               <button
-                onClick={() => setLanguage('en')}
+                onClick={() => handleLanguageChange('en')}
                 style={{
                   flex: 1,
                   height: '44px',
-                  backgroundColor: language === 'en' ? '#041E3A' : '#F5F5F5',
-                  border: language === 'en' ? 'none' : '1px solid #EBEBF0',
+                  backgroundColor: profile?.language === 'en' ? '#041E3A' : '#F5F5F5',
+                  border: profile?.language === 'en' ? 'none' : '1px solid #EBEBF0',
                   borderRadius: '4px',
                   fontFamily: 'var(--font-ui)',
                   fontSize: '13px',
                   fontWeight: 500,
-                  color: language === 'en' ? '#FFFFFF' : '#041E3A',
+                  color: profile?.language === 'en' ? '#FFFFFF' : '#041E3A',
                   cursor: 'pointer',
-                  transition: 'all 120ms ease-out',
                 }}
               >
                 English
@@ -629,13 +505,8 @@ export function ProfileSettingsScreen({ onNavigate }: ProfileSettingsScreenProps
                   </div>
                   <input
                     type="time"
-                    value={notifications.morningTime}
-                    onChange={(e) =>
-                      setNotifications({
-                        ...notifications,
-                        morningTime: e.target.value,
-                      })
-                    }
+                    value={profile?.morning_time ?? '07:00'}
+                    onChange={(e) => handleMorningTimeChange(e.target.value)}
                     style={{
                       fontFamily: 'var(--font-mono)',
                       fontSize: '13px',
@@ -672,17 +543,12 @@ export function ProfileSettingsScreen({ onNavigate }: ProfileSettingsScreenProps
                 </div>
                 <button
                   onClick={() =>
-                    setNotifications({
-                      ...notifications,
-                      middayEnabled: !notifications.middayEnabled,
-                    })
+                    handleToggle('notification_midday', !profile?.notification_midday)
                   }
                   style={{
                     width: '48px',
                     height: '28px',
-                    backgroundColor: notifications.middayEnabled
-                      ? '#041E3A'
-                      : '#EBEBF0',
+                    backgroundColor: profile?.notification_midday ? '#041E3A' : '#EBEBF0',
                     border: 'none',
                     borderRadius: '50px',
                     cursor: 'pointer',
@@ -698,7 +564,7 @@ export function ProfileSettingsScreen({ onNavigate }: ProfileSettingsScreenProps
                       borderRadius: '50%',
                       position: 'absolute',
                       top: '3px',
-                      left: notifications.middayEnabled ? '23px' : '3px',
+                      left: profile?.notification_midday ? '23px' : '3px',
                       transition: 'left 150ms ease-out',
                     }}
                   />
@@ -725,17 +591,12 @@ export function ProfileSettingsScreen({ onNavigate }: ProfileSettingsScreenProps
                 </div>
                 <button
                   onClick={() =>
-                    setNotifications({
-                      ...notifications,
-                      preSleepEnabled: !notifications.preSleepEnabled,
-                    })
+                    handleToggle('notification_pre_sleep', !profile?.notification_pre_sleep)
                   }
                   style={{
                     width: '48px',
                     height: '28px',
-                    backgroundColor: notifications.preSleepEnabled
-                      ? '#041E3A'
-                      : '#EBEBF0',
+                    backgroundColor: profile?.notification_pre_sleep ? '#041E3A' : '#EBEBF0',
                     border: 'none',
                     borderRadius: '50px',
                     cursor: 'pointer',
@@ -751,7 +612,7 @@ export function ProfileSettingsScreen({ onNavigate }: ProfileSettingsScreenProps
                       borderRadius: '50%',
                       position: 'absolute',
                       top: '3px',
-                      left: notifications.preSleepEnabled ? '23px' : '3px',
+                      left: profile?.notification_pre_sleep ? '23px' : '3px',
                       transition: 'left 150ms ease-out',
                     }}
                   />
@@ -763,6 +624,7 @@ export function ProfileSettingsScreen({ onNavigate }: ProfileSettingsScreenProps
 
         {/* Sign out button */}
         <button
+          onClick={signOut}
           style={{
             width: '100%',
             height: '44px',

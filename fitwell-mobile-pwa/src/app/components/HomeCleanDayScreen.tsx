@@ -1,13 +1,14 @@
 import React from 'react';
 import { Search } from 'lucide-react';
+import { useAuthStore } from '@/store/authStore';
 
 interface HomeCleanDayScreenProps {
   onNavigate: (screen: string) => void;
 }
 
 export function HomeCleanDayScreen({ onNavigate }: HomeCleanDayScreenProps) {
-  // Mock data
-  const userName = 'Anh';
+  const profile = useAuthStore((s) => s.profile);
+  const userName = profile?.email?.split('@')[0] ?? 'bạn';
   const riskDays = [
     { label: 'Hôm nay', risk: 'Thấp', color: '#059669' },
     { label: 'Thứ Năm', risk: 'CAO', color: '#DC2626' },

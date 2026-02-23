@@ -8,7 +8,7 @@ export default function LoginRoute() {
       onNavigate={(screen) => {
         if (screen === 'authRegister') navigate('/auth/register');
       }}
-      onSubmit={() => navigate('/auth/magic-link-sent')}
+      onSubmit={(email) => navigate('/auth/magic-link-sent', { state: { email } })}
     />
   );
 }

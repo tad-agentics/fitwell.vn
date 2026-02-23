@@ -13,7 +13,9 @@ export default function RecoveryActiveRoute() {
     <RecoveryProtocolActiveScreen
       onNavigate={createNavigateHandler(navigate)}
       onStartAction={() => navigate('/actions/flow')}
-      eventType={(recovery?.event_type as any) || 'long_desk'}
+      eventType={(recovery?.event_type as any) || 'heavy_night'}
+      currentDay={recovery?.current_day ?? 1}
+      totalDays={recovery?.total_days}
     />
   );
 }
