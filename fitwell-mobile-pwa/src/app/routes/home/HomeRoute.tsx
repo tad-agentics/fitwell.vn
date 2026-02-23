@@ -54,6 +54,7 @@ export default function HomeRoute() {
       checkInMorning: '/checkin/morning',
       checkInMidday: '/checkin',
       checkInPostEvent: '/checkin/post-event',
+      checkInEvening: '/checkin/pre-sleep',
       actionLibrary: '/actions',
       weeklyBrief: '/brief',
       profile: '/profile',
@@ -61,8 +62,11 @@ export default function HomeRoute() {
       recovery: '/recovery',
       recoveryActive: '/recovery',
       preSleep: '/checkin/pre-sleep',
+      preSleepWindDown: '/actions/flow',
       contextSelector: '/checkin/context',
       microAction: '/actions/flow',
+      home: '/home',
+      scenarioPlaybook: '/scenarios',
     };
     navigate(routeMap[screen] || '/home');
   };

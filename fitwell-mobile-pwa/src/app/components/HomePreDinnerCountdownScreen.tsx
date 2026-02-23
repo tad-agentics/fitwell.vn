@@ -2,11 +2,26 @@ import React from 'react';
 
 interface HomePreDinnerCountdownScreenProps {
   onNavigate: (screen: string) => void;
+  onViewScenario?: () => void;
+  eventTitle?: string;
+  eventTime?: string;
 }
 
-export function HomePreDinnerCountdownScreen({ onNavigate }: HomePreDinnerCountdownScreenProps) {
-  const eventTime = '19:30';
-  const hoursUntil = 3;
+export function HomePreDinnerCountdownScreen({
+  onNavigate,
+  onViewScenario,
+  eventTitle,
+  eventTime = '19:30',
+}: HomePreDinnerCountdownScreenProps) {
+  // Compute hours remaining until event
+  const now = new Date();
+  const [h, m] = eventTime.split(':').map(Number);
+  const eventDate = new Date(now);
+  eventDate.setHours(h, m, 0, 0);
+  const diffMs = eventDate.getTime() - now.getTime();
+  const hoursUntil = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60)));
+
+  const displayTitle = eventTitle ?? `Sự kiện — ${eventTime}`;
 
   return (
     <div className="fw-screen fw-bg-surface" style={{ overflow: 'auto', paddingBottom: '56px' }}>
@@ -16,7 +31,7 @@ export function HomePreDinnerCountdownScreen({ onNavigate }: HomePreDinnerCountd
           SỰ KIỆN HÔM NAY
         </div>
         <h1 className="fw-heading-1" style={{ marginBottom: '8px' }}>
-          Nhà hàng hải sản — {eventTime}
+          {displayTitle}
         </h1>
         <p className="fw-body-m fw-text-grey">
           Còn {hoursUntil} giờ nữa
@@ -44,15 +59,15 @@ export function HomePreDinnerCountdownScreen({ onNavigate }: HomePreDinnerCountd
 
           <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <li className="fw-body-m fw-text-navy" style={{ paddingLeft: '20px', position: 'relative' }}>
-              <span style={{ position: 'absolute', left: 0 }}>□</span>
+              <span style={{ position: 'absolute', left: 0 }}>&#9633;</span>
               Uống 500ml nước
             </li>
             <li className="fw-body-m fw-text-navy" style={{ paddingLeft: '20px', position: 'relative' }}>
-              <span style={{ position: 'absolute', left: 0 }}>□</span>
+              <span style={{ position: 'absolute', left: 0 }}>&#9633;</span>
               Ăn nhẹ trước
             </li>
             <li className="fw-body-m fw-text-navy" style={{ paddingLeft: '20px', position: 'relative' }}>
-              <span style={{ position: 'absolute', left: 0 }}>□</span>
+              <span style={{ position: 'absolute', left: 0 }}>&#9633;</span>
               Xem lại kịch bản
             </li>
           </ul>
@@ -61,7 +76,7 @@ export function HomePreDinnerCountdownScreen({ onNavigate }: HomePreDinnerCountd
 
       {/* CTA */}
       <div className="fw-container">
-        <button onClick={() => onNavigate('scenarioPlaybook')} className="fw-btn-primary">
+        <button onClick={onViewScenario ?? (() => onNavigate('scenarioPlaybook'))} className="fw-btn-primary">
           Xem kịch bản đầy đủ
         </button>
         <button

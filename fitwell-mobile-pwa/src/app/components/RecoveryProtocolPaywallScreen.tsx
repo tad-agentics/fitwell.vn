@@ -1,8 +1,10 @@
 import React from 'react';
+import { useAuthStore } from '@/store/authStore';
+import { useActiveRecovery } from '@/hooks/useSupabaseQuery';
 
 interface RecoveryProtocolPaywallScreenProps {
   onNavigate: (screen: string) => void;
-  onViewPlans: () => void; // Should navigate to pricing with 'individual-quarterly' highlighted
+  onViewPlans: () => void;
   onSkip: () => void;
 }
 
@@ -11,6 +13,13 @@ export function RecoveryProtocolPaywallScreen({
   onViewPlans,
   onSkip,
 }: RecoveryProtocolPaywallScreenProps) {
+  const session = useAuthStore((s) => s.session);
+  const { data: recovery } = useActiveRecovery(session?.user?.id);
+
+  const currentDay = recovery?.current_day ?? 2;
+  const totalDays = recovery?.total_days ?? 3;
+  const completedDays = currentDay - 1;
+
   return (
     <div
       style={{
@@ -18,7 +27,7 @@ export function RecoveryProtocolPaywallScreen({
         height: '100%',
         backgroundColor: '#F5F5F5',
         overflow: 'auto',
-        paddingBottom: '72px', // Bottom nav clearance
+        paddingBottom: '72px',
       }}
     >
       <div style={{ padding: '40px 20px 32px' }}>
@@ -35,7 +44,7 @@ export function RecoveryProtocolPaywallScreen({
             lineHeight: '1.0',
           }}
         >
-          RECOVERY DAY 2
+          RECOVERY DAY {currentDay}
         </div>
 
         {/* Headline */}
@@ -49,7 +58,7 @@ export function RecoveryProtocolPaywallScreen({
             margin: '0 0 16px 0',
           }}
         >
-          Ngày 2 phục hồi — tiếp tục đà hôm qua.
+          Ngày {currentDay} phục hồi — tiếp tục đà hôm qua.
         </h1>
 
         {/* Body text */}
@@ -63,10 +72,10 @@ export function RecoveryProtocolPaywallScreen({
             margin: '0 0 32px 0',
           }}
         >
-          Bạn đã hoàn thành 1 trong 3 ngày. Mở khóa để tiếp tục.
+          Bạn đã hoàn thành {completedDays} trong {totalDays} ngày. Mở khóa để tiếp tục.
         </p>
 
-        {/* Progress indicator - showing day 2 locked */}
+        {/* Progress indicator */}
         <div
           style={{
             display: 'flex',
@@ -75,7 +84,6 @@ export function RecoveryProtocolPaywallScreen({
             marginBottom: '40px',
           }}
         >
-          {/* Progress text */}
           <div
             style={{
               fontFamily: 'var(--font-ui)',
@@ -85,36 +93,30 @@ export function RecoveryProtocolPaywallScreen({
               lineHeight: '1.5',
             }}
           >
-            Ngày 2 / 3
+            Ngày {currentDay} / {totalDays}
           </div>
 
           {/* Progress dots */}
           <div style={{ display: 'flex', gap: '6px' }}>
-            <div
-              style={{
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                backgroundColor: '#059669', // Day 1 completed - green
-              }}
-            />
-            <div
-              style={{
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                backgroundColor: '#D97706', // Day 2 locked - amber
-                border: '2px solid #D97706',
-              }}
-            />
-            <div
-              style={{
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                backgroundColor: '#EBEBF0',
-              }}
-            />
+            {Array.from({ length: totalDays }).map((_, i) => {
+              const dayNum = i + 1;
+              let bg = '#EBEBF0';
+              let border = 'none';
+              if (dayNum < currentDay) bg = '#059669'; // completed - green
+              else if (dayNum === currentDay) { bg = '#D97706'; border = '2px solid #D97706'; } // locked - amber
+              return (
+                <div
+                  key={i}
+                  style={{
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    backgroundColor: bg,
+                    border,
+                  }}
+                />
+              );
+            })}
           </div>
         </div>
 
@@ -136,28 +138,14 @@ export function RecoveryProtocolPaywallScreen({
               height="48"
               viewBox="0 0 48 48"
               fill="none"
-              style={{ margin: '0 auto' }}
+              style={{ margin: '0 auto', display: 'block' }}
             >
-              <rect
-                x="10"
-                y="22"
-                width="28"
-                height="20"
-                rx="2"
-                stroke="#9D9FA3"
-                strokeWidth="2"
-              />
-              <path
-                d="M16 22V16C16 11.5817 19.5817 8 24 8C28.4183 8 32 11.5817 32 16V22"
-                stroke="#9D9FA3"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
+              <rect x="10" y="22" width="28" height="20" rx="2" stroke="#9D9FA3" strokeWidth="2" />
+              <path d="M16 22V16C16 11.5817 19.5817 8 24 8C28.4183 8 32 11.5817 32 16V22" stroke="#9D9FA3" strokeWidth="2" strokeLinecap="round" />
               <circle cx="24" cy="32" r="2" fill="#9D9FA3" />
             </svg>
           </div>
 
-          {/* Lock message */}
           <div
             style={{
               fontFamily: 'var(--font-ui)',
@@ -180,11 +168,11 @@ export function RecoveryProtocolPaywallScreen({
               lineHeight: '1.5',
             }}
           >
-            Nâng cấp để mở khóa ngày 2 và 3 của giao thức phục hồi.
+            Nâng cấp để mở khóa ngày {currentDay} và {totalDays} của giao thức phục hồi.
           </div>
         </div>
 
-        {/* Primary CTA - deep-link to pricing with individual-quarterly highlighted */}
+        {/* Primary CTA */}
         <button
           onClick={onViewPlans}
           style={{
@@ -201,18 +189,11 @@ export function RecoveryProtocolPaywallScreen({
             letterSpacing: '1px',
             cursor: 'pointer',
             marginBottom: '16px',
-            transition: 'background-color 150ms ease-out',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             gap: '8px',
             lineHeight: '1.0',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#0A3055';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#041E3A';
           }}
         >
           XEM GÓI →

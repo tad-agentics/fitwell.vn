@@ -1,21 +1,48 @@
 import React from 'react';
 import { Search } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
+import { useLatestBrief } from '@/hooks/useSupabaseQuery';
+import type { RiskCalendarDay } from '@/types/models';
+
+const RISK_COLORS: Record<string, string> = {
+  low: '#059669',
+  medium: '#D97706',
+  high: '#DC2626',
+};
+
+const RISK_LABELS: Record<string, string> = {
+  low: 'Thấp',
+  medium: 'Trung bình',
+  high: 'CAO',
+};
+
+const DAY_LABELS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
 interface HomeCleanDayScreenProps {
   onNavigate: (screen: string) => void;
 }
 
 export function HomeCleanDayScreen({ onNavigate }: HomeCleanDayScreenProps) {
+  const session = useAuthStore((s) => s.session);
   const profile = useAuthStore((s) => s.profile);
   const userName = profile?.email?.split('@')[0] ?? 'bạn';
-  const riskDays = [
-    { label: 'Hôm nay', risk: 'Thấp', color: '#059669' },
-    { label: 'Thứ Năm', risk: 'CAO', color: '#DC2626' },
-    { label: 'Thứ Sáu', risk: 'Phục hồi', color: '#D97706' }
-  ];
-  const patternInsight = undefined;
-  
+  const { data: brief } = useLatestBrief(session?.user?.id);
+
+  const riskCalendar = (brief?.content as { risk_calendar?: RiskCalendarDay[] } | null)?.risk_calendar ?? [];
+
+  // Show up to 3 upcoming risk days from brief, or fallback
+  const riskDays = riskCalendar.length > 0
+    ? riskCalendar.slice(0, 3).map((day) => {
+        const d = new Date(day.date);
+        const isToday = d.toDateString() === new Date().toDateString();
+        return {
+          label: isToday ? 'Hôm nay' : DAY_LABELS[d.getDay()] ?? day.date,
+          risk: RISK_LABELS[day.risk_level] ?? day.risk_level,
+          color: RISK_COLORS[day.risk_level] ?? '#9D9FA3',
+        };
+      })
+    : [{ label: 'Hôm nay', risk: 'Thấp', color: '#059669' }];
+
   return (
     <div className="fw-screen fw-bg-surface" style={{ overflow: 'auto', paddingBottom: '56px' }}>
       {/* Header */}
