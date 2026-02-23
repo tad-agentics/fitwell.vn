@@ -1,0 +1,111 @@
+{
+  "library": {
+    "title": "Action library",
+    "subtitle": "Exercises & habits to help you feel better every day",
+    "searchPlaceholder": "Search exercises, habits...",
+    "filterByCategory": "Filter by category",
+    "filterByDuration": "Filter by duration",
+    "sortBy": "Sort by",
+    "sortPopular": "Most popular",
+    "sortNewest": "Newest",
+    "sortShortest": "Shortest",
+    "noResults": "No matching exercises found",
+    "totalActions": "{{count}} actions"
+  },
+  "categories": {
+    "stretch": "Stretching",
+    "stretchDescription": "Stretch muscles, release tension",
+    "breathing": "Breathing",
+    "breathingDescription": "Breathing exercises to reduce stress and relax",
+    "mobility": "Light movement",
+    "mobilityDescription": "Walking, basic movement",
+    "posture": "Posture",
+    "postureDescription": "Correct sitting and standing posture",
+    "hydration": "Hydration",
+    "hydrationDescription": "Reminders and water intake tracking",
+    "nutrition": "Nutrition",
+    "nutritionDescription": "Meal suggestions, healthy food choices",
+    "mindfulness": "Mindfulness",
+    "mindfulnessDescription": "Short meditation, calm the mind, reduce anxiety",
+    "recovery": "Recovery",
+    "recoveryDescription": "Recovery exercises after pain episodes or injury"
+  },
+  "context": {
+    "label": "Where are you?",
+    "office": "Office",
+    "officeDescription": "Discreet exercises you can do at your desk",
+    "private": "Private",
+    "privateDescription": "At home or a comfortable space",
+    "transit": "On the go",
+    "transitDescription": "In a car, waiting, or in public"
+  },
+  "timer": {
+    "title": "Timer",
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stop": "Stop",
+    "reset": "Reset",
+    "timeRemaining": "{{time}} remaining",
+    "holdFor": "Hold for {{seconds}} seconds",
+    "restBetween": "Rest for {{seconds}} seconds",
+    "setOf": "Set {{current}}/{{total}}",
+    "repCount": "{{current}}/{{total}} reps"
+  },
+  "completion": {
+    "title": "Great job!",
+    "message": "You've completed the exercise.",
+    "streak": "{{count}}-day streak!",
+    "pointsEarned": "+{{points}} points",
+    "feelBetter": "How do you feel after the exercise?",
+    "feelOptions": {
+      "great": "Much better",
+      "okay": "A bit better",
+      "same": "No change",
+      "worse": "Slightly uncomfortable"
+    },
+    "shareButton": "Share achievement",
+    "nextAction": "Next exercise",
+    "backToLibrary": "Back to library"
+  },
+  "sequence": {
+    "title": "Exercise sequence",
+    "runButton": "Run sequence",
+    "steps": "{{count}} steps",
+    "duration": "{{minutes}} minutes",
+    "currentStep": "Step {{current}} / {{total}}",
+    "nextUp": "Next up:",
+    "skipStep": "Skip this step",
+    "completeSequence": "Sequence complete!",
+    "sequences": {
+      "morningWakeUp": "Morning wake-up",
+      "deskBreak": "Desk break",
+      "backRelief": "Quick back relief",
+      "neckShoulder": "Neck & shoulder release",
+      "preSleep": "Pre-sleep relaxation",
+      "postMeal": "After a heavy meal",
+      "stressRelief": "Stress relief"
+    }
+  },
+  "suggested": {
+    "title": "Suggested for you",
+    "basedOn": "Based on today's check-in",
+    "forCondition": "Suited for your condition",
+    "quickAction": "Quick action",
+    "viewAll": "View all"
+  },
+  "detail": {
+    "instructions": "Instructions",
+    "benefits": "Benefits",
+    "difficulty": "Difficulty",
+    "difficultyEasy": "Easy",
+    "difficultyMedium": "Medium",
+    "difficultyHard": "Advanced",
+    "duration": "Duration",
+    "equipment": "Equipment",
+    "noEquipment": "No equipment needed",
+    "startButton": "Start",
+    "addToFavorites": "Add to favorites",
+    "removeFromFavorites": "Remove from favorites"
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "search": {
+    "title": "Tình huống & Kịch bản",
+    "placeholder": "Tìm món ăn, tình huống...",
+    "recentSearches": "Tìm kiếm gần đây",
+    "popular": "Phổ biến",
+    "noResults": "Không tìm thấy kịch bản phù hợp",
+    "noResultsSuggestion": "Thử tìm với từ khoá khác"
+  },
+  "categories": {
+    "all": "Tất cả",
+    "dining": "Ăn ngoài",
+    "cooking": "Nấu ăn tại nhà",
+    "drinking": "Nhậu & tiệc",
+    "snacking": "Ăn vặt",
+    "deskWork": "Làm việc bàn",
+    "travel": "Đi công tác",
+    "exercise": "Vận động"
+  },
+  "riskLevel": {
+    "label": "Mức rủi ro",
+    "safe": "An toàn",
+    "safeDescription": "Yên tâm thưởng thức",
+    "caution": "Cần chú ý",
+    "cautionDescription": "Ăn vừa phải, kiểm soát lượng",
+    "avoid": "Nên tránh",
+    "avoidDescription": "Nguy cơ cao, dễ gây bùng phát",
+    "danger": "Nguy hiểm",
+    "dangerDescription": "Tuyệt đối tránh nếu đang có triệu chứng"
+  },
+  "playbook": {
+    "title": "Kịch bản: {{name}}",
+    "overview": "Tổng quan",
+    "avoidSection": {
+      "title": "Nên tránh",
+      "subtitle": "Những thứ làm tăng rủi ro"
+    },
+    "safeSection": {
+      "title": "An toàn để chọn",
+      "subtitle": "Những lựa chọn tốt cho bạn"
+    },
+    "strategySection": {
+      "title": "Chiến lược",
+      "subtitle": "Cách xử lý thông minh"
+    },
+    "tipsSection": {
+      "title": "Mẹo nhỏ",
+      "subtitle": "Bí quyết từ cộng đồng FitWell"
+    },
+    "relatedPlaybooks": "Kịch bản liên quan"
+  },
+  "scenarios": {
+    "hotpot": {
+      "title": "Ăn lẩu",
+      "description": "Lẩu là món rất nhiều purine. Đây là cách ăn lẩu an toàn hơn."
+    },
+    "bbq": {
+      "title": "Nướng BBQ / Thịt nướng",
+      "description": "Hướng dẫn chọn thịt và cách nướng giảm rủi ro."
+    },
+    "beer": {
+      "title": "Nhậu bia / rượu",
+      "description": "Bia là kẻ thù của gút. Nếu không tránh được, hãy giảm thiểu."
+    },
+    "seafood": {
+      "title": "Ăn hải sản",
+      "description": "Không phải hải sản nào cũng xấu. Biết chọn là được."
+    },
+    "office": {
+      "title": "Cơm văn phòng",
+      "description": "Chọn cơm trưa tốt cho sức khoẻ khi ăn ngoài."
+    },
+    "wedding": {
+      "title": "Đám cưới / Tiệc",
+      "description": "Cách ăn tiệc mà không hối hận ngày hôm sau."
+    },
+    "travel": {
+      "title": "Đi công tác / Du lịch",
+      "description": "Giữ thói quen khi xa nhà, ăn uống lạ."
+    }
+  },
+  "alreadyAte": {
+    "button": "Vào rồi!",
+    "title": "Bạn đã ăn rồi?",
+    "description": "Không sao! Hãy ghi nhận và xem cách giảm thiểu ảnh hưởng.",
+    "logWhat": "Bạn đã ăn/uống gì?",
+    "placeholder": "VD: 2 ly bia, lẩu bò...",
+    "mitigationTitle": "Cách giảm rủi ro ngay",
+    "mitigationWater": "Uống thật nhiều nước (ít nhất 500ml ngay bây giờ)",
+    "mitigationWalk": "Đi bộ nhẹ 10-15 phút",
+    "mitigationNextMeal": "Bữa tiếp theo nên ăn nhẹ, nhiều rau",
+    "mitigationSleep": "Ngủ đủ giấc đêm nay",
+    "submitButton": "Ghi nhận"
+  },
+  "deskBreak": {
+    "title": "Nghỉ giải lao bàn làm việc",
+    "subtitle": "Bài tập nhanh tại chỗ ngồi",
+    "protocol": {
+      "title": "Quy trình 2 phút",
+      "step1": "Đứng dậy, vươn vai",
+      "step2": "Xoay cổ nhẹ nhàng (5 vòng mỗi hướng)",
+      "step3": "Cuộn vai ra trước, ra sau (10 lần)",
+      "step4": "Nghiêng người sang hai bên (giữ 10 giây mỗi bên)",
+      "step5": "Đi bộ tại chỗ hoặc vài bước",
+      "step6": "Uống một ngụm nước"
+    },
+    "reminderSet": "Sẽ nhắc bạn sau {{minutes}} phút",
+    "startButton": "Bắt đầu",
+    "skipButton": "Bỏ qua lần này",
+    "completeButton": "Đã xong"
+  }
+}

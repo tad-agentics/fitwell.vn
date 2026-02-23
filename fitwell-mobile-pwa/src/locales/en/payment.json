@@ -1,0 +1,95 @@
+{
+  "title": "Upgrade FitWell",
+  "subtitle": "Unlock all features",
+  "pricingNote": "Prices include VAT",
+  "plans": {
+    "individual_monthly": {
+      "name": "Individual — Monthly",
+      "price": "490,000₫",
+      "priceNumeric": 490000,
+      "period": "/month",
+      "description": "Full experience",
+      "perDay": "~16,000₫/day"
+    },
+    "individual_quarterly": {
+      "name": "Individual — Quarterly",
+      "price": "1,490,000₫",
+      "priceNumeric": 1490000,
+      "period": "/3 months",
+      "description": "Best value for individuals",
+      "badge": "POPULAR",
+      "savings": "Save 980,000₫",
+      "perDay": "~16,500₫/day"
+    },
+    "household_annual": {
+      "name": "Household — Annual",
+      "price": "2,490,000₫",
+      "priceNumeric": 2490000,
+      "period": "/year",
+      "description": "For you and your partner",
+      "badge": "HOUSEHOLD",
+      "savings": "Save 3,390,000₫ vs. buying separately",
+      "perDay": "~6,800₫/day",
+      "includes": "Includes 2 accounts"
+    }
+  },
+  "features": {
+    "title": "Premium Features",
+    "allCheckins": "All check-ins (morning, midday, evening, post-event)",
+    "unlimitedScenarios": "Unlimited scenario playbooks",
+    "fullRecovery": "Full Day 2–3 recovery protocols",
+    "actionLibrary": "Action library + instructional videos",
+    "weeklyBrief": "Unlimited weekly briefs",
+    "patternInsights": "90-day pattern insights",
+    "householdModule": "Household module (Household plan)",
+    "prioritySupport": "Priority support",
+    "exportData": "Health data export"
+  },
+  "comparison": {
+    "title": "Compare plans",
+    "freeColumn": "Free",
+    "premiumColumn": "Premium",
+    "householdColumn": "Household"
+  },
+  "selectPlan": "SELECT THIS PLAN",
+  "currentPlan": "Current plan",
+  "changePlan": "Change plan",
+  "processing": "Processing payment...",
+  "success": {
+    "title": "Payment successful!",
+    "subtitle": "Welcome to FitWell Premium",
+    "message": "All features are now unlocked. Enjoy the full experience.",
+    "continueButton": "GET STARTED"
+  },
+  "cancel": {
+    "title": "Payment cancelled",
+    "subtitle": "You can try again anytime",
+    "message": "No charges were made. You can continue using the free plan.",
+    "retryButton": "TRY AGAIN",
+    "homeButton": "Go home"
+  },
+  "free": {
+    "label": "Free",
+    "includes": "Includes: Morning check-in, 1 scenario, 2 post-event check-ins, 1 weekly brief",
+    "limitations": {
+      "checkins": "Morning check-in only",
+      "scenarios": "1 scenario per week",
+      "postEvent": "2 post-event check-ins per week",
+      "brief": "1 weekly brief per month",
+      "noExport": "No data export"
+    }
+  },
+  "trial": {
+    "title": "7-day free trial",
+    "description": "Experience all Premium features for 7 days, no card required.",
+    "startButton": "Start free trial",
+    "daysRemaining": "{{days}} trial days remaining",
+    "expiringSoon": "Trial ending soon! Upgrade to continue.",
+    "expired": "Trial period has ended"
+  },
+  "errors": {
+    "paymentFailed": "Payment failed. Please try again.",
+    "networkError": "Connection error. Please check your network.",
+    "alreadySubscribed": "You're already subscribed to this plan."
+  }
+}

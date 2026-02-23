@@ -1,0 +1,133 @@
+{
+  "languageSelection": {
+    "title": "Chọn ngôn ngữ",
+    "subtitle": "Bạn có thể thay đổi sau trong phần Cài đặt",
+    "vietnamese": "Tiếng Việt",
+    "english": "English"
+  },
+  "conditionDeclaration": {
+    "title": "Bạn đang quan tâm đến vấn đề nào?",
+    "subtitle": "Chọn tất cả những gì phù hợp. Chúng tôi sẽ cá nhân hoá nội dung cho bạn.",
+    "gout": "Gút (Gout)",
+    "goutDescription": "Axit uric cao, đau khớp, sưng ngón chân",
+    "cholesterol": "Cholesterol",
+    "cholesterolDescription": "Mỡ máu cao, LDL/HDL, triglyceride",
+    "backPain": "Đau lưng",
+    "backPainDescription": "Đau thắt lưng, cổ vai gáy, ngồi nhiều",
+    "unsure": "Chưa rõ, muốn khám phá",
+    "unsureDescription": "Tôi muốn tìm hiểu thêm về sức khoẻ tổng quát",
+    "continueButton": "Tiếp tục"
+  },
+  "biomarkerInput": {
+    "title": "Chỉ số sức khoẻ gần nhất",
+    "subtitle": "Nếu bạn có kết quả xét nghiệm gần đây, hãy nhập vào. Không bắt buộc.",
+    "uricAcid": "Axit uric (mg/dL)",
+    "uricAcidPlaceholder": "VD: 7.2",
+    "uricAcidNormal": "Bình thường: 3.5 - 7.0 mg/dL",
+    "totalCholesterol": "Cholesterol toàn phần (mg/dL)",
+    "totalCholesterolPlaceholder": "VD: 220",
+    "totalCholesterolNormal": "Nên dưới 200 mg/dL",
+    "ldl": "LDL (mg/dL)",
+    "ldlPlaceholder": "VD: 130",
+    "ldlNormal": "Nên dưới 100 mg/dL",
+    "hdl": "HDL (mg/dL)",
+    "hdlPlaceholder": "VD: 55",
+    "hdlNormal": "Nên trên 40 mg/dL (nam), 50 mg/dL (nữ)",
+    "triglycerides": "Triglyceride (mg/dL)",
+    "triglyceridesPlaceholder": "VD: 150",
+    "triglyceridesNormal": "Nên dưới 150 mg/dL",
+    "skipForNow": "Bỏ qua, nhập sau",
+    "saveAndContinue": "Lưu & tiếp tục",
+    "noResultsYet": "Chưa có kết quả xét nghiệm? Không sao!"
+  },
+  "ahaMoment": {
+    "gout": {
+      "title": "Bạn biết không?",
+      "message": "70% cơn gút bùng phát ban đêm liên quan đến bữa tối hôm đó. FitWell sẽ giúp bạn kiểm soát từ bữa ăn.",
+      "highlight": "70% cơn gút bùng phát ban đêm"
+    },
+    "cholesterol": {
+      "title": "Bạn biết không?",
+      "message": "Chỉ cần thay đổi nhỏ trong thói quen ăn uống, bạn có thể giảm cholesterol 10-15% mà không cần thuốc.",
+      "highlight": "giảm 10-15% mà không cần thuốc"
+    },
+    "backPain": {
+      "title": "Bạn biết không?",
+      "message": "Ngồi liên tục 2 tiếng làm tăng áp lực lên cột sống 40%. Nghỉ 2 phút mỗi giờ giảm đau đáng kể.",
+      "highlight": "Nghỉ 2 phút mỗi giờ"
+    },
+    "general": {
+      "title": "Bạn biết không?",
+      "message": "Những thay đổi nhỏ, đều đặn mỗi ngày tạo ra kết quả lớn. FitWell đồng hành cùng bạn từng bước.",
+      "highlight": "Thay đổi nhỏ, kết quả lớn"
+    },
+    "continueButton": "Tuyệt, tiếp tục!"
+  },
+  "lifePattern": {
+    "title": "Thói quen sinh hoạt",
+    "subtitle": "Giúp chúng tôi hiểu lịch trình của bạn để gợi ý phù hợp.",
+    "deskHours": {
+      "question": "Mỗi ngày bạn ngồi bàn làm việc bao lâu?",
+      "options": {
+        "under4": "Dưới 4 tiếng",
+        "4to6": "4-6 tiếng",
+        "6to8": "6-8 tiếng",
+        "over8": "Trên 8 tiếng"
+      }
+    },
+    "eatingOut": {
+      "question": "Bạn ăn ngoài bao nhiêu bữa mỗi tuần?",
+      "options": {
+        "rarely": "Hiếm khi (0-2 bữa)",
+        "sometimes": "Thỉnh thoảng (3-5 bữa)",
+        "often": "Thường xuyên (6-10 bữa)",
+        "mostly": "Hầu hết (trên 10 bữa)"
+      }
+    },
+    "backNeckPain": {
+      "question": "Bạn có thường xuyên đau lưng hoặc cổ vai gáy không?",
+      "options": {
+        "never": "Không bao giờ",
+        "sometimes": "Thỉnh thoảng",
+        "often": "Thường xuyên",
+        "daily": "Gần như mỗi ngày"
+      }
+    },
+    "riskEnvironment": {
+      "question": "Tình huống nào dễ khiến bạn ăn uống thiếu kiểm soát?",
+      "options": {
+        "socialDining": "Ăn nhậu với bạn bè / đồng nghiệp",
+        "lateNight": "Ăn khuya",
+        "stress": "Khi căng thẳng / mệt mỏi",
+        "travel": "Khi đi công tác / du lịch",
+        "none": "Không có tình huống cụ thể"
+      }
+    },
+    "accountUsage": {
+      "question": "Ai sẽ sử dụng tài khoản này?",
+      "options": {
+        "justMe": "Chỉ mình tôi",
+        "withPartner": "Tôi và người thân (vợ/chồng, cha mẹ)",
+        "household": "Cả gia đình"
+      }
+    }
+  },
+  "activationEvent": {
+    "title": "Điều gì thúc đẩy bạn bắt đầu?",
+    "subtitle": "Chọn lý do gần nhất. Không có đáp án sai.",
+    "options": {
+      "recentFlare": "Vừa bị cơn gút / đau lưng nặng",
+      "badLabResult": "Kết quả xét nghiệm không tốt",
+      "doctorAdvice": "Bác sĩ khuyên thay đổi lối sống",
+      "familyHistory": "Người thân mắc bệnh tương tự",
+      "prevention": "Muốn phòng ngừa từ sớm",
+      "curiosity": "Tò mò, muốn thử"
+    },
+    "continueButton": "Bắt đầu thôi!"
+  },
+  "completion": {
+    "title": "Sẵn sàng rồi!",
+    "message": "FitWell đã được cá nhân hoá cho bạn. Hãy bắt đầu với check-in sáng đầu tiên.",
+    "startButton": "Bắt đầu sử dụng"
+  }
+}

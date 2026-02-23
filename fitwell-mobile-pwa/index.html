@@ -151,7 +151,6 @@
     <!-- App Root -->
     <div id="root"></div>
     
-    <!-- Service Worker Registration -->
     <script>
       // Remove loading screen when app loads
       window.addEventListener('load', () => {
@@ -164,32 +163,17 @@
           }, 100);
         }
       });
-      
-      // Register service worker
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker
-            .register('/sw.js')
-            .then((registration) => {
-              console.log('SW registered:', registration.scope);
-            })
-            .catch((error) => {
-              console.log('SW registration failed:', error);
-            });
-        });
-      }
-      
+
       // Handle install prompt
       let deferredPrompt;
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        // Store event for later use (in your A2HS component)
         window.deferredInstallPrompt = e;
       });
     </script>
-    
+
     <!-- App Entry Point -->
-    <script type="module" src="/src/main.tsx?v=2.0.3"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

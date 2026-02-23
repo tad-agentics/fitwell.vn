@@ -1,0 +1,111 @@
+{
+  "library": {
+    "title": "Thư viện hành động",
+    "subtitle": "Bài tập & thói quen giúp bạn khoẻ hơn mỗi ngày",
+    "searchPlaceholder": "Tìm bài tập, thói quen...",
+    "filterByCategory": "Lọc theo loại",
+    "filterByDuration": "Lọc theo thời gian",
+    "sortBy": "Sắp xếp",
+    "sortPopular": "Phổ biến nhất",
+    "sortNewest": "Mới nhất",
+    "sortShortest": "Ngắn nhất",
+    "noResults": "Không tìm thấy bài tập phù hợp",
+    "totalActions": "{{count}} hành động"
+  },
+  "categories": {
+    "stretch": "Giãn cơ",
+    "stretchDescription": "Kéo giãn cơ, giải phóng căng cứng",
+    "breathing": "Hít thở",
+    "breathingDescription": "Bài tập thở giảm stress, thư giãn",
+    "mobility": "Vận động nhẹ",
+    "mobilityDescription": "Di chuyển, đi bộ, vận động cơ bản",
+    "posture": "Tư thế",
+    "postureDescription": "Chỉnh tư thế ngồi, đứng đúng cách",
+    "hydration": "Uống nước",
+    "hydrationDescription": "Nhắc nhở và theo dõi lượng nước",
+    "nutrition": "Dinh dưỡng",
+    "nutritionDescription": "Gợi ý bữa ăn, thực phẩm tốt",
+    "mindfulness": "Chánh niệm",
+    "mindfulnessDescription": "Thiền ngắn, tĩnh tâm, giảm lo âu",
+    "recovery": "Phục hồi",
+    "recoveryDescription": "Bài tập phục hồi sau cơn đau, chấn thương"
+  },
+  "context": {
+    "label": "Bạn đang ở đâu?",
+    "office": "Văn phòng",
+    "officeDescription": "Bài tập kín đáo, làm tại bàn",
+    "private": "Riêng tư",
+    "privateDescription": "Tại nhà hoặc nơi thoải mái",
+    "transit": "Di chuyển",
+    "transitDescription": "Trên xe, chờ đợi, nơi công cộng"
+  },
+  "timer": {
+    "title": "Đếm giờ",
+    "start": "Bắt đầu",
+    "pause": "Tạm dừng",
+    "resume": "Tiếp tục",
+    "stop": "Dừng",
+    "reset": "Đặt lại",
+    "timeRemaining": "Còn lại {{time}}",
+    "holdFor": "Giữ {{seconds}} giây",
+    "restBetween": "Nghỉ {{seconds}} giây",
+    "setOf": "Hiệp {{current}}/{{total}}",
+    "repCount": "{{current}}/{{total}} lần"
+  },
+  "completion": {
+    "title": "Tuyệt vời!",
+    "message": "Bạn đã hoàn thành bài tập.",
+    "streak": "{{count}} ngày liên tiếp thực hiện!",
+    "pointsEarned": "+{{points}} điểm",
+    "feelBetter": "Bạn cảm thấy thế nào sau bài tập?",
+    "feelOptions": {
+      "great": "Tốt hơn nhiều",
+      "okay": "Khá hơn một chút",
+      "same": "Không thay đổi",
+      "worse": "Hơi khó chịu"
+    },
+    "shareButton": "Chia sẻ thành tích",
+    "nextAction": "Bài tập tiếp theo",
+    "backToLibrary": "Về thư viện"
+  },
+  "sequence": {
+    "title": "Chuỗi bài tập",
+    "runButton": "Chạy chuỗi",
+    "steps": "{{count}} bước",
+    "duration": "{{minutes}} phút",
+    "currentStep": "Bước {{current}} / {{total}}",
+    "nextUp": "Tiếp theo:",
+    "skipStep": "Bỏ qua bước này",
+    "completeSequence": "Hoàn thành chuỗi!",
+    "sequences": {
+      "morningWakeUp": "Thức dậy buổi sáng",
+      "deskBreak": "Nghỉ giải lao bàn làm việc",
+      "backRelief": "Giảm đau lưng nhanh",
+      "neckShoulder": "Giải phóng cổ vai gáy",
+      "preSleep": "Thư giãn trước ngủ",
+      "postMeal": "Sau bữa ăn nặng",
+      "stressRelief": "Giải toả căng thẳng"
+    }
+  },
+  "suggested": {
+    "title": "Gợi ý cho bạn",
+    "basedOn": "Dựa trên check-in hôm nay",
+    "forCondition": "Phù hợp với tình trạng của bạn",
+    "quickAction": "Hành động nhanh",
+    "viewAll": "Xem tất cả"
+  },
+  "detail": {
+    "instructions": "Hướng dẫn",
+    "benefits": "Lợi ích",
+    "difficulty": "Độ khó",
+    "difficultyEasy": "Dễ",
+    "difficultyMedium": "Trung bình",
+    "difficultyHard": "Nâng cao",
+    "duration": "Thời gian",
+    "equipment": "Dụng cụ",
+    "noEquipment": "Không cần dụng cụ",
+    "startButton": "Bắt đầu",
+    "addToFavorites": "Thêm vào yêu thích",
+    "removeFromFavorites": "Bỏ yêu thích"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "title": "Gia đình",
+  "subtitle": "Cùng nhau chăm sóc sức khoẻ",
+  "invite": {
+    "title": "Mời người thân",
+    "subtitle": "Chia sẻ FitWell với người thân để cùng chăm sóc sức khỏe",
+    "description": "Người thân sẽ nhận được giao diện riêng với gợi ý mua sắm, nấu ăn phù hợp với tình trạng của bạn.",
+    "qrLabel": "Quét mã QR để tham gia",
+    "qrDescription": "Dùng camera điện thoại quét mã này",
+    "orDivider": "hoặc",
+    "copyLink": "SAO CHÉP LIÊN KẾT",
+    "linkCopied": "Đã sao chép!",
+    "shareVia": "Chia sẻ qua",
+    "shareZalo": "Gửi qua Zalo",
+    "shareMessage": "Gửi tin nhắn",
+    "expires": "Liên kết hết hạn sau 72 giờ",
+    "sendButton": "GỬI LỜI MỜI",
+    "resendButton": "Gửi lại lời mời",
+    "cancelInvite": "Huỷ lời mời",
+    "maxReached": "Đã đạt số lượng tối đa ({{max}} người)"
+  },
+  "partner": {
+    "title": "Hỗ trợ người thân",
+    "subtitle": "Gợi ý mua sắm và nấu ăn phù hợp",
+    "homeTitle": "Trang chủ Hỗ trợ",
+    "homeSubtitle": "Bạn đang hỗ trợ {{name}}",
+    "stockingGuidance": "Gợi ý thực phẩm",
+    "stockingSubtitle": "Danh sách đi chợ thông minh",
+    "weeklyShoppingList": "Danh sách mua sắm tuần này",
+    "alwaysStock": "Luôn có sẵn trong nhà",
+    "avoidBuying": "Hạn chế mua",
+    "cookingTips": "Gợi ý nấu ăn",
+    "cookingSubtitle": "Công thức phù hợp cho gia đình",
+    "riskCalendar": "Lịch rủi ro chung",
+    "riskCalendarSubtitle": "Theo dõi ngày rủi ro cao của người thân",
+    "todayStatus": "Hôm nay: {{status}}",
+    "gout": {
+      "title": "Hỗ trợ người bị Gút",
+      "tip": "Ưu tiên thực phẩm ít purine: rau xanh, trái cây, sữa ít béo",
+      "avoid": "Hạn chế: nội tạng, hải sản đậm vị, bia, nước ngọt",
+      "encourage": "Khuyến khích: uống nhiều nước, ăn cherry, vitamin C"
+    },
+    "cholesterol": {
+      "title": "Hỗ trợ người có Cholesterol cao",
+      "tip": "Tăng omega-3: cá hồi, hạt chia, quả óc chó. Giảm mỡ bão hòa",
+      "avoid": "Hạn chế: đồ chiên, mỡ động vật, thức ăn nhanh",
+      "encourage": "Khuyến khích: yến mạch, rau xanh, đậu, trái cây"
+    },
+    "back_pain": {
+      "title": "Hỗ trợ người đau lưng",
+      "tip": "Thực phẩm chống viêm: nghệ, gừng, cá béo, rau lá xanh",
+      "avoid": "Hạn chế: đồ ăn gây viêm, đường tinh chế, rượu bia",
+      "encourage": "Khuyến khích: nhắc nghỉ ngơi, hỗ trợ tư thế ngồi"
+    },
+    "notifications": {
+      "flareAlert": "{{name}} vừa ghi nhận một sự kiện. Hãy hỗ trợ!",
+      "shoppingReminder": "Nhắc đi chợ: cập nhật danh sách tuần này",
+      "mealSuggestion": "Gợi ý bữa tối phù hợp cho hôm nay"
+    }
+  },
+  "members": {
+    "title": "Thành viên",
+    "you": "Bạn",
+    "role": {
+      "primary": "Người dùng chính",
+      "partner": "Người hỗ trợ"
+    },
+    "remove": "Xoá thành viên",
+    "removeConfirm": "Bạn có chắc muốn xoá {{name}} khỏi gia đình?"
+  },
+  "status": {
+    "pending": "Đang chờ",
+    "accepted": "Đã chấp nhận",
+    "expired": "Hết hạn",
+    "noPartner": "Chưa có người thân",
+    "connected": "Đã kết nối"
+  },
+  "upgrade": {
+    "title": "Tính năng Gia đình",
+    "description": "Nâng cấp lên gói Gia đình để mời người thân cùng sử dụng.",
+    "upgradeButton": "Nâng cấp gói Gia đình"
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "greeting": "Chào {{name}}",
+  "greetingMorning": "Chào buổi sáng, {{name}}",
+  "greetingAfternoon": "Chào buổi chiều, {{name}}",
+  "greetingEvening": "Chào buổi tối, {{name}}",
+  "cleanDay": {
+    "eyebrow": "NGÀY MỚI",
+    "title": "Hôm nay trông ổn",
+    "titleVariant1": "Một ngày mới, một cơ hội mới",
+    "titleVariant2": "Ngày sạch — giữ vững nhé!",
+    "subtitle": "Chưa có sự kiện nào được lên lịch",
+    "morningCheckin": "CHECK-IN SÁNG",
+    "searchScenarios": "Tìm kịch bản cho tối nay",
+    "quickActions": "Hành động nhanh",
+    "streak": "Chuỗi {{count}} ngày sạch!",
+    "streakEncouragement": "Tuyệt vời! Tiếp tục phát huy nhé.",
+    "tip": "Mẹo hôm nay"
+  },
+  "midday": {
+    "eyebrow": "GIỮA TRƯA",
+    "title": "Giờ nghỉ bàn làm việc",
+    "titleVariant1": "Đã ngồi đủ lâu rồi!",
+    "titleVariant2": "Lưng cần được nghỉ ngơi",
+    "subtitle": "Đã ngồi từ sáng — hãy vận động nhẹ",
+    "sittingHours": "Bạn đã ngồi khoảng {{hours}} giờ",
+    "startCheckin": "CHECK-IN GIỮA TRƯA",
+    "quickStretch": "Kéo giãn nhanh 3 phút",
+    "deskBreak": "Nghỉ giải lao 2 phút",
+    "waterReminder": "Uống nước nhé! Mục tiêu: {{target}}ml",
+    "waterProgress": "Đã uống: {{current}}/{{target}}ml"
+  },
+  "preSleep": {
+    "eyebrow": "TRƯỚC NGỦ",
+    "title": "Chuẩn bị cho giấc ngủ",
+    "titleVariant1": "Thời gian thư giãn",
+    "titleVariant2": "Hãy để cơ thể nghỉ ngơi",
+    "subtitle": "Thư giãn và chuẩn bị nghỉ ngơi",
+    "startWindDown": "BẮT ĐẦU THƯ GIÃN",
+    "todaySummary": "Tóm tắt ngày hôm nay",
+    "checkinsDone": "{{count}} check-in đã hoàn thành",
+    "actionsDone": "{{count}} hành động đã thực hiện",
+    "screenTimeWarning": "Hạn chế màn hình trước khi ngủ nhé"
+  },
+  "preDinner": {
+    "eyebrow": "SẮP ĐẾN GIỜ",
+    "title": "Sự kiện trong {{hours}} giờ nữa",
+    "titleSoon": "Sự kiện sắp bắt đầu!",
+    "subtitle": "Xem kịch bản chuẩn bị trước",
+    "eventName": "{{event}}",
+    "viewScenario": "XEM KỊCH BẢN",
+    "countdown": "Còn {{time}}",
+    "countdownHours": "Còn {{hours}} giờ {{minutes}} phút",
+    "prepTips": "Mẹo trước khi đi",
+    "drinkWater": "Uống đủ nước trước khi đến",
+    "eatLight": "Ăn nhẹ trước để tránh ăn quá nhiều",
+    "planAhead": "Xác định trước sẽ ăn gì / uống gì"
+  },
+  "activeRecovery": {
+    "eyebrow": "ĐANG PHỤC HỒI",
+    "title": "Ngày {{day}} phục hồi",
+    "subtitle": "Tiếp tục quy trình phục hồi của bạn",
+    "day1": {
+      "title": "Ngày 1: Nghỉ ngơi & Hydrate",
+      "description": "Ưu tiên uống nước, ăn nhẹ, tránh purine"
+    },
+    "day2": {
+      "title": "Ngày 2: Phục hồi tích cực",
+      "description": "Vận động nhẹ, tiếp tục chế độ ăn sạch"
+    },
+    "day3": {
+      "title": "Ngày 3: Trở lại bình thường",
+      "description": "Từ từ quay lại thói quen, theo dõi triệu chứng"
+    },
+    "continueProtocol": "TIẾP TỤC PHỤC HỒI",
+    "skipDay": "Bỏ qua hôm nay",
+    "progress": "Tiến độ: {{current}}/{{total}}",
+    "waterIntake": "Mục tiêu nước: {{target}}ml",
+    "nextStep": "Bước tiếp theo"
+  },
+  "sundayBrief": {
+    "eyebrow": "CHỦ NHẬT",
+    "title": "Báo cáo tuần của bạn",
+    "subtitle": "Tổng kết và chuẩn bị cho tuần tới",
+    "viewBrief": "XEM BÁO CÁO TUẦN",
+    "highlightCleanDays": "{{count}} ngày sạch tuần này",
+    "highlightActions": "{{count}} hành động hoàn thành",
+    "highlightStreak": "Chuỗi {{count}} ngày",
+    "prepareNextWeek": "Chuẩn bị cho tuần mới"
+  },
+  "mondayIntercept": {
+    "eyebrow": "BÁO CÁO TUẦN",
+    "title": "Báo cáo tuần đã sẵn sàng",
+    "titleVariant1": "Tuần mới, khởi đầu mới!",
+    "subtitle": "Xem lại tuần trước trước khi bắt đầu tuần mới",
+    "lastWeekHighlight": "Tuần trước: {{cleanDays}} ngày sạch, {{actions}} hành động",
+    "viewBrief": "XEM BÁO CÁO",
+    "dismiss": "Bỏ qua",
+    "setGoal": "Đặt mục tiêu tuần này"
+  },
+  "cards": {
+    "upcomingCheckin": "Check-in tiếp theo",
+    "suggestedAction": "Gợi ý cho bạn",
+    "todayProgress": "Tiến độ hôm nay",
+    "riskLevel": "Mức rủi ro hôm nay",
+    "noUpcoming": "Không có sự kiện sắp tới"
+  },
+  "empty": {
+    "title": "Chào mừng đến FitWell!",
+    "subtitle": "Hãy bắt đầu với check-in sáng đầu tiên của bạn.",
+    "startButton": "Bắt đầu check-in"
+  }
+}

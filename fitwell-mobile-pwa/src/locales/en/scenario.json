@@ -1,0 +1,112 @@
+{
+  "search": {
+    "title": "Scenarios & Playbooks",
+    "placeholder": "Search food, situations...",
+    "recentSearches": "Recent searches",
+    "popular": "Popular",
+    "noResults": "No matching playbooks found",
+    "noResultsSuggestion": "Try different keywords"
+  },
+  "categories": {
+    "all": "All",
+    "dining": "Dining out",
+    "cooking": "Home cooking",
+    "drinking": "Drinking & parties",
+    "snacking": "Snacking",
+    "deskWork": "Desk work",
+    "travel": "Business travel",
+    "exercise": "Exercise"
+  },
+  "riskLevel": {
+    "label": "Risk level",
+    "safe": "Safe",
+    "safeDescription": "Enjoy without worry",
+    "caution": "Use caution",
+    "cautionDescription": "Eat in moderation, watch portions",
+    "avoid": "Best avoided",
+    "avoidDescription": "High risk, may trigger flare-ups",
+    "danger": "Dangerous",
+    "dangerDescription": "Avoid completely if you have active symptoms"
+  },
+  "playbook": {
+    "title": "Playbook: {{name}}",
+    "overview": "Overview",
+    "avoidSection": {
+      "title": "Items to avoid",
+      "subtitle": "These increase your risk"
+    },
+    "safeSection": {
+      "title": "Safe choices",
+      "subtitle": "Good options for you"
+    },
+    "strategySection": {
+      "title": "Strategy",
+      "subtitle": "Smart ways to handle this"
+    },
+    "tipsSection": {
+      "title": "Tips",
+      "subtitle": "Advice from the FitWell community"
+    },
+    "relatedPlaybooks": "Related playbooks"
+  },
+  "scenarios": {
+    "hotpot": {
+      "title": "Eating hot pot",
+      "description": "Hot pot is very high in purines. Here's how to enjoy it more safely."
+    },
+    "bbq": {
+      "title": "BBQ / Grilled meat",
+      "description": "Guide to choosing meats and grilling methods that reduce risk."
+    },
+    "beer": {
+      "title": "Beer / alcohol",
+      "description": "Beer is gout's worst enemy. If you can't avoid it, here's how to minimize damage."
+    },
+    "seafood": {
+      "title": "Eating seafood",
+      "description": "Not all seafood is bad. Learn what to choose."
+    },
+    "office": {
+      "title": "Office lunch",
+      "description": "Choose healthier lunch options when eating out."
+    },
+    "wedding": {
+      "title": "Weddings & banquets",
+      "description": "How to enjoy a celebration without regretting it tomorrow."
+    },
+    "travel": {
+      "title": "Business travel",
+      "description": "Maintain your habits when away from home with unfamiliar food."
+    }
+  },
+  "alreadyAte": {
+    "button": "Already ate!",
+    "title": "Already ate it?",
+    "description": "No worries! Let's log it and see how to minimize the impact.",
+    "logWhat": "What did you eat or drink?",
+    "placeholder": "e.g. 2 beers, beef hot pot...",
+    "mitigationTitle": "How to reduce risk right now",
+    "mitigationWater": "Drink plenty of water (at least 500ml right now)",
+    "mitigationWalk": "Take a gentle 10-15 minute walk",
+    "mitigationNextMeal": "Keep your next meal light with plenty of vegetables",
+    "mitigationSleep": "Get a good night's sleep tonight",
+    "submitButton": "Log it"
+  },
+  "deskBreak": {
+    "title": "Desk break",
+    "subtitle": "Quick exercises at your seat",
+    "protocol": {
+      "title": "2-minute routine",
+      "step1": "Stand up and stretch",
+      "step2": "Gently rotate your neck (5 circles each direction)",
+      "step3": "Roll your shoulders forward and back (10 times)",
+      "step4": "Side bends (hold 10 seconds each side)",
+      "step5": "March in place or take a few steps",
+      "step6": "Have a sip of water"
+    },
+    "reminderSet": "We'll remind you in {{minutes}} minutes",
+    "startButton": "Start",
+    "skipButton": "Skip this time",
+    "completeButton": "Done"
+  }
+}

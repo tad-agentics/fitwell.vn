@@ -1,0 +1,90 @@
+{
+  "weeklyBrief": {
+    "title": "Tổng kết tuần",
+    "subtitle": "Tuần từ {{startDate}} đến {{endDate}}",
+    "greeting": "Đây là tổng kết tuần của bạn, {{name}}",
+    "loading": "Đang phân tích dữ liệu tuần..."
+  },
+  "riskCalendar": {
+    "heading": "Lịch rủi ro",
+    "subtitle": "Ngày nào bạn đối mặt rủi ro cao?",
+    "safe": "An toàn",
+    "moderate": "Cần chú ý",
+    "high": "Rủi ro cao",
+    "noData": "Không có dữ liệu",
+    "cleanDay": "Ngày sạch",
+    "cleanDays": "{{count}} ngày sạch tuần này",
+    "cleanDayStreak": "Chuỗi {{count}} ngày sạch liên tiếp!",
+    "bestStreak": "Kỷ lục: {{count}} ngày"
+  },
+  "patterns": {
+    "heading": "Xu hướng & Mẫu hình",
+    "subtitle": "Những điều chúng tôi nhận thấy",
+    "sleepPattern": "Giấc ngủ",
+    "painPattern": "Mức đau",
+    "energyPattern": "Năng lượng",
+    "mealPattern": "Bữa ăn",
+    "improving": "Đang cải thiện",
+    "stable": "Ổn định",
+    "declining": "Cần chú ý",
+    "noPattern": "Chưa đủ dữ liệu để phân tích"
+  },
+  "comparison": {
+    "heading": "So sánh",
+    "vsLastWeek": "So với tuần trước",
+    "vsPreviousMonth": "So với tháng trước",
+    "better": "Tốt hơn",
+    "same": "Tương đương",
+    "worse": "Kém hơn",
+    "checkinRate": "Tỷ lệ check-in",
+    "actionsCompleted": "Hành động hoàn thành",
+    "cleanDayRate": "Tỷ lệ ngày sạch",
+    "avgPainScore": "Điểm đau trung bình",
+    "avgSleepQuality": "Chất lượng giấc ngủ TB"
+  },
+  "insights": {
+    "heading": "Nhận xét",
+    "goutRisk": "Rủi ro gút tuần này ở mức {{level}}. {{detail}}",
+    "goutRiskLow": "Bạn đang kiểm soát tốt!",
+    "goutRiskMedium": "Có vài bữa ăn cần chú ý.",
+    "goutRiskHigh": "Nên cẩn thận hơn trong tuần tới.",
+    "backPainTrend": "Đau lưng {{trend}} so với tuần trước.",
+    "backPainImproved": "giảm đáng kể",
+    "backPainStable": "không thay đổi nhiều",
+    "backPainWorsened": "tăng lên",
+    "sleepInsight": "Bạn ngủ trung bình {{hours}} giờ. {{quality}}",
+    "sleepGood": "Giấc ngủ chất lượng tốt!",
+    "sleepFair": "Có thể cải thiện thêm.",
+    "sleepPoor": "Giấc ngủ cần được ưu tiên.",
+    "deskInsight": "Bạn ngồi trung bình {{hours}} giờ/ngày. {{suggestion}}",
+    "deskSuggestion": "Hãy thử nghỉ giải lao thường xuyên hơn.",
+    "topInsight": "Điểm sáng tuần này",
+    "improvementArea": "Cần cải thiện"
+  },
+  "cta": {
+    "viewDetails": "Xem chi tiết",
+    "shareReport": "Chia sẻ báo cáo",
+    "setGoalNextWeek": "Đặt mục tiêu tuần tới",
+    "talkToCoach": "Trao đổi với chuyên gia",
+    "viewPlaybook": "Xem kịch bản phù hợp",
+    "adjustReminders": "Điều chỉnh nhắc nhở"
+  },
+  "mondayIntercept": {
+    "title": "Tuần mới, khởi đầu mới!",
+    "subtitle": "Dựa trên tuần trước, đây là gợi ý cho tuần này",
+    "lastWeekSummary": "Tuần trước bạn có {{cleanDays}} ngày sạch và hoàn thành {{actions}} hành động.",
+    "thisWeekGoal": "Mục tiêu tuần này",
+    "suggestedGoals": {
+      "morningCheckin": "Check-in sáng mỗi ngày",
+      "deskBreaks": "Nghỉ giải lao 3 lần/ngày",
+      "cleanMeals": "Ít nhất 5 bữa ăn sạch",
+      "backExercise": "Tập giãn cơ lưng 4 lần/tuần",
+      "waterIntake": "Uống đủ 2L nước mỗi ngày",
+      "earlyDinner": "Ăn tối trước 19h"
+    },
+    "viewButton": "Xem tổng kết tuần trước",
+    "skipButton": "Bắt đầu tuần mới",
+    "acceptGoal": "Nhận mục tiêu",
+    "customizeGoal": "Tuỳ chỉnh"
+  }
+}

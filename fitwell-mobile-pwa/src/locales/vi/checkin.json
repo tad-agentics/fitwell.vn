@@ -1,0 +1,132 @@
+{
+  "morning": {
+    "title": "Check-in sáng",
+    "greeting": "Chào buổi sáng, {{name}}!",
+    "subtitle": "Hôm nay bạn cảm thấy thế nào?",
+    "sleepQuality": {
+      "question": "Đêm qua bạn ngủ ra sao?",
+      "options": {
+        "good": "Ngon giấc",
+        "fair": "Tạm ổn",
+        "poor": "Khó ngủ",
+        "terrible": "Rất tệ"
+      },
+      "goodEmoji": "Ngủ ngon, tràn đầy năng lượng",
+      "fairEmoji": "Ngủ được nhưng chưa sâu",
+      "poorEmoji": "Trằn trọc, khó vào giấc",
+      "terribleEmoji": "Gần như không ngủ được"
+    },
+    "bodyFeeling": {
+      "question": "Cơ thể bạn cảm thấy thế nào?",
+      "options": {
+        "fresh": "Tươi tỉnh",
+        "stiff": "Hơi cứng",
+        "heavy": "Nặng nề",
+        "sore": "Đau nhức"
+      },
+      "freshDescription": "Nhẹ nhàng, sẵn sàng hoạt động",
+      "stiffDescription": "Cổ vai gáy hoặc lưng hơi cứng",
+      "heavyDescription": "Uể oải, muốn nghỉ thêm",
+      "soreDescription": "Có điểm đau cụ thể"
+    },
+    "backPainScore": {
+      "question": "Mức độ đau lưng / cổ vai gáy",
+      "scale": "Thang điểm 0-10",
+      "noPain": "Không đau",
+      "mildPain": "Đau nhẹ",
+      "moderatePain": "Đau vừa",
+      "severePain": "Đau nặng",
+      "worstPain": "Đau dữ dội",
+      "skipIfNoPain": "Bỏ qua nếu không đau"
+    },
+    "complete": "Đã ghi nhận! Chúc bạn ngày mới tốt lành.",
+    "submitButton": "Ghi nhận"
+  },
+  "postEvent": {
+    "title": "Sau sự kiện",
+    "subtitle": "Bạn vừa trải qua điều gì?",
+    "intensity": {
+      "question": "Mức độ ảnh hưởng",
+      "low": "Nhẹ",
+      "medium": "Vừa",
+      "high": "Nặng"
+    },
+    "eventTypes": {
+      "question": "Loại sự kiện",
+      "goutFlare": "Cơn gút bùng phát",
+      "backPainEpisode": "Cơn đau lưng",
+      "heavyMeal": "Bữa ăn nặng (nhậu, tiệc)",
+      "missedMedication": "Quên uống thuốc",
+      "highStress": "Căng thẳng cao",
+      "poorSleep": "Mất ngủ kéo dài",
+      "exerciseInjury": "Tập quá sức / chấn thương",
+      "other": "Khác"
+    },
+    "notes": {
+      "label": "Ghi chú thêm (tuỳ chọn)",
+      "placeholder": "Mô tả ngắn gọn tình huống..."
+    },
+    "timestamp": "Xảy ra khi nào?",
+    "justNow": "Vừa xong",
+    "earlier": "Sáng nay",
+    "lastNight": "Tối qua",
+    "submitButton": "Ghi nhận sự kiện"
+  },
+  "midday": {
+    "title": "Check-in giữa ngày",
+    "greeting": "Buổi chiều rồi, {{name}}!",
+    "subtitle": "Trạng thái hiện tại của bạn?",
+    "afternoonState": {
+      "question": "Bạn đang cảm thấy thế nào?",
+      "options": {
+        "clear": "Minh mẫn",
+        "sluggish": "Uể oải",
+        "stressed": "Căng thẳng",
+        "backTight": "Lưng/cổ mỏi"
+      },
+      "clearDescription": "Tập trung tốt, năng lượng ổn",
+      "sluggishDescription": "Buồn ngủ sau ăn trưa, khó tập trung",
+      "stressedDescription": "Deadline, áp lực công việc",
+      "backTightDescription": "Ngồi lâu, cần vận động"
+    },
+    "deskBreakReminder": "Bạn đã ngồi {{hours}} tiếng. Đứng dậy vận động nhé!",
+    "waterReminder": "Đừng quên uống nước! Mục tiêu: {{target}}ml/ngày.",
+    "suggestedAction": "Gợi ý cho bạn",
+    "submitButton": "Ghi nhận",
+    "complete": "Đã ghi nhận! Nửa ngày còn lại sẽ tuyệt vời."
+  },
+  "preSleep": {
+    "title": "Check-in trước ngủ",
+    "greeting": "Chuẩn bị nghỉ ngơi, {{name}}",
+    "readiness": {
+      "question": "Bạn sẵn sàng đi ngủ chưa?",
+      "options": {
+        "ready": "Sẵn sàng đi ngủ",
+        "delay": "Chưa buồn ngủ"
+      },
+      "readyDescription": "Đã thư giãn, sẵn sàng ngủ",
+      "delayDescription": "Còn muốn thức thêm"
+    },
+    "todaySummary": "Tóm tắt hôm nay",
+    "checkinCount": "{{count}} check-in hoàn thành",
+    "actionsCompleted": "{{count}} hành động đã thực hiện",
+    "tip": "Mẹo: Tránh nhìn màn hình 30 phút trước khi ngủ để cải thiện chất lượng giấc ngủ.",
+    "submitButton": "Chúc ngủ ngon",
+    "complete": "Chúc bạn ngủ ngon! Hẹn gặp lại sáng mai."
+  },
+  "history": {
+    "title": "Lịch sử check-in",
+    "noData": "Chưa có dữ liệu check-in",
+    "streak": "{{count}} ngày liên tiếp",
+    "streakBroken": "Chuỗi bị gián đoạn",
+    "viewDetails": "Xem chi tiết"
+  },
+  "reminder": {
+    "morningTitle": "Check-in sáng",
+    "morningBody": "Chào buổi sáng! Hôm nay bạn cảm thấy thế nào?",
+    "middayTitle": "Check-in giữa ngày",
+    "middayBody": "Buổi chiều rồi! Cập nhật trạng thái nhé.",
+    "preSleepTitle": "Check-in tối",
+    "preSleepBody": "Ghi nhận ngày hôm nay trước khi đi ngủ."
+  }
+}
