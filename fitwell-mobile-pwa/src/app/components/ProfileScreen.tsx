@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
+import { useAuthStore } from '@/store/authStore';
 
 interface ProfileScreenProps {
   onBack: () => void;
@@ -7,47 +8,53 @@ interface ProfileScreenProps {
 }
 
 export function ProfileScreen({ onBack, onNavigate }: ProfileScreenProps) {
+  const profile = useAuthStore((s) => s.profile);
+  const signOut = useAuthStore((s) => s.signOut);
+
+  const displayName = profile?.email?.split('@')[0] ?? 'User';
+
   const profileSections = [
     {
-      title: 'Personal Information',
+      title: 'Thông tin cá nhân',
       items: [
-        { label: 'Full Name', value: 'Minh Nguyen' },
-        { label: 'Date of Birth', value: '15 March 1985' },
-        { label: 'Email', value: 'minh.nguyen@email.com' },
-        { label: 'Phone', value: '+84 90 123 4567' }
-      ]
-    },
-    {
-      title: 'Medical Information',
-      items: [
-        { label: 'Primary Physician', value: 'Dr. Tran Van Anh' },
-        { label: 'Hospital', value: 'Cho Ray Hospital' },
-        { label: 'Blood Type', value: 'O+' },
-        { label: 'Allergies', value: 'None reported' }
-      ]
+        { label: 'Email', value: profile?.email ?? '—' },
+        { label: 'Ngôn ngữ', value: profile?.language === 'en' ? 'English' : 'Tiếng Việt' },
+      ],
     },
     {
       title: 'Cài đặt chương trình',
       items: [
-        { label: 'Ngày bắt đầu', value: '21 tháng 1, 2026' },
-        { label: 'Thời lượng', value: '12 tuần' },
-        { label: 'Tần suất check-in', value: 'Hàng tuần' },
-        { label: 'Xét nghiệm máu tiếp theo', value: '18 tháng 3, 2026' }
-      ]
-    }
+        {
+          label: 'Tình trạng',
+          value:
+            profile?.primary_conditions?.length
+              ? profile.primary_conditions.join(', ')
+              : 'Chưa khai báo',
+        },
+        {
+          label: 'Ngày bắt đầu',
+          value: profile?.created_at
+            ? new Date(profile.created_at).toLocaleDateString('vi-VN')
+            : '—',
+        },
+      ],
+    },
   ];
 
   const menuItems = [
     'Tùy chọn thông báo',
     'Quyền riêng tư & Dữ liệu',
     'Trợ giúp & Hỗ trợ',
-    'Điều khoản dịch vụ'
+    'Điều khoản dịch vụ',
   ];
 
   return (
     <div className="h-full flex flex-col" style={{ backgroundColor: '#ffffff' }}>
       {/* Header */}
-      <div className="pt-16 pb-6 px-6 flex items-center gap-4" style={{ borderBottom: '1px solid #e8e8eb' }}>
+      <div
+        className="pt-16 pb-6 px-6 flex items-center gap-4"
+        style={{ borderBottom: '1px solid #e8e8eb' }}
+      >
         <button
           onClick={onBack}
           style={{
@@ -56,21 +63,21 @@ export function ProfileScreen({ onBack, onNavigate }: ProfileScreenProps) {
             cursor: 'pointer',
             padding: '0',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
           }}
         >
           <ArrowLeft size={24} style={{ color: '#041E3A' }} />
         </button>
-        <h1 
-          className="fitwell-heading-secondary" 
-          style={{ 
+        <h1
+          style={{
             color: '#041E3A',
             fontSize: '28px',
             fontWeight: '400',
-            letterSpacing: '-0.019em'
+            letterSpacing: '-0.019em',
+            fontFamily: 'var(--font-ui)',
           }}
         >
-          Profile & Settings
+          {displayName}
         </h1>
       </div>
 
@@ -117,39 +124,40 @@ export function ProfileScreen({ onBack, onNavigate }: ProfileScreenProps) {
         {profileSections.map((section, sectionIndex) => (
           <div key={sectionIndex}>
             <div className="px-6 py-4" style={{ backgroundColor: '#f8f8f9' }}>
-              <span 
-                className="fitwell-label" 
-                style={{ 
+              <span
+                style={{
                   color: '#6b6d7a',
                   fontSize: '11px',
                   fontWeight: '500',
                   letterSpacing: '0.04em',
-                  textTransform: 'uppercase'
+                  textTransform: 'uppercase',
+                  fontFamily: 'var(--font-mono)',
                 }}
               >
                 {section.title}
               </span>
             </div>
-            
+
             <div className="px-6 py-4 space-y-5">
               {section.items.map((item, itemIndex) => (
                 <div key={itemIndex}>
-                  <div 
-                    className="fitwell-body-small mb-1" 
-                    style={{ 
+                  <div
+                    style={{
                       color: '#9a9ba5',
                       fontSize: '13px',
-                      fontWeight: '400'
+                      fontWeight: '400',
+                      fontFamily: 'var(--font-ui)',
+                      marginBottom: '4px',
                     }}
                   >
                     {item.label}
                   </div>
-                  <div 
-                    className="fitwell-body" 
-                    style={{ 
+                  <div
+                    style={{
                       color: '#041E3A',
                       fontSize: '15px',
-                      fontWeight: '400'
+                      fontWeight: '400',
+                      fontFamily: 'var(--font-ui)',
                     }}
                   >
                     {item.value}
@@ -163,20 +171,20 @@ export function ProfileScreen({ onBack, onNavigate }: ProfileScreenProps) {
         {/* Menu Items */}
         <div className="px-6 pt-6 pb-4">
           <div className="mb-4">
-            <span 
-              className="fitwell-label" 
-              style={{ 
+            <span
+              style={{
                 color: '#6b6d7a',
                 fontSize: '11px',
                 fontWeight: '500',
                 letterSpacing: '0.04em',
-                textTransform: 'uppercase'
+                textTransform: 'uppercase',
+                fontFamily: 'var(--font-mono)',
               }}
             >
-              Settings
+              Cài đặt
             </span>
           </div>
-          
+
           <div className="space-y-2">
             {menuItems.map((item, index) => (
               <button
@@ -185,15 +193,15 @@ export function ProfileScreen({ onBack, onNavigate }: ProfileScreenProps) {
                 style={{
                   background: 'none',
                   border: '1px solid #e8e8eb',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
                 }}
               >
-                <span 
-                  className="fitwell-body" 
-                  style={{ 
+                <span
+                  style={{
                     color: '#041E3A',
                     fontSize: '15px',
-                    fontWeight: '400'
+                    fontWeight: '400',
+                    fontFamily: 'var(--font-ui)',
                   }}
                 >
                   {item}
@@ -207,6 +215,7 @@ export function ProfileScreen({ onBack, onNavigate }: ProfileScreenProps) {
         {/* Sign Out */}
         <div className="px-6 py-8">
           <button
+            onClick={signOut}
             className="w-full p-4"
             style={{
               background: 'none',
@@ -214,34 +223,36 @@ export function ProfileScreen({ onBack, onNavigate }: ProfileScreenProps) {
               color: '#041E3A',
               cursor: 'pointer',
               fontSize: '15px',
-              fontWeight: '400'
+              fontWeight: '400',
+              fontFamily: 'var(--font-ui)',
             }}
           >
-            <span className="fitwell-body">Sign Out</span>
+            Đăng xuất
           </button>
         </div>
 
         {/* App Info */}
         <div className="px-6 pb-8 text-center">
-          <div 
-            className="fitwell-body-small mb-1" 
-            style={{ 
+          <div
+            style={{
               color: '#9a9ba5',
               fontSize: '13px',
-              fontWeight: '400'
+              fontWeight: '400',
+              fontFamily: 'var(--font-ui)',
+              marginBottom: '4px',
             }}
           >
             FitWell Health Recovery
           </div>
-          <div 
-            className="fitwell-body-small" 
-            style={{ 
+          <div
+            style={{
               color: '#9a9ba5',
               fontSize: '13px',
-              fontWeight: '400'
+              fontWeight: '400',
+              fontFamily: 'var(--font-ui)',
             }}
           >
-            Version 1.0.2
+            Version 2.0.0
           </div>
         </div>
       </div>

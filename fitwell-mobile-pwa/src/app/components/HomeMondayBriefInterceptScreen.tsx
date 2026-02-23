@@ -1,13 +1,23 @@
 import React from 'react';
+import { useLatestBrief } from '@/hooks/useSupabaseQuery';
+import { useAuthStore } from '@/store/authStore';
 
 interface HomeMondayBriefInterceptScreenProps {
   onNavigate: (screen: string) => void;
+  onViewBrief?: () => void;
+  onDismiss?: () => void;
 }
 
-export function HomeMondayBriefInterceptScreen({ onNavigate }: HomeMondayBriefInterceptScreenProps) {
-  const weekScore = 72;
-  const previousWeekScore = 68;
-  const scoreDelta = weekScore - previousWeekScore;
+export function HomeMondayBriefInterceptScreen({ onNavigate, onViewBrief, onDismiss }: HomeMondayBriefInterceptScreenProps) {
+  const session = useAuthStore((s) => s.session);
+  const profile = useAuthStore((s) => s.profile);
+  const userId = session?.user?.id;
+  const language = profile?.language ?? 'vi';
+  const { data: brief } = useLatestBrief(userId);
+
+  const headline = brief
+    ? (language === 'vi' ? brief.headline_vi : brief.headline_en)
+    : 'Báo cáo tuần của bạn đã sẵn sàng';
 
   return (
     <div
@@ -31,34 +41,40 @@ export function HomeMondayBriefInterceptScreen({ onNavigate }: HomeMondayBriefIn
         Tuần trước của bạn
       </h1>
 
-      {/* Score card */}
-      <div className="fw-card" style={{ marginBottom: '32px', textAlign: 'center', padding: '40px 24px' }}>
-        <div className="fw-display-xl fw-text-navy" style={{ marginBottom: '8px' }}>
-          {weekScore}/100
-        </div>
-        <div className="fw-body-s" style={{ color: scoreDelta > 0 ? '#059669' : '#DC2626' }}>
-          {scoreDelta > 0 ? '+' : ''}{scoreDelta} so với tuần trước
-        </div>
-      </div>
-
-      {/* Summary insight */}
+      {/* Summary insight card */}
       <div className="fw-card" style={{ marginBottom: '32px' }}>
         <div className="fw-body-l fw-text-navy" style={{ fontWeight: 600, marginBottom: '8px' }}>
-          2 đêm nặng, phục hồi tốt
+          {headline}
         </div>
-        <p className="fw-body-m fw-text-grey">
-          Bạn đã hoàn thành 85% các hành động recovery. Desk sedentary vẫn cao — cần cải thiện.
-        </p>
+        {brief && (
+          <div
+            style={{
+              display: 'inline-block',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '9px',
+              fontWeight: 400,
+              color: '#8C693B',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              padding: '4px 8px',
+              backgroundColor: 'rgba(140, 105, 59, 0.08)',
+              borderRadius: '2px',
+              marginTop: '8px',
+            }}
+          >
+            TUẦN {brief.insight_tier}
+          </div>
+        )}
       </div>
 
       {/* CTA */}
-      <button onClick={() => onNavigate('weeklyBrief')} className="fw-btn-primary">
+      <button onClick={onViewBrief ?? (() => onNavigate('weeklyBrief'))} className="fw-btn-primary">
         XEM BÁO CÁO ĐẦY ĐỦ
       </button>
 
       {/* Skip option */}
       <button
-        onClick={() => onNavigate('home')}
+        onClick={onDismiss ?? (() => onNavigate('home'))}
         className="fw-btn-ghost"
         style={{ marginTop: '12px' }}
       >

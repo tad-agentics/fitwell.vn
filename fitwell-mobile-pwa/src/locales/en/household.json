@@ -1,0 +1,83 @@
+{
+  "title": "Household",
+  "subtitle": "Caring for health together",
+  "invite": {
+    "title": "Invite a Partner",
+    "subtitle": "Share FitWell with a loved one for mutual health support",
+    "description": "Your partner will get their own interface with shopping and cooking suggestions tailored to your health conditions.",
+    "qrLabel": "Scan QR code to join",
+    "qrDescription": "Use your phone camera to scan this code",
+    "orDivider": "or",
+    "copyLink": "COPY LINK",
+    "linkCopied": "Copied!",
+    "shareVia": "Share via",
+    "shareZalo": "Send via Zalo",
+    "shareMessage": "Send a message",
+    "expires": "Link expires in 72 hours",
+    "sendButton": "SEND INVITE",
+    "resendButton": "Resend invite",
+    "cancelInvite": "Cancel invite",
+    "maxReached": "Maximum members reached ({{max}})"
+  },
+  "partner": {
+    "title": "Partner Support",
+    "subtitle": "Shopping and cooking suggestions",
+    "homeTitle": "Support Home",
+    "homeSubtitle": "You're supporting {{name}}",
+    "stockingGuidance": "Stocking Guidance",
+    "stockingSubtitle": "Smart grocery list",
+    "weeklyShoppingList": "This week's shopping list",
+    "alwaysStock": "Always keep at home",
+    "avoidBuying": "Avoid buying",
+    "cookingTips": "Cooking suggestions",
+    "cookingSubtitle": "Family-friendly recipes",
+    "riskCalendar": "Shared Risk Calendar",
+    "riskCalendarSubtitle": "Track your loved one's high-risk days",
+    "todayStatus": "Today: {{status}}",
+    "gout": {
+      "title": "Supporting Gout",
+      "tip": "Prioritize low-purine foods: green vegetables, fruits, low-fat dairy",
+      "avoid": "Limit: organ meats, rich seafood, beer, sugary drinks",
+      "encourage": "Encourage: plenty of water, cherries, vitamin C"
+    },
+    "cholesterol": {
+      "title": "Supporting High Cholesterol",
+      "tip": "Increase omega-3: salmon, chia seeds, walnuts. Reduce saturated fats",
+      "avoid": "Limit: fried foods, animal fats, fast food",
+      "encourage": "Encourage: oatmeal, leafy greens, legumes, fruit"
+    },
+    "back_pain": {
+      "title": "Supporting Back Pain",
+      "tip": "Anti-inflammatory foods: turmeric, ginger, fatty fish, leafy greens",
+      "avoid": "Limit: inflammatory foods, refined sugar, alcohol",
+      "encourage": "Encourage: rest breaks, proper sitting posture support"
+    },
+    "notifications": {
+      "flareAlert": "{{name}} just logged an event. Offer your support!",
+      "shoppingReminder": "Shopping reminder: this week's list has been updated",
+      "mealSuggestion": "Dinner suggestion for tonight"
+    }
+  },
+  "members": {
+    "title": "Members",
+    "you": "You",
+    "role": {
+      "primary": "Primary user",
+      "partner": "Support partner"
+    },
+    "remove": "Remove member",
+    "removeConfirm": "Are you sure you want to remove {{name}} from the household?"
+  },
+  "status": {
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "expired": "Expired",
+    "noPartner": "No partner yet",
+    "connected": "Connected"
+  },
+  "upgrade": {
+    "title": "Household Feature",
+    "description": "Upgrade to the Household plan to invite a partner.",
+    "upgradeButton": "Upgrade to Household"
+  }
+}

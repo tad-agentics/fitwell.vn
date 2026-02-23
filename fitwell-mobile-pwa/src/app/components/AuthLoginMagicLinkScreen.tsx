@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 interface AuthLoginMagicLinkScreenProps {
   onNavigate: (screen: string) => void;
-  onSubmit: () => void;
+  onSubmit: (email: string) => void;
 }
 
 export function AuthLoginMagicLinkScreen({
@@ -10,10 +11,31 @@ export function AuthLoginMagicLinkScreen({
   onSubmit,
 }: AuthLoginMagicLinkScreenProps) {
   const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit();
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: `${window.location.origin}/home` },
+      });
+
+      if (otpError) {
+        setError(otpError.message);
+        return;
+      }
+
+      onSubmit(email);
+    } catch {
+      setError('Đã xảy ra lỗi. Vui lòng thử lại.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -126,25 +148,33 @@ export function AuthLoginMagicLinkScreen({
           />
         </div>
 
+        {/* Error message */}
+        {error && (
+          <div
+            style={{
+              padding: '12px 16px',
+              backgroundColor: '#FEF2F2',
+              border: '1px solid #FCA5A5',
+              borderRadius: '4px',
+              marginBottom: '16px',
+              fontFamily: 'var(--font-ui)',
+              fontSize: '13px',
+              color: '#DC2626',
+              lineHeight: '1.5',
+            }}
+          >
+            {error}
+          </div>
+        )}
+
         {/* Primary CTA */}
         <button
           type="submit"
-          style={{
-            width: '100%',
-            height: '56px',
-            backgroundColor: '#041E3A',
-            color: '#FFFFFF',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '11px',
-            fontWeight: 500,
-            letterSpacing: '1px',
-            textTransform: 'uppercase',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
+          disabled={isSubmitting || !email}
+          className="fw-btn-primary"
+          style={{ opacity: isSubmitting ? 0.7 : 1 }}
         >
-          Gửi link đăng nhập
+          {isSubmitting ? 'Đang gửi...' : 'Gửi link đăng nhập'}
         </button>
       </form>
 

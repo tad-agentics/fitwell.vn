@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Mail, CheckCircle } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 interface AuthMagicLinkSentScreenProps {
+  email: string;
   onNavigate: (screen: string) => void;
-  onResend: () => void;
 }
 
 export function AuthMagicLinkSentScreen({
+  email,
   onNavigate,
-  onResend,
 }: AuthMagicLinkSentScreenProps) {
   const [canResend, setCanResend] = useState(false);
   const [countdown, setCountdown] = useState(60);
-  const email = 'user@example.com'; // Mock email
+  const [resendError, setResendError] = useState<string | null>(null);
+  const [resending, setResending] = useState(false);
 
   useEffect(() => {
-    // Start 60-second countdown
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
@@ -30,13 +31,32 @@ export function AuthMagicLinkSentScreen({
     return () => clearInterval(timer);
   }, []);
 
-  const handleResend = () => {
-    if (canResend) {
-      onResend();
+  const handleResend = useCallback(async () => {
+    if (!canResend || resending) return;
+
+    setResending(true);
+    setResendError(null);
+
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: `${window.location.origin}/home` },
+      });
+
+      if (error) {
+        setResendError(error.message);
+        return;
+      }
+
+      // Reset countdown
       setCanResend(false);
       setCountdown(60);
+    } catch {
+      setResendError('Đã xảy ra lỗi. Vui lòng thử lại.');
+    } finally {
+      setResending(false);
     }
-  };
+  }, [canResend, resending, email]);
 
   return (
     <div
@@ -155,10 +175,30 @@ export function AuthMagicLinkSentScreen({
           </p>
         </div>
 
+        {/* Resend error */}
+        {resendError && (
+          <div
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#FEF2F2',
+              border: '1px solid #FCA5A5',
+              borderRadius: '4px',
+              marginBottom: '16px',
+              fontFamily: 'var(--font-ui)',
+              fontSize: '13px',
+              color: '#DC2626',
+              lineHeight: '1.5',
+              textAlign: 'center',
+            }}
+          >
+            {resendError}
+          </div>
+        )}
+
         {/* Secondary action - Resend link */}
         <button
           onClick={handleResend}
-          disabled={!canResend}
+          disabled={!canResend || resending}
           style={{
             background: 'none',
             border: 'none',
@@ -173,7 +213,11 @@ export function AuthMagicLinkSentScreen({
             textAlign: 'center',
           }}
         >
-          {canResend ? 'Gửi lại link' : `Gửi lại link (${countdown}s)`}
+          {resending
+            ? 'Đang gửi...'
+            : canResend
+              ? 'Gửi lại link'
+              : `Gửi lại link (${countdown}s)`}
         </button>
 
         {/* Ghost - Alternative password login */}

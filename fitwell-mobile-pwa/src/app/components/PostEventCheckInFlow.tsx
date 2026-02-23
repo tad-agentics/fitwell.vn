@@ -1,77 +1,114 @@
 import React, { useState } from 'react';
 import { CheckInQuestionScreen } from './CheckInQuestionScreen';
 import { PostEventTypeSelector } from './PostEventTypeSelector';
+import { useAuthStore } from '@/store/authStore';
+import { useInsertCheckin, useCreateRecovery } from '@/hooks/useSupabaseQuery';
 
 interface PostEventCheckInFlowProps {
   onComplete: () => void;
 }
 
-type PostEventStep = 
-  | 'intensity'    // "Tối/Ngày qua thế nào?" (Nặng/Vừa/Nhẹ)
-  | 'eventType'    // "Đó là buổi gì?" (conditional - only if Nặng or Vừa)
+type PostEventStep =
+  | 'intensity'
+  | 'eventType'
   | 'complete';
 
-/**
- * Post-Event Check-In Flow (Screen 9 - Redesigned v2.0)
- * 
- * Multi-step flow for post-event recovery assessment:
- * 
- * Screen 9, Part 1 of 2: Intensity Question
- *   "Tối/Ngày qua thế nào?" → Nặng / Vừa / Nhẹ
- *   Updated from "Tối qua" to "Tối/Ngày qua" to cover non-evening events
- *   (e.g., "Ngày làm việc dày" happens during day, not evening)
- * 
- * Screen 9, Part 2 of 2 (Conditional): Event Type Selector (Screen N3)
- *   Only shown when intensity is "Nặng" or "Vừa"
- *   "Đó là buổi gì?" → 6 event types
- * 
- * This is v2.0's key differentiator: The product can now distinguish
- * "heavy night out" from "10-hour desk day" and route to entirely
- * different recovery protocols.
- * 
- * Flow paths:
- * - Intensity = "Nhẹ" → Complete (skip event type, assign light recovery protocol)
- * - Intensity = "Vừa" or "Nặng" → Event Type → Complete (protocol varies by event type)
- */
+// Map UI intensity to DB values
+const INTENSITY_MAP: Record<string, string> = {
+  'Nặng': 'heavy',
+  'Vừa': 'medium',
+  'Nhẹ': 'light',
+};
+
+// Map UI event type to DB values
+const EVENT_TYPE_MAP: Record<string, string> = {
+  'Nhậu nặng': 'heavy_night',
+  'Bữa ăn lớn': 'rich_meal',
+  'Ngày làm việc dài': 'long_desk',
+  'Ngày căng thẳng': 'stress_day',
+  'Công tác': 'travel',
+  'Tiệc / Lễ': 'celebration',
+};
+
+// Map event type to recovery variant
+const RECOVERY_VARIANT_MAP: Record<string, string> = {
+  'heavy_night': 'post_event',
+  'rich_meal': 'metabolic',
+  'long_desk': 'spinal',
+  'stress_day': 'cortisol',
+  'travel': 'post_event',
+  'celebration': 'post_event',
+};
+
 export function PostEventCheckInFlow({ onComplete }: PostEventCheckInFlowProps) {
+  const session = useAuthStore((s) => s.session);
+  const userId = session?.user?.id;
+  const insertCheckin = useInsertCheckin();
+  const createRecovery = useCreateRecovery();
+
   const [currentStep, setCurrentStep] = useState<PostEventStep>('intensity');
   const [intensityAnswer, setIntensityAnswer] = useState<string | null>(null);
   const [eventType, setEventType] = useState<string | null>(null);
 
   const handleIntensityAnswer = (answer: string) => {
     setIntensityAnswer(answer);
-    
-    // Conditional logic: Show event type selector ONLY if intensity is "Nặng" or "Vừa"
+
     const shouldShowEventType = answer === 'Nặng' || answer === 'Vừa';
-    
+
     if (shouldShowEventType) {
       setCurrentStep('eventType');
     } else {
-      // Light intensity - skip event type and complete
-      handleComplete();
+      saveAndComplete(answer, null);
     }
   };
 
   const handleEventTypeSelect = (selectedEventType: string) => {
     setEventType(selectedEventType);
-    // Auto-advance to complete
-    handleComplete();
+    saveAndComplete(intensityAnswer, selectedEventType);
   };
 
-  const handleComplete = () => {
-    // Save all check-in data (would normally POST to backend)
-    const checkInData = {
-      timestamp: new Date().toISOString(),
-      type: 'post-event',
-      intensity: intensityAnswer,
-      eventType: eventType, // null if intensity was "Nhẹ"
-    };
-    console.log('Post-event check-in completed:', checkInData);
-    
-    onComplete();
+  const saveAndComplete = (intensity: string | null, evtType: string | null) => {
+    if (!userId) {
+      onComplete();
+      return;
+    }
+
+    const dbIntensity = intensity ? INTENSITY_MAP[intensity] : null;
+    const dbEventType = evtType ? EVENT_TYPE_MAP[evtType] ?? evtType : null;
+
+    // Save check-in
+    insertCheckin.mutate(
+      {
+        user_id: userId,
+        trigger: 'post_event',
+        event_intensity: dbIntensity as any,
+        event_type: dbEventType as any,
+      },
+      {
+        onSuccess: (checkin) => {
+          // If heavy or medium, create recovery protocol
+          if (dbIntensity === 'heavy' || dbIntensity === 'medium') {
+            createRecovery.mutate(
+              {
+                user_id: userId,
+                checkin_id: checkin.id,
+                event_type: dbEventType ?? 'heavy_night',
+                intensity: dbIntensity,
+                total_days: dbIntensity === 'heavy' ? 3 : 2,
+                current_day: 1,
+                status: 'active',
+              },
+              { onSettled: () => onComplete() },
+            );
+          } else {
+            onComplete();
+          }
+        },
+        onError: () => onComplete(),
+      },
+    );
   };
 
-  // Screen 9, Part 1 of 2: Intensity Question
   if (currentStep === 'intensity') {
     return (
       <CheckInQuestionScreen
@@ -84,14 +121,9 @@ export function PostEventCheckInFlow({ onComplete }: PostEventCheckInFlowProps) 
     );
   }
 
-  // Step 2 (Conditional): Event Type Selector
-  // Only shown when intensity is "Nặng" or "Vừa"
   if (currentStep === 'eventType') {
-    return (
-      <PostEventTypeSelector onTypeSelect={handleEventTypeSelect} />
-    );
+    return <PostEventTypeSelector onTypeSelect={handleEventTypeSelect} />;
   }
 
-  // Fallback (should not reach here)
   return null;
 }

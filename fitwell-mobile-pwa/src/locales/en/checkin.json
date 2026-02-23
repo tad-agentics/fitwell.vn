@@ -1,0 +1,132 @@
+{
+  "morning": {
+    "title": "Morning check-in",
+    "greeting": "Good morning, {{name}}!",
+    "subtitle": "How are you feeling today?",
+    "sleepQuality": {
+      "question": "How did you sleep last night?",
+      "options": {
+        "good": "Slept well",
+        "fair": "Okay",
+        "poor": "Poorly",
+        "terrible": "Terrible"
+      },
+      "goodEmoji": "Rested and full of energy",
+      "fairEmoji": "Slept but not deeply",
+      "poorEmoji": "Tossed and turned, hard to fall asleep",
+      "terribleEmoji": "Barely slept at all"
+    },
+    "bodyFeeling": {
+      "question": "How does your body feel?",
+      "options": {
+        "fresh": "Fresh",
+        "stiff": "A bit stiff",
+        "heavy": "Heavy",
+        "sore": "Sore"
+      },
+      "freshDescription": "Light and ready to move",
+      "stiffDescription": "Neck, shoulder, or back feels stiff",
+      "heavyDescription": "Sluggish, could use more rest",
+      "soreDescription": "Specific pain points"
+    },
+    "backPainScore": {
+      "question": "Back / neck pain level",
+      "scale": "Scale 0-10",
+      "noPain": "No pain",
+      "mildPain": "Mild",
+      "moderatePain": "Moderate",
+      "severePain": "Severe",
+      "worstPain": "Worst possible",
+      "skipIfNoPain": "Skip if no pain"
+    },
+    "complete": "Logged! Wishing you a great day.",
+    "submitButton": "Log it"
+  },
+  "postEvent": {
+    "title": "Post-event log",
+    "subtitle": "What just happened?",
+    "intensity": {
+      "question": "How intense was it?",
+      "low": "Mild",
+      "medium": "Moderate",
+      "high": "Severe"
+    },
+    "eventTypes": {
+      "question": "Event type",
+      "goutFlare": "Gout flare-up",
+      "backPainEpisode": "Back pain episode",
+      "heavyMeal": "Heavy meal (drinking, party)",
+      "missedMedication": "Missed medication",
+      "highStress": "High stress",
+      "poorSleep": "Extended poor sleep",
+      "exerciseInjury": "Overexertion / injury",
+      "other": "Other"
+    },
+    "notes": {
+      "label": "Additional notes (optional)",
+      "placeholder": "Briefly describe what happened..."
+    },
+    "timestamp": "When did it happen?",
+    "justNow": "Just now",
+    "earlier": "Earlier today",
+    "lastNight": "Last night",
+    "submitButton": "Log event"
+  },
+  "midday": {
+    "title": "Midday check-in",
+    "greeting": "Good afternoon, {{name}}!",
+    "subtitle": "How are you doing right now?",
+    "afternoonState": {
+      "question": "How are you feeling?",
+      "options": {
+        "clear": "Clear-headed",
+        "sluggish": "Sluggish",
+        "stressed": "Stressed",
+        "backTight": "Back/neck tight"
+      },
+      "clearDescription": "Focused, energy is good",
+      "sluggishDescription": "Post-lunch drowsiness, hard to focus",
+      "stressedDescription": "Deadlines, work pressure",
+      "backTightDescription": "Sitting too long, need to move"
+    },
+    "deskBreakReminder": "You've been sitting for {{hours}} hours. Time to stand up and stretch!",
+    "waterReminder": "Don't forget to hydrate! Goal: {{target}}ml/day.",
+    "suggestedAction": "Suggested for you",
+    "submitButton": "Log it",
+    "complete": "Logged! The rest of your day will be great."
+  },
+  "preSleep": {
+    "title": "Pre-sleep check-in",
+    "greeting": "Time to wind down, {{name}}",
+    "readiness": {
+      "question": "Are you ready for bed?",
+      "options": {
+        "ready": "Ready for bed",
+        "delay": "Not sleepy yet"
+      },
+      "readyDescription": "Relaxed and ready to sleep",
+      "delayDescription": "Want to stay up a bit longer"
+    },
+    "todaySummary": "Today's summary",
+    "checkinCount": "{{count}} check-ins completed",
+    "actionsCompleted": "{{count}} actions completed",
+    "tip": "Tip: Avoid screens 30 minutes before bed to improve sleep quality.",
+    "submitButton": "Good night",
+    "complete": "Sleep well! See you tomorrow morning."
+  },
+  "history": {
+    "title": "Check-in history",
+    "noData": "No check-in data yet",
+    "streak": "{{count}}-day streak",
+    "streakBroken": "Streak broken",
+    "viewDetails": "View details"
+  },
+  "reminder": {
+    "morningTitle": "Morning check-in",
+    "morningBody": "Good morning! How are you feeling today?",
+    "middayTitle": "Midday check-in",
+    "middayBody": "Good afternoon! Time to update your status.",
+    "preSleepTitle": "Evening check-in",
+    "preSleepBody": "Log your day before going to bed."
+  }
+}

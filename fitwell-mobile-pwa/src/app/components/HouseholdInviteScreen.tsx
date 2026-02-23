@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useHousehold } from '@/hooks/useSupabaseQuery';
+import { useAuthStore } from '@/store/authStore';
 
 interface HouseholdInviteScreenProps {
   onNavigate: (screen: string) => void;
@@ -12,39 +14,33 @@ export function HouseholdInviteScreen({
   onViewStatus,
 }: HouseholdInviteScreenProps) {
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
-  
-  // Mock data
-  const inviteUrl = 'https://fitwell.vn/invite/a3x7k';
-  const qrCodeDataUrl = undefined;
-  const context = 'profile';
+  const session = useAuthStore((s) => s.session);
+  const { data: household } = useHousehold(session?.user?.id);
+
+  // Build invite URL from household token
+  const inviteToken = household?.invite_token ?? 'loading';
+  const inviteUrl = `https://fitwell.vn/invite/${inviteToken}`;
 
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(inviteUrl);
       setCopyStatus('copied');
-      
-      // Revert back to idle after 2 seconds
-      setTimeout(() => {
-        setCopyStatus('idle');
-      }, 2000);
+      setTimeout(() => setCopyStatus('idle'), 2000);
     } catch (error) {
       console.error('Failed to copy link:', error);
     }
   };
 
   const handleShareZalo = () => {
-    // Zalo sharing URL scheme
     const zaloUrl = `https://zalo.me/share?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent('Tham gia FitWell cùng tôi')}`;
     window.open(zaloUrl, '_blank');
   };
 
   const handleShareSMS = () => {
-    // SMS sharing
     const smsBody = `Tham gia FitWell cùng tôi: ${inviteUrl}`;
     window.location.href = `sms:?body=${encodeURIComponent(smsBody)}`;
   };
 
-  // Generate truncated URL for display
   const getTruncatedUrl = () => {
     const urlWithoutProtocol = inviteUrl.replace(/^https?:\/\//, '');
     if (urlWithoutProtocol.length > 30) {
@@ -62,12 +58,7 @@ export function HouseholdInviteScreen({
         padding: '40px 20px 80px',
       }}
     >
-      <div
-        style={{
-          maxWidth: '393px',
-          margin: '0 auto',
-        }}
-      >
+      <div style={{ maxWidth: '393px', margin: '0 auto' }}>
         {/* Eyebrow */}
         <div
           style={{
@@ -125,7 +116,7 @@ export function HouseholdInviteScreen({
             marginBottom: '16px',
           }}
         >
-          {/* QR Code */}
+          {/* QR placeholder */}
           <div
             style={{
               width: '180px',
@@ -138,51 +129,37 @@ export function HouseholdInviteScreen({
               marginBottom: '16px',
             }}
           >
-            {qrCodeDataUrl ? (
-              <img
-                src={qrCodeDataUrl}
-                alt="QR Code"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'contain',
-                }}
-              />
-            ) : (
-              // Placeholder QR code pattern
-              <svg width="180" height="180" viewBox="0 0 180 180" fill="none">
-                <rect width="180" height="180" fill="white"/>
-                <rect x="20" y="20" width="40" height="40" fill="#041E3A"/>
-                <rect x="70" y="20" width="10" height="10" fill="#041E3A"/>
-                <rect x="90" y="20" width="10" height="10" fill="#041E3A"/>
-                <rect x="120" y="20" width="40" height="40" fill="#041E3A"/>
-                <rect x="30" y="30" width="20" height="20" fill="white"/>
-                <rect x="130" y="30" width="20" height="20" fill="white"/>
-                <rect x="20" y="70" width="10" height="10" fill="#041E3A"/>
-                <rect x="40" y="70" width="10" height="10" fill="#041E3A"/>
-                <rect x="60" y="70" width="10" height="10" fill="#041E3A"/>
-                <rect x="80" y="70" width="30" height="30" fill="#041E3A"/>
-                <rect x="120" y="70" width="10" height="10" fill="#041E3A"/>
-                <rect x="140" y="70" width="10" height="10" fill="#041E3A"/>
-                <rect x="160" y="70" width="10" height="10" fill="#041E3A"/>
-                <rect x="20" y="90" width="10" height="10" fill="#041E3A"/>
-                <rect x="120" y="90" width="10" height="10" fill="#041E3A"/>
-                <rect x="20" y="120" width="40" height="40" fill="#041E3A"/>
-                <rect x="70" y="120" width="10" height="10" fill="#041E3A"/>
-                <rect x="90" y="120" width="10" height="10" fill="#041E3A"/>
-                <rect x="110" y="120" width="10" height="10" fill="#041E3A"/>
-                <rect x="130" y="120" width="10" height="10" fill="#041E3A"/>
-                <rect x="150" y="120" width="10" height="10" fill="#041E3A"/>
-                <rect x="30" y="130" width="20" height="20" fill="white"/>
-                <rect x="70" y="140" width="10" height="10" fill="#041E3A"/>
-                <rect x="110" y="140" width="10" height="10" fill="#041E3A"/>
-                <rect x="130" y="140" width="10" height="10" fill="#041E3A"/>
-                <rect x="150" y="140" width="10" height="10" fill="#041E3A"/>
-              </svg>
-            )}
+            <svg width="180" height="180" viewBox="0 0 180 180" fill="none">
+              <rect width="180" height="180" fill="white"/>
+              <rect x="20" y="20" width="40" height="40" fill="#041E3A"/>
+              <rect x="70" y="20" width="10" height="10" fill="#041E3A"/>
+              <rect x="90" y="20" width="10" height="10" fill="#041E3A"/>
+              <rect x="120" y="20" width="40" height="40" fill="#041E3A"/>
+              <rect x="30" y="30" width="20" height="20" fill="white"/>
+              <rect x="130" y="30" width="20" height="20" fill="white"/>
+              <rect x="20" y="70" width="10" height="10" fill="#041E3A"/>
+              <rect x="40" y="70" width="10" height="10" fill="#041E3A"/>
+              <rect x="60" y="70" width="10" height="10" fill="#041E3A"/>
+              <rect x="80" y="70" width="30" height="30" fill="#041E3A"/>
+              <rect x="120" y="70" width="10" height="10" fill="#041E3A"/>
+              <rect x="140" y="70" width="10" height="10" fill="#041E3A"/>
+              <rect x="160" y="70" width="10" height="10" fill="#041E3A"/>
+              <rect x="20" y="90" width="10" height="10" fill="#041E3A"/>
+              <rect x="120" y="90" width="10" height="10" fill="#041E3A"/>
+              <rect x="20" y="120" width="40" height="40" fill="#041E3A"/>
+              <rect x="70" y="120" width="10" height="10" fill="#041E3A"/>
+              <rect x="90" y="120" width="10" height="10" fill="#041E3A"/>
+              <rect x="110" y="120" width="10" height="10" fill="#041E3A"/>
+              <rect x="130" y="120" width="10" height="10" fill="#041E3A"/>
+              <rect x="150" y="120" width="10" height="10" fill="#041E3A"/>
+              <rect x="30" y="130" width="20" height="20" fill="white"/>
+              <rect x="70" y="140" width="10" height="10" fill="#041E3A"/>
+              <rect x="110" y="140" width="10" height="10" fill="#041E3A"/>
+              <rect x="130" y="140" width="10" height="10" fill="#041E3A"/>
+              <rect x="150" y="140" width="10" height="10" fill="#041E3A"/>
+            </svg>
           </div>
 
-          {/* QR instruction */}
           <p
             style={{
               fontFamily: 'var(--font-ui)',
@@ -212,7 +189,6 @@ export function HouseholdInviteScreen({
             marginBottom: '12px',
           }}
         >
-          {/* Truncated link */}
           <span
             style={{
               fontFamily: 'var(--font-mono)',
@@ -229,7 +205,6 @@ export function HouseholdInviteScreen({
             {getTruncatedUrl()}
           </span>
 
-          {/* Copy button */}
           <button
             onClick={handleCopyLink}
             style={{
@@ -267,15 +242,7 @@ export function HouseholdInviteScreen({
         </p>
 
         {/* Share options */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '24px',
-            marginBottom: '40px',
-          }}
-        >
-          {/* Zalo share */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginBottom: '40px' }}>
           <button
             onClick={handleShareZalo}
             style={{
@@ -283,7 +250,6 @@ export function HouseholdInviteScreen({
               fontSize: '15px',
               fontWeight: 400,
               color: '#041E3A',
-              borderBottom: '1px solid #041E3A',
               backgroundColor: 'transparent',
               border: 'none',
               borderBottom: '1px solid #041E3A',
@@ -295,7 +261,6 @@ export function HouseholdInviteScreen({
             Gửi qua Zalo
           </button>
 
-          {/* SMS share */}
           <button
             onClick={handleShareSMS}
             style={{
@@ -303,7 +268,6 @@ export function HouseholdInviteScreen({
               fontSize: '15px',
               fontWeight: 400,
               color: '#041E3A',
-              borderBottom: '1px solid #041E3A',
               backgroundColor: 'transparent',
               border: 'none',
               borderBottom: '1px solid #041E3A',
@@ -316,49 +280,26 @@ export function HouseholdInviteScreen({
           </button>
         </div>
 
-        {/* Continue/Done CTA */}
-        {context === 'onboarding' && onContinue && (
-          <button
-            onClick={onContinue}
-            style={{
-              width: '100%',
-              height: '56px',
-              backgroundColor: '#041E3A',
-              color: '#FFFFFF',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '11px',
-              fontWeight: 500,
-              letterSpacing: '1px',
-              textTransform: 'uppercase',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
-            Tiếp tục
-          </button>
-        )}
-
-        {context === 'profile' && onDone && (
-          <button
-            onClick={onDone}
-            style={{
-              fontFamily: 'var(--font-ui)',
-              fontSize: '13px',
-              fontWeight: 400,
-              color: '#9D9FA3',
-              backgroundColor: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              width: '100%',
-              textAlign: 'center',
-              lineHeight: '1.5',
-            }}
-          >
-            Xong
-          </button>
-        )}
+        {/* Continue CTA */}
+        <button
+          onClick={onContinue}
+          style={{
+            width: '100%',
+            height: '56px',
+            backgroundColor: '#041E3A',
+            color: '#FFFFFF',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '11px',
+            fontWeight: 500,
+            letterSpacing: '1px',
+            textTransform: 'uppercase',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        >
+          Tiếp tục
+        </button>
       </div>
     </div>
   );

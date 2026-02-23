@@ -1,0 +1,95 @@
+{
+  "title": "Nâng cấp FitWell",
+  "subtitle": "Mở khóa tất cả tính năng",
+  "pricingNote": "Giá đã bao gồm VAT",
+  "plans": {
+    "individual_monthly": {
+      "name": "Cá nhân — Tháng",
+      "price": "490.000₫",
+      "priceNumeric": 490000,
+      "period": "/tháng",
+      "description": "Trải nghiệm đầy đủ",
+      "perDay": "~16.000₫/ngày"
+    },
+    "individual_quarterly": {
+      "name": "Cá nhân — Quý",
+      "price": "1.490.000₫",
+      "priceNumeric": 1490000,
+      "period": "/3 tháng",
+      "description": "Tiết kiệm nhất cho cá nhân",
+      "badge": "PHỔ BIẾN",
+      "savings": "Tiết kiệm 980.000₫",
+      "perDay": "~16.500₫/ngày"
+    },
+    "household_annual": {
+      "name": "Gia đình — Năm",
+      "price": "2.490.000₫",
+      "priceNumeric": 2490000,
+      "period": "/năm",
+      "description": "Cho bạn và người thân",
+      "badge": "GIA ĐÌNH",
+      "savings": "Tiết kiệm 3.390.000₫ so với mua lẻ",
+      "perDay": "~6.800₫/ngày",
+      "includes": "Bao gồm 2 tài khoản"
+    }
+  },
+  "features": {
+    "title": "Tính năng trả phí",
+    "allCheckins": "Tất cả check-in (sáng, trưa, tối, sau sự kiện)",
+    "unlimitedScenarios": "Kịch bản không giới hạn",
+    "fullRecovery": "Phục hồi Ngày 2–3 đầy đủ",
+    "actionLibrary": "Thư viện hành động + video hướng dẫn",
+    "weeklyBrief": "Báo cáo tuần không giới hạn",
+    "patternInsights": "Phân tích xu hướng 90 ngày",
+    "householdModule": "Module gia đình (gói Gia đình)",
+    "prioritySupport": "Hỗ trợ ưu tiên",
+    "exportData": "Xuất dữ liệu sức khoẻ"
+  },
+  "comparison": {
+    "title": "So sánh các gói",
+    "freeColumn": "Miễn phí",
+    "premiumColumn": "Premium",
+    "householdColumn": "Gia đình"
+  },
+  "selectPlan": "CHỌN GÓI NÀY",
+  "currentPlan": "Gói hiện tại",
+  "changePlan": "Đổi gói",
+  "processing": "Đang xử lý thanh toán...",
+  "success": {
+    "title": "Thanh toán thành công!",
+    "subtitle": "Chào mừng bạn đến FitWell Premium",
+    "message": "Tất cả tính năng đã được mở khóa. Hãy bắt đầu trải nghiệm đầy đủ.",
+    "continueButton": "BẮT ĐẦU SỬ DỤNG"
+  },
+  "cancel": {
+    "title": "Thanh toán bị hủy",
+    "subtitle": "Bạn có thể thử lại bất cứ lúc nào",
+    "message": "Không có khoản nào bị trừ. Bạn vẫn có thể sử dụng gói miễn phí.",
+    "retryButton": "THỬ LẠI",
+    "homeButton": "Về trang chủ"
+  },
+  "free": {
+    "label": "Miễn phí",
+    "includes": "Bao gồm: Check-in sáng, 1 kịch bản, 2 check-in sau sự kiện, 1 báo cáo tuần",
+    "limitations": {
+      "checkins": "Chỉ check-in sáng",
+      "scenarios": "1 kịch bản / tuần",
+      "postEvent": "2 check-in sau sự kiện / tuần",
+      "brief": "1 báo cáo tuần / tháng",
+      "noExport": "Không xuất dữ liệu"
+    }
+  },
+  "trial": {
+    "title": "Dùng thử 7 ngày miễn phí",
+    "description": "Trải nghiệm tất cả tính năng Premium trong 7 ngày, không cần thẻ.",
+    "startButton": "Bắt đầu dùng thử",
+    "daysRemaining": "Còn {{days}} ngày dùng thử",
+    "expiringSoon": "Dùng thử sắp hết! Nâng cấp để tiếp tục.",
+    "expired": "Thời gian dùng thử đã hết"
+  },
+  "errors": {
+    "paymentFailed": "Thanh toán thất bại. Vui lòng thử lại.",
+    "networkError": "Lỗi kết nối. Vui lòng kiểm tra mạng.",
+    "alreadySubscribed": "Bạn đã đăng ký gói này rồi."
+  }
+}

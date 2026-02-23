@@ -1,0 +1,117 @@
+{
+  "title": "Hồ sơ của tôi",
+  "editProfile": "Chỉnh sửa hồ sơ",
+  "displayName": "Tên hiển thị",
+  "displayNamePlaceholder": "Nhập tên của bạn",
+  "email": "Email",
+  "joinedDate": "Tham gia từ {{date}}",
+  "biomarkers": {
+    "title": "Chỉ số sinh học",
+    "subtitle": "Cập nhật chỉ số từ kết quả xét nghiệm",
+    "lastRecorded": "Cập nhật lần cuối: {{date}}",
+    "uric_acid": "Acid uric",
+    "cholesterol_total": "Cholesterol tổng",
+    "ldl": "LDL",
+    "hdl": "HDL",
+    "triglycerides": "Triglycerides",
+    "crp": "CRP",
+    "hba1c": "HbA1c",
+    "blood_pressure_sys": "Huyết áp tâm thu",
+    "blood_pressure_dia": "Huyết áp tâm trương",
+    "unit": "mg/dL",
+    "normal": "Bình thường",
+    "elevated": "Cao",
+    "high": "Rất cao",
+    "low": "Thấp",
+    "addNew": "Thêm chỉ số mới",
+    "updateButton": "Cập nhật chỉ số",
+    "history": "Lịch sử chỉ số",
+    "empty": "Chưa có chỉ số nào. Hãy thêm từ kết quả xét nghiệm.",
+    "noDataHint": "Nhập kết quả xét nghiệm để theo dõi xu hướng"
+  },
+  "conditions": {
+    "title": "Tình trạng sức khỏe",
+    "subtitle": "Các vấn đề bạn đang theo dõi",
+    "gout": "Gút",
+    "cholesterol": "Cholesterol",
+    "back_pain": "Đau lưng",
+    "unsure": "Chưa rõ",
+    "active": "Đang theo dõi",
+    "inactive": "Không theo dõi",
+    "edit": "Chỉnh sửa",
+    "manage": "Quản lý tình trạng",
+    "addCondition": "Thêm tình trạng",
+    "removeCondition": "Bỏ theo dõi",
+    "removeConfirm": "Bạn có chắc muốn bỏ theo dõi {{condition}}?"
+  },
+  "language": {
+    "title": "Ngôn ngữ",
+    "toggle": "Chuyển ngôn ngữ",
+    "vi": "Tiếng Việt",
+    "en": "English",
+    "changeConfirm": "Đổi ngôn ngữ sang {{language}}?"
+  },
+  "settings": "Cài đặt",
+  "settingsScreen": {
+    "title": "Cài đặt",
+    "notifications": {
+      "title": "Thông báo",
+      "subtitle": "Quản lý nhắc nhở và thông báo",
+      "morning": "Nhắc nhở buổi sáng",
+      "morningTime": "Giờ nhắc sáng",
+      "midday": "Nhắc nhở giữa trưa",
+      "middayTime": "Giờ nhắc trưa",
+      "preSleep": "Nhắc nhở trước ngủ",
+      "preSleepTime": "Giờ nhắc trước ngủ",
+      "deskBreak": "Nhắc nghỉ giải lao",
+      "deskBreakInterval": "Mỗi {{minutes}} phút",
+      "waterReminder": "Nhắc uống nước",
+      "brief": "Báo cáo tuần",
+      "briefDay": "Mỗi Chủ nhật",
+      "enableAll": "Bật tất cả",
+      "disableAll": "Tắt tất cả"
+    },
+    "data": {
+      "title": "Dữ liệu",
+      "exportData": "Xuất dữ liệu",
+      "exportDescription": "Tải về dữ liệu sức khoẻ của bạn",
+      "deleteAccount": "Xoá tài khoản",
+      "deleteAccountWarning": "Hành động này không thể hoàn tác. Tất cả dữ liệu sẽ bị xoá vĩnh viễn.",
+      "deleteConfirm": "Nhập \"XOÁ\" để xác nhận"
+    },
+    "about": {
+      "title": "Về FitWell",
+      "version": "Phiên bản {{version}}",
+      "termsOfService": "Điều khoản sử dụng",
+      "privacyPolicy": "Chính sách bảo mật",
+      "contactSupport": "Liên hệ hỗ trợ",
+      "rateApp": "Đánh giá ứng dụng"
+    }
+  },
+  "subscription": {
+    "title": "Gói đăng ký",
+    "free": "Miễn phí",
+    "active": "Đang hoạt động",
+    "expired": "Hết hạn",
+    "upgrade": "Nâng cấp"
+  },
+  "a2hs": {
+    "title": "Thêm vào màn hình chính",
+    "description": "Cài FitWell lên điện thoại để truy cập nhanh hơn và nhận thông báo đầy đủ. Không cần tải từ App Store.",
+    "addButton": "THÊM VÀO MÀN HÌNH CHÍNH",
+    "instructionTitle": "Hướng dẫn cài đặt",
+    "iosInstructions": "Nhấn nút Chia sẻ, sau đó chọn \"Thêm vào Màn hình chính\"",
+    "later": "Để sau",
+    "installed": "Đã cài đặt"
+  },
+  "signOut": "Đăng xuất",
+  "signOutConfirm": "Bạn có chắc muốn đăng xuất không?",
+  "stats": {
+    "title": "Thống kê",
+    "totalCheckins": "Tổng check-in",
+    "totalActions": "Hành động đã thực hiện",
+    "longestStreak": "Chuỗi dài nhất",
+    "cleanDays": "Ngày sạch",
+    "memberSince": "Thành viên từ"
+  }
+}

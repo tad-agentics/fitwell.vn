@@ -82,11 +82,6 @@ export function OnboardingConditionScreen({ onContinue }: OnboardingConditionScr
 
   const handleContinue = () => {
     const conditionsArray = Array.from(selectedConditions);
-    
-    // Save to localStorage for use in conditional check-in screens
-    localStorage.setItem('primaryConditions', JSON.stringify(conditionsArray));
-    
-    // Pass selected conditions to parent
     onContinue(conditionsArray);
   };
 

@@ -1,0 +1,133 @@
+{
+  "languageSelection": {
+    "title": "Choose your language",
+    "subtitle": "You can change this later in Settings",
+    "vietnamese": "Tiếng Việt",
+    "english": "English"
+  },
+  "conditionDeclaration": {
+    "title": "What health concerns do you have?",
+    "subtitle": "Select all that apply. We'll personalize your experience.",
+    "gout": "Gout",
+    "goutDescription": "High uric acid, joint pain, swollen toes",
+    "cholesterol": "Cholesterol",
+    "cholesterolDescription": "High blood lipids, LDL/HDL, triglycerides",
+    "backPain": "Back pain",
+    "backPainDescription": "Lower back pain, neck & shoulder, prolonged sitting",
+    "unsure": "Not sure, want to explore",
+    "unsureDescription": "I want to learn more about general wellness",
+    "continueButton": "Continue"
+  },
+  "biomarkerInput": {
+    "title": "Your latest health numbers",
+    "subtitle": "If you have recent lab results, enter them here. This is optional.",
+    "uricAcid": "Uric acid (mg/dL)",
+    "uricAcidPlaceholder": "e.g. 7.2",
+    "uricAcidNormal": "Normal: 3.5 - 7.0 mg/dL",
+    "totalCholesterol": "Total cholesterol (mg/dL)",
+    "totalCholesterolPlaceholder": "e.g. 220",
+    "totalCholesterolNormal": "Should be below 200 mg/dL",
+    "ldl": "LDL (mg/dL)",
+    "ldlPlaceholder": "e.g. 130",
+    "ldlNormal": "Should be below 100 mg/dL",
+    "hdl": "HDL (mg/dL)",
+    "hdlPlaceholder": "e.g. 55",
+    "hdlNormal": "Should be above 40 mg/dL (men), 50 mg/dL (women)",
+    "triglycerides": "Triglycerides (mg/dL)",
+    "triglyceridesPlaceholder": "e.g. 150",
+    "triglyceridesNormal": "Should be below 150 mg/dL",
+    "skipForNow": "Skip for now",
+    "saveAndContinue": "Save & continue",
+    "noResultsYet": "No lab results yet? No worries!"
+  },
+  "ahaMoment": {
+    "gout": {
+      "title": "Did you know?",
+      "message": "70% of nighttime gout flares are linked to that evening's dinner. FitWell helps you take control starting from your meals.",
+      "highlight": "70% of nighttime gout flares"
+    },
+    "cholesterol": {
+      "title": "Did you know?",
+      "message": "Small changes in eating habits can lower cholesterol by 10-15% without medication.",
+      "highlight": "10-15% reduction without medication"
+    },
+    "backPain": {
+      "title": "Did you know?",
+      "message": "Sitting for 2 hours straight increases spinal pressure by 40%. A 2-minute break every hour can significantly reduce pain.",
+      "highlight": "2-minute break every hour"
+    },
+    "general": {
+      "title": "Did you know?",
+      "message": "Small, consistent daily changes create big results. FitWell walks with you every step of the way.",
+      "highlight": "Small changes, big results"
+    },
+    "continueButton": "Great, let's go!"
+  },
+  "lifePattern": {
+    "title": "Your daily habits",
+    "subtitle": "Help us understand your routine so we can give better recommendations.",
+    "deskHours": {
+      "question": "How many hours a day do you sit at a desk?",
+      "options": {
+        "under4": "Less than 4 hours",
+        "4to6": "4-6 hours",
+        "6to8": "6-8 hours",
+        "over8": "More than 8 hours"
+      }
+    },
+    "eatingOut": {
+      "question": "How many meals do you eat out per week?",
+      "options": {
+        "rarely": "Rarely (0-2 meals)",
+        "sometimes": "Sometimes (3-5 meals)",
+        "often": "Often (6-10 meals)",
+        "mostly": "Most meals (10+ meals)"
+      }
+    },
+    "backNeckPain": {
+      "question": "Do you regularly experience back or neck pain?",
+      "options": {
+        "never": "Never",
+        "sometimes": "Sometimes",
+        "often": "Often",
+        "daily": "Almost every day"
+      }
+    },
+    "riskEnvironment": {
+      "question": "What situations make it hard to eat healthy?",
+      "options": {
+        "socialDining": "Dining out with friends / colleagues",
+        "lateNight": "Late-night eating",
+        "stress": "When stressed or tired",
+        "travel": "During business trips / travel",
+        "none": "No specific situation"
+      }
+    },
+    "accountUsage": {
+      "question": "Who will be using this account?",
+      "options": {
+        "justMe": "Just me",
+        "withPartner": "Me and a family member (spouse, parent)",
+        "household": "The whole household"
+      }
+    }
+  },
+  "activationEvent": {
+    "title": "What motivated you to start?",
+    "subtitle": "Pick the closest reason. There's no wrong answer.",
+    "options": {
+      "recentFlare": "Recent gout flare / severe back pain",
+      "badLabResult": "Concerning lab results",
+      "doctorAdvice": "Doctor recommended lifestyle changes",
+      "familyHistory": "Family member with similar condition",
+      "prevention": "Want to prevent issues early",
+      "curiosity": "Curious, want to try it out"
+    },
+    "continueButton": "Let's get started!"
+  },
+  "completion": {
+    "title": "You're all set!",
+    "message": "FitWell has been personalized for you. Start with your first morning check-in.",
+    "startButton": "Start using FitWell"
+  }
+}

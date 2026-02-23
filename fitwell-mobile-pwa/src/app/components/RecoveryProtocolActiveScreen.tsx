@@ -4,7 +4,9 @@ import { ChevronDown, ChevronUp, Play, Check } from 'lucide-react';
 interface RecoveryProtocolActiveScreenProps {
   onNavigate: (screen: string) => void;
   onStartAction: (actionId: string) => void;
-  eventType?: 'heavy_night' | 'rich_meal' | 'long_desk' | 'stress_day'; // NEW: Recovery type
+  eventType?: 'heavy_night' | 'rich_meal' | 'long_desk' | 'stress_day';
+  currentDay?: number; // From active recovery protocol
+  totalDays?: number; // From active recovery protocol
 }
 
 interface Action {
@@ -217,17 +219,28 @@ const RECOVERY_DAYS_LONG_DESK: DayData[] = [
 export function RecoveryProtocolActiveScreen({
   onNavigate,
   onStartAction,
-  eventType = 'heavy_night', // Default to heavy_night for backward compatibility
+  eventType = 'heavy_night',
+  currentDay = 1,
+  totalDays,
 }: RecoveryProtocolActiveScreenProps) {
-  const [expandedDay, setExpandedDay] = useState<number>(1); // Current day expanded by default
+  const [expandedDay, setExpandedDay] = useState<number>(currentDay);
 
   // Get recovery configuration based on event type
   const config = RECOVERY_CONFIGS[eventType];
-  
+  const effectiveTotalDays = totalDays ?? config.totalDays;
+
   // Get recovery days data based on event type
-  const recoveryDays = eventType === 'long_desk' 
-    ? RECOVERY_DAYS_LONG_DESK 
+  const templateDays = eventType === 'long_desk'
+    ? RECOVERY_DAYS_LONG_DESK
     : RECOVERY_DAYS_HEAVY_NIGHT;
+
+  // Update day statuses based on real current_day from DB
+  const recoveryDays = templateDays.map((day) => ({
+    ...day,
+    status: day.dayNumber < currentDay ? 'completed' as const
+      : day.dayNumber === currentDay ? 'active' as const
+      : 'locked' as const,
+  }));
 
   const toggleDay = (dayNumber: number) => {
     setExpandedDay(expandedDay === dayNumber ? 0 : dayNumber);
@@ -257,7 +270,7 @@ export function RecoveryProtocolActiveScreen({
             lineHeight: '1.0',
           }}
         >
-          {config.eyebrow(1, config.totalDays)}
+          {config.eyebrow(currentDay, effectiveTotalDays)}
         </div>
 
         <h1
@@ -287,7 +300,7 @@ export function RecoveryProtocolActiveScreen({
                 style={{
                   position: 'relative',
                   paddingLeft: '40px',
-                  paddingBottom: dayIndex < RECOVERY_DAYS.length - 1 ? '24px' : '0',
+                  paddingBottom: dayIndex < recoveryDays.length - 1 ? '24px' : '0',
                 }}
               >
                 {/* Vertical timeline line - only show if not last item */}
@@ -349,7 +362,7 @@ export function RecoveryProtocolActiveScreen({
                         lineHeight: '1.0',
                       }}
                     >
-                      NGÀY {day.dayNumber} / {config.totalDays}
+                      NGÀY {day.dayNumber} / {effectiveTotalDays}
                     </div>
                     <div
                       style={{

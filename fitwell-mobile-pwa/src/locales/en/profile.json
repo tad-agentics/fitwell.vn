@@ -1,0 +1,117 @@
+{
+  "title": "My Profile",
+  "editProfile": "Edit profile",
+  "displayName": "Display name",
+  "displayNamePlaceholder": "Enter your name",
+  "email": "Email",
+  "joinedDate": "Joined {{date}}",
+  "biomarkers": {
+    "title": "Biomarkers",
+    "subtitle": "Update from your lab results",
+    "lastRecorded": "Last updated: {{date}}",
+    "uric_acid": "Uric Acid",
+    "cholesterol_total": "Total Cholesterol",
+    "ldl": "LDL",
+    "hdl": "HDL",
+    "triglycerides": "Triglycerides",
+    "crp": "CRP",
+    "hba1c": "HbA1c",
+    "blood_pressure_sys": "Systolic BP",
+    "blood_pressure_dia": "Diastolic BP",
+    "unit": "mg/dL",
+    "normal": "Normal",
+    "elevated": "Elevated",
+    "high": "High",
+    "low": "Low",
+    "addNew": "Add new biomarker",
+    "updateButton": "Update biomarkers",
+    "history": "Biomarker history",
+    "empty": "No biomarkers yet. Add from your test results.",
+    "noDataHint": "Enter lab results to track trends"
+  },
+  "conditions": {
+    "title": "Health Conditions",
+    "subtitle": "Conditions you're tracking",
+    "gout": "Gout",
+    "cholesterol": "Cholesterol",
+    "back_pain": "Back Pain",
+    "unsure": "Unsure",
+    "active": "Tracking",
+    "inactive": "Not tracking",
+    "edit": "Edit",
+    "manage": "Manage conditions",
+    "addCondition": "Add condition",
+    "removeCondition": "Stop tracking",
+    "removeConfirm": "Are you sure you want to stop tracking {{condition}}?"
+  },
+  "language": {
+    "title": "Language",
+    "toggle": "Switch language",
+    "vi": "Tiếng Việt",
+    "en": "English",
+    "changeConfirm": "Switch language to {{language}}?"
+  },
+  "settings": "Settings",
+  "settingsScreen": {
+    "title": "Settings",
+    "notifications": {
+      "title": "Notifications",
+      "subtitle": "Manage reminders and notifications",
+      "morning": "Morning reminder",
+      "morningTime": "Morning reminder time",
+      "midday": "Midday reminder",
+      "middayTime": "Midday reminder time",
+      "preSleep": "Pre-sleep reminder",
+      "preSleepTime": "Pre-sleep reminder time",
+      "deskBreak": "Desk break reminder",
+      "deskBreakInterval": "Every {{minutes}} minutes",
+      "waterReminder": "Water reminder",
+      "brief": "Weekly brief",
+      "briefDay": "Every Sunday",
+      "enableAll": "Enable all",
+      "disableAll": "Disable all"
+    },
+    "data": {
+      "title": "Data",
+      "exportData": "Export data",
+      "exportDescription": "Download your health data",
+      "deleteAccount": "Delete account",
+      "deleteAccountWarning": "This action cannot be undone. All data will be permanently deleted.",
+      "deleteConfirm": "Type \"DELETE\" to confirm"
+    },
+    "about": {
+      "title": "About FitWell",
+      "version": "Version {{version}}",
+      "termsOfService": "Terms of Service",
+      "privacyPolicy": "Privacy Policy",
+      "contactSupport": "Contact support",
+      "rateApp": "Rate the app"
+    }
+  },
+  "subscription": {
+    "title": "Subscription",
+    "free": "Free",
+    "active": "Active",
+    "expired": "Expired",
+    "upgrade": "Upgrade"
+  },
+  "a2hs": {
+    "title": "Add to Home Screen",
+    "description": "Install FitWell on your phone for faster access and full notifications. No app store needed.",
+    "addButton": "ADD TO HOME SCREEN",
+    "instructionTitle": "Installation Guide",
+    "iosInstructions": "Tap the Share button, then select \"Add to Home Screen\"",
+    "later": "Later",
+    "installed": "Installed"
+  },
+  "signOut": "Sign out",
+  "signOutConfirm": "Are you sure you want to sign out?",
+  "stats": {
+    "title": "Statistics",
+    "totalCheckins": "Total check-ins",
+    "totalActions": "Actions completed",
+    "longestStreak": "Longest streak",
+    "cleanDays": "Clean days",
+    "memberSince": "Member since"
+  }
+}

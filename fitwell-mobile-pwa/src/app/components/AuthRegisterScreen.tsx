@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 interface AuthRegisterScreenProps {
   onNavigate: (screen: string) => void;
@@ -14,11 +15,41 @@ export function AuthRegisterScreen({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate registration success
-    onRegisterSuccess();
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { display_name: displayName },
+        },
+      });
+
+      if (signUpError) {
+        setError(signUpError.message);
+        return;
+      }
+
+      if (data.user) {
+        // Create profile row
+        await supabase.from('profiles').upsert({
+          id: data.user.id,
+          email: data.user.email ?? email,
+        });
+        onRegisterSuccess();
+      }
+    } catch {
+      setError('Đã xảy ra lỗi. Vui lòng thử lại.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -242,25 +273,33 @@ export function AuthRegisterScreen({
           </div>
         </div>
 
+        {/* Error message */}
+        {error && (
+          <div
+            style={{
+              padding: '12px 16px',
+              backgroundColor: '#FEF2F2',
+              border: '1px solid #FCA5A5',
+              borderRadius: '4px',
+              marginBottom: '16px',
+              fontFamily: 'var(--font-ui)',
+              fontSize: '13px',
+              color: '#DC2626',
+              lineHeight: '1.5',
+            }}
+          >
+            {error}
+          </div>
+        )}
+
         {/* Primary CTA */}
         <button
           type="submit"
-          style={{
-            width: '100%',
-            height: '56px',
-            backgroundColor: '#041E3A',
-            color: '#FFFFFF',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '11px',
-            fontWeight: 500,
-            letterSpacing: '1px',
-            textTransform: 'uppercase',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
+          disabled={isSubmitting || !email || !password}
+          className="fw-btn-primary"
+          style={{ opacity: isSubmitting ? 0.7 : 1 }}
         >
-          Tạo tài khoản
+          {isSubmitting ? 'Đang tạo...' : 'Tạo tài khoản'}
         </button>
       </form>
 

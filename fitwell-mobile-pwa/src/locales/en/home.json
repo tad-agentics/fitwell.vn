@@ -1,0 +1,112 @@
+{
+  "greeting": "Hi {{name}}",
+  "greetingMorning": "Good morning, {{name}}",
+  "greetingAfternoon": "Good afternoon, {{name}}",
+  "greetingEvening": "Good evening, {{name}}",
+  "cleanDay": {
+    "eyebrow": "NEW DAY",
+    "title": "Today looks clear",
+    "titleVariant1": "A new day, a new opportunity",
+    "titleVariant2": "Clean day — keep it going!",
+    "subtitle": "No events scheduled",
+    "morningCheckin": "MORNING CHECK-IN",
+    "searchScenarios": "Search scenarios for tonight",
+    "quickActions": "Quick actions",
+    "streak": "{{count}}-day clean streak!",
+    "streakEncouragement": "Amazing! Keep up the great work.",
+    "tip": "Today's tip"
+  },
+  "midday": {
+    "eyebrow": "MIDDAY",
+    "title": "Desk break time",
+    "titleVariant1": "You've been sitting long enough!",
+    "titleVariant2": "Your back needs a break",
+    "subtitle": "You've been sitting since morning — time for a quick move",
+    "sittingHours": "You've been sitting for about {{hours}} hours",
+    "startCheckin": "MIDDAY CHECK-IN",
+    "quickStretch": "Quick 3-min stretch",
+    "deskBreak": "2-minute desk break",
+    "waterReminder": "Time to hydrate! Goal: {{target}}ml",
+    "waterProgress": "Progress: {{current}}/{{target}}ml"
+  },
+  "preSleep": {
+    "eyebrow": "PRE-SLEEP",
+    "title": "Prepare for sleep",
+    "titleVariant1": "Time to wind down",
+    "titleVariant2": "Let your body rest",
+    "subtitle": "Wind down and get ready for rest",
+    "startWindDown": "START WIND-DOWN",
+    "todaySummary": "Today's summary",
+    "checkinsDone": "{{count}} check-ins completed",
+    "actionsDone": "{{count}} actions completed",
+    "screenTimeWarning": "Limit screen time before bed"
+  },
+  "preDinner": {
+    "eyebrow": "COMING UP",
+    "title": "Event in {{hours}} hours",
+    "titleSoon": "Event starting soon!",
+    "subtitle": "Review the preparation scenario",
+    "eventName": "{{event}}",
+    "viewScenario": "VIEW SCENARIO",
+    "countdown": "{{time}} remaining",
+    "countdownHours": "{{hours}}h {{minutes}}m remaining",
+    "prepTips": "Tips before you go",
+    "drinkWater": "Drink plenty of water before arriving",
+    "eatLight": "Eat a light snack to avoid overeating",
+    "planAhead": "Decide in advance what you'll eat and drink"
+  },
+  "activeRecovery": {
+    "eyebrow": "RECOVERING",
+    "title": "Recovery day {{day}}",
+    "subtitle": "Continue your recovery protocol",
+    "day1": {
+      "title": "Day 1: Rest & Hydrate",
+      "description": "Focus on water intake, light meals, avoid purines"
+    },
+    "day2": {
+      "title": "Day 2: Active Recovery",
+      "description": "Light movement, continue clean eating"
+    },
+    "day3": {
+      "title": "Day 3: Return to Normal",
+      "description": "Gradually resume routines, monitor symptoms"
+    },
+    "continueProtocol": "CONTINUE RECOVERY",
+    "skipDay": "Skip today",
+    "progress": "Progress: {{current}}/{{total}}",
+    "waterIntake": "Water goal: {{target}}ml",
+    "nextStep": "Next step"
+  },
+  "sundayBrief": {
+    "eyebrow": "SUNDAY",
+    "title": "Your weekly brief",
+    "subtitle": "Summary and preparation for next week",
+    "viewBrief": "VIEW WEEKLY BRIEF",
+    "highlightCleanDays": "{{count}} clean days this week",
+    "highlightActions": "{{count}} actions completed",
+    "highlightStreak": "{{count}}-day streak",
+    "prepareNextWeek": "Prepare for the new week"
+  },
+  "mondayIntercept": {
+    "eyebrow": "WEEKLY BRIEF",
+    "title": "Your weekly brief is ready",
+    "titleVariant1": "New week, fresh start!",
+    "subtitle": "Review last week before starting a new one",
+    "lastWeekHighlight": "Last week: {{cleanDays}} clean days, {{actions}} actions",
+    "viewBrief": "VIEW BRIEF",
+    "dismiss": "Dismiss",
+    "setGoal": "Set this week's goal"
+  },
+  "cards": {
+    "upcomingCheckin": "Next check-in",
+    "suggestedAction": "Suggested for you",
+    "todayProgress": "Today's progress",
+    "riskLevel": "Today's risk level",
+    "noUpcoming": "No upcoming events"
+  },
+  "empty": {
+    "title": "Welcome to FitWell!",
+    "subtitle": "Start with your first morning check-in.",
+    "startButton": "Start check-in"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "weeklyBrief": {
+    "title": "Weekly brief",
+    "subtitle": "Week of {{startDate}} to {{endDate}}",
+    "greeting": "Here's your weekly summary, {{name}}",
+    "loading": "Analyzing your weekly data..."
+  },
+  "riskCalendar": {
+    "heading": "Risk calendar",
+    "subtitle": "Which days did you face higher risk?",
+    "safe": "Safe",
+    "moderate": "Moderate",
+    "high": "High risk",
+    "noData": "No data",
+    "cleanDay": "Clean day",
+    "cleanDays": "{{count}} clean days this week",
+    "cleanDayStreak": "{{count}}-day clean streak!",
+    "bestStreak": "Best streak: {{count}} days"
+  },
+  "patterns": {
+    "heading": "Trends & patterns",
+    "subtitle": "What we noticed",
+    "sleepPattern": "Sleep",
+    "painPattern": "Pain levels",
+    "energyPattern": "Energy",
+    "mealPattern": "Meals",
+    "improving": "Improving",
+    "stable": "Stable",
+    "declining": "Needs attention",
+    "noPattern": "Not enough data to analyze yet"
+  },
+  "comparison": {
+    "heading": "Comparison",
+    "vsLastWeek": "vs. last week",
+    "vsPreviousMonth": "vs. last month",
+    "better": "Better",
+    "same": "About the same",
+    "worse": "Worse",
+    "checkinRate": "Check-in rate",
+    "actionsCompleted": "Actions completed",
+    "cleanDayRate": "Clean day rate",
+    "avgPainScore": "Avg. pain score",
+    "avgSleepQuality": "Avg. sleep quality"
+  },
+  "insights": {
+    "heading": "Insights",
+    "goutRisk": "Gout risk this week was {{level}}. {{detail}}",
+    "goutRiskLow": "You're doing a great job managing it!",
+    "goutRiskMedium": "A few meals to watch out for.",
+    "goutRiskHigh": "Be more careful next week.",
+    "backPainTrend": "Back pain {{trend}} compared to last week.",
+    "backPainImproved": "significantly improved",
+    "backPainStable": "stayed about the same",
+    "backPainWorsened": "increased",
+    "sleepInsight": "You slept an average of {{hours}} hours. {{quality}}",
+    "sleepGood": "Sleep quality was good!",
+    "sleepFair": "There's room for improvement.",
+    "sleepPoor": "Sleep should be a priority.",
+    "deskInsight": "You sat an average of {{hours}} hours/day. {{suggestion}}",
+    "deskSuggestion": "Try taking more frequent breaks.",
+    "topInsight": "This week's highlight",
+    "improvementArea": "Needs improvement"
+  },
+  "cta": {
+    "viewDetails": "View details",
+    "shareReport": "Share report",
+    "setGoalNextWeek": "Set next week's goal",
+    "talkToCoach": "Talk to an expert",
+    "viewPlaybook": "View relevant playbook",
+    "adjustReminders": "Adjust reminders"
+  },
+  "mondayIntercept": {
+    "title": "New week, fresh start!",
+    "subtitle": "Based on last week, here are suggestions for this week",
+    "lastWeekSummary": "Last week you had {{cleanDays}} clean days and completed {{actions}} actions.",
+    "thisWeekGoal": "This week's goal",
+    "suggestedGoals": {
+      "morningCheckin": "Morning check-in every day",
+      "deskBreaks": "Desk breaks 3 times a day",
+      "cleanMeals": "At least 5 clean meals",
+      "backExercise": "Back stretches 4 times a week",
+      "waterIntake": "Drink 2L of water daily",
+      "earlyDinner": "Dinner before 7 PM"
+    },
+    "viewButton": "View last week's summary",
+    "skipButton": "Start the new week",
+    "acceptGoal": "Accept goal",
+    "customizeGoal": "Customize"
+  }
+}

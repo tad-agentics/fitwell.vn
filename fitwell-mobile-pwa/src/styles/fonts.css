@@ -1,5 +1,9 @@
-/* Google Fonts Import */
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Be+Vietnam+Pro:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+/* Google Fonts Import - Be Vietnam Pro + IBM Plex Mono (primary fonts) */
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+/* DM Serif Display - only used on 2 screens (weekly brief, timer) */
+/* Loaded conditionally via font-display: swap */
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap');
 
 /* Font Family Variables */
 :root {
