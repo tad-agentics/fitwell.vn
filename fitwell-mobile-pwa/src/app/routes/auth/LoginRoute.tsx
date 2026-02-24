@@ -7,6 +7,7 @@ export default function LoginRoute() {
     <AuthLoginMagicLinkScreen
       onNavigate={(screen) => {
         if (screen === 'authRegister') navigate('/auth/register');
+        if (screen === 'authLoginPassword') navigate('/auth/login/password');
       }}
       onSubmit={(email) => navigate('/auth/magic-link-sent', { state: { email } })}
     />
