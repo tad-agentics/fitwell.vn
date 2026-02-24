@@ -69,10 +69,18 @@ export const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       // Redirect root to home or auth
-      { index: true, element: <Navigate to="/onboarding" replace /> },
+      { index: true, element: <Navigate to="/home" replace /> },
 
-      // Auth routes disabled for testing — redirect to onboarding
-      { path: 'auth/*', element: <Navigate to="/onboarding" replace /> },
+      // Guest-only routes (auth)
+      {
+        element: <GuestOnly />,
+        children: [
+          { path: 'auth/register', element: <AuthRegisterRoute /> },
+          { path: 'auth/login', element: <AuthLoginRoute /> },
+          { path: 'auth/login/magic-link', element: <AuthLoginMagicLinkRoute /> },
+          { path: 'auth/magic-link-sent', element: <AuthMagicLinkSentRoute /> },
+        ],
+      },
 
       // Protected routes (require auth)
       {
@@ -132,7 +140,7 @@ export const router = createBrowserRouter([
       },
 
       // Catch-all
-      { path: '*', element: <Navigate to="/onboarding" replace /> },
+      { path: '*', element: <Navigate to="/home" replace /> },
     ],
   },
 ]);
