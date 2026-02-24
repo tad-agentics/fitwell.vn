@@ -1,15 +1,15 @@
 import { useNavigate } from 'react-router';
-import { AuthLoginMagicLinkScreen } from '@/app/components/AuthLoginMagicLinkScreen';
+import { AuthLoginPasswordScreen } from '@/app/components/AuthLoginPasswordScreen';
 
 export default function LoginRoute() {
   const navigate = useNavigate();
   return (
-    <AuthLoginMagicLinkScreen
+    <AuthLoginPasswordScreen
       onNavigate={(screen) => {
         if (screen === 'authRegister') navigate('/auth/register');
-        if (screen === 'authLoginPassword') navigate('/auth/login/password');
+        if (screen === 'authLogin') navigate('/auth/login/magic-link');
       }}
-      onSubmit={(email) => navigate('/auth/magic-link-sent', { state: { email } })}
+      onLoginSuccess={() => navigate('/home')}
     />
   );
 }
