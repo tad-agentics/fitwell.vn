@@ -69,7 +69,7 @@ export const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       // Redirect root to home or auth
-      { index: true, element: <Navigate to="/home" replace /> },
+      { index: true, element: <Navigate to="/onboarding" replace /> },
 
       // Guest-only routes (auth)
       {
