@@ -11,6 +11,7 @@ import { AuthGuard, OnboardingGuard, GuestOnly } from './layouts/AuthGuard';
 const AuthRegisterRoute = lazy(() => import('./routes/auth/RegisterRoute'));
 const AuthLoginRoute = lazy(() => import('./routes/auth/LoginRoute'));
 const AuthMagicLinkSentRoute = lazy(() => import('./routes/auth/MagicLinkSentRoute'));
+const AuthLoginPasswordRoute = lazy(() => import('./routes/auth/LoginPasswordRoute'));
 
 // Onboarding
 const OnboardingRoute = lazy(() => import('./routes/onboarding/OnboardingRoute'));
@@ -76,6 +77,7 @@ export const router = createBrowserRouter([
         children: [
           { path: 'auth/register', element: <AuthRegisterRoute /> },
           { path: 'auth/login', element: <AuthLoginRoute /> },
+          { path: 'auth/login/password', element: <AuthLoginPasswordRoute /> },
           { path: 'auth/magic-link-sent', element: <AuthMagicLinkSentRoute /> },
         ],
       },

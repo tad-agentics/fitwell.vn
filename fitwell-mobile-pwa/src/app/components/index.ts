@@ -1,6 +1,7 @@
 // Auth & Registration
 export { AuthRegisterScreen } from './AuthRegisterScreen';
 export { AuthLoginMagicLinkScreen } from './AuthLoginMagicLinkScreen';
+export { AuthLoginPasswordScreen } from './AuthLoginPasswordScreen';
 export { AuthMagicLinkSentScreen } from './AuthMagicLinkSentScreen';
 
 // Core Onboarding Flow

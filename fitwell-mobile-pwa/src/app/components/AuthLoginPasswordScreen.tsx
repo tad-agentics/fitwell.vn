@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
-interface AuthLoginMagicLinkScreenProps {
+interface AuthLoginPasswordScreenProps {
   onNavigate: (screen: string) => void;
-  onSubmit: (email: string) => void;
+  onLoginSuccess: () => void;
 }
 
-export function AuthLoginMagicLinkScreen({
+export function AuthLoginPasswordScreen({
   onNavigate,
-  onSubmit,
-}: AuthLoginMagicLinkScreenProps) {
+  onLoginSuccess,
+}: AuthLoginPasswordScreenProps) {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,17 +23,17 @@ export function AuthLoginMagicLinkScreen({
     setIsSubmitting(true);
 
     try {
-      const { error: otpError } = await supabase.auth.signInWithOtp({
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
-        options: { emailRedirectTo: `${window.location.origin}/home` },
+        password,
       });
 
-      if (otpError) {
-        setError(otpError.message);
+      if (signInError) {
+        setError(signInError.message);
         return;
       }
 
-      onSubmit(email);
+      onLoginSuccess();
     } catch {
       setError('Đã xảy ra lỗi. Vui lòng thử lại.');
     } finally {
@@ -91,7 +94,7 @@ export function AuthLoginMagicLinkScreen({
           lineHeight: '1.5',
         }}
       >
-        Nhập email để nhận link đăng nhập
+        Đăng nhập bằng email và mật khẩu
       </p>
 
       {/* Form card */}
@@ -106,7 +109,7 @@ export function AuthLoginMagicLinkScreen({
         }}
       >
         {/* Email field */}
-        <div style={{ marginBottom: '24px' }}>
+        <div style={{ marginBottom: '16px' }}>
           <label
             style={{
               display: 'block',
@@ -148,6 +151,74 @@ export function AuthLoginMagicLinkScreen({
           />
         </div>
 
+        {/* Password field */}
+        <div style={{ marginBottom: '32px' }}>
+          <label
+            style={{
+              display: 'block',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '10px',
+              fontWeight: 400,
+              textTransform: 'uppercase',
+              color: '#9D9FA3',
+              letterSpacing: '0.05em',
+              marginBottom: '8px',
+            }}
+          >
+            MẬT KHẨU
+          </label>
+          <div style={{ position: 'relative' }}>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Nhập mật khẩu"
+              style={{
+                width: '100%',
+                height: '48px',
+                fontFamily: 'var(--font-ui)',
+                fontSize: '15px',
+                fontWeight: 400,
+                color: '#041E3A',
+                backgroundColor: '#FFFFFF',
+                border: '1px solid #EBEBF0',
+                borderRadius: '4px',
+                padding: '0 48px 0 16px',
+                outline: 'none',
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#041E3A';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#EBEBF0';
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: 'absolute',
+                right: '12px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {showPassword ? (
+                <EyeOff size={20} style={{ color: '#9D9FA3' }} />
+              ) : (
+                <Eye size={20} style={{ color: '#9D9FA3' }} />
+              )}
+            </button>
+          </div>
+        </div>
+
         {/* Error message */}
         {error && (
           <div
@@ -170,11 +241,11 @@ export function AuthLoginMagicLinkScreen({
         {/* Primary CTA */}
         <button
           type="submit"
-          disabled={isSubmitting || !email}
+          disabled={isSubmitting || !email || !password}
           className="fw-btn-primary"
           style={{ opacity: isSubmitting ? 0.7 : 1 }}
         >
-          {isSubmitting ? 'Đang gửi...' : 'Gửi link đăng nhập'}
+          {isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
         </button>
       </form>
 
@@ -213,9 +284,9 @@ export function AuthLoginMagicLinkScreen({
         />
       </div>
 
-      {/* Password login option */}
+      {/* Magic link option */}
       <button
-        onClick={() => onNavigate('authLoginPassword')}
+        onClick={() => onNavigate('authLogin')}
         type="button"
         style={{
           width: '100%',
@@ -233,7 +304,7 @@ export function AuthLoginMagicLinkScreen({
           marginBottom: '24px',
         }}
       >
-        Đăng nhập bằng mật khẩu
+        Đăng nhập bằng Magic Link
       </button>
 
       {/* Register redirect */}
