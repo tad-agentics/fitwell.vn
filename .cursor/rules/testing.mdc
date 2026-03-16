@@ -1,0 +1,64 @@
+---
+description: Pre-commit smoke check for any screen — call with @testing before committing
+alwaysApply: false
+---
+
+Call `@testing` in Cursor Composer before committing each screen. No globs — manual only.
+
+## Screen Smoke Check
+
+Before committing any screen, verify all of the following:
+
+### Render
+- Component renders without errors in default state
+- No console errors or warnings in default state
+- All required props are passed — no TypeScript errors
+
+### Interaction States
+- Default state: renders correctly with real data from seed
+- Loading state: `SkeletonBlock` or `SkeletonText` renders (never null, never blank)
+- Error state: `ErrorBanner` renders with retry action where applicable
+- Empty state: `EmptyState` renders with title and message (never blank space)
+- Disabled state: buttons show `opacity: 0.5`, `cursor: not-allowed`
+
+### Data Variables
+- All dynamic variables inject correctly with real seed data values
+- No `undefined` renders as visible text
+- Nullable fields have defined fallback rendering (not blank)
+- No lorem ipsum or placeholder copy anywhere on screen
+
+### Copy
+- All copy in Vietnamese — no English visible to users
+- No `!` anywhere in copy
+- Protocol format correct: `[Tên bài] · [Thời lượng] · [Địa điểm]`
+- AI response copy: does not start with forbidden openings, does not end with forbidden closings
+
+### Navigation
+- Enters from the correct screen via the correct trigger (per screen spec)
+- Exits to the correct screen via the correct trigger (per screen spec)
+- Back behavior matches spec (hardware back / disabled / navigate to correct parent)
+- Deep links resolve correctly where applicable
+
+### Mobile Viewport
+- Renders correctly at 375px width (iPhone SE baseline)
+- No horizontal overflow
+- All touch targets ≥ 44px height
+- Bottom nav does not overlap content
+
+### Tokens
+- No raw hex values in style props
+- No raw pixel values in style props
+- All colors reference `colors.*` tokens
+- All spacing references `spacing.*` tokens
+- No `!important` anywhere
+
+### Auth
+- Anonymous session: screen works without JWT (if applicable per spec)
+- Protected screen: redirects to onboarding if no session
+- JWT not present in localStorage or sessionStorage (verify in DevTools → Application)
+
+### Log Amendment
+If any deviation from spec is discovered during this check:
+- Add one row to `amendments-log.md` — takes 30 seconds
+- Do NOT edit the spec during the build session
+- Tag as BLOCKING if it prevents building the next screen

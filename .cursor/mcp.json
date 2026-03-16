@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=hptovpbiwvtngorhdhhm"
+    },
+    "vercel": {
+      "command": "npx",
+      "args": ["-y", "@vercel/mcp-server@latest"],
+      "env": {
+        "VERCEL_TOKEN": "REPLACE_WITH_VERCEL_TOKEN"
+      }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    }
+  }
+}

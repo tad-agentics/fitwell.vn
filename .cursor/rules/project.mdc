@@ -1,0 +1,91 @@
+---
+description: Project context, stack, tier scope, and build constraints — loaded in every session
+alwaysApply: true
+---
+
+## Project
+
+FitWell là ứng dụng phục hồi cơ xương khớp (MSK) dành cho nam giới văn phòng 35–50 tuổi tại Hà Nội và TP.HCM. Core loop: user mô tả triệu chứng → AI giao đúng protocol → daily check-in → progress tracking. Moat là longitudinal pattern data tích luỹ theo thời gian — switching cost tăng tự nhiên. MVP là web-first (Astro + React + Tailwind trên Vercel).
+
+## Tech Stack
+
+- Frontend: Astro + React + Tailwind CSS — deployed on Vercel
+- Backend: Fastify + Node.js — deployed on DigitalOcean Singapore
+- Database: PostgreSQL via Supabase (service_role key, RLS disabled by design)
+- Auth: JWT in-memory only (no localStorage) + httpOnly refresh cookies
+- AI: Claude Haiku (triage/check-in response) + Claude Sonnet (protocol assignment)
+- Video: Cloudflare Stream
+- Payments: PayOS (desktop QR polling + mobile redirect — two separate flows)
+- Email: Resend
+- Push: Web Push via VAPID + Service Worker
+
+## Tier Scope — Active Sprint
+
+**Tier 1 only.** Do not build Tier 2 or Tier 3 features.
+
+Tier 1 screens:
+- Symptom intake (3-question onboarding)
+- Protocol assignment (AI response + first exercise)
+- Daily check-in
+- Progress tracking (pain score timeline)
+- Exercise video player (Cloudflare Stream)
+
+## Out of Scope — Do Not Build
+
+- Pattern memory and proactive nudges — Tier 2
+- Adaptive protocol switching — Tier 2
+- Paywall and billing screens — Tier 3
+- 7-day trial conversion flow — Tier 3
+- Re-engagement flow after churn — Tier 3
+- Condition expansion beyond initial 5 MSK entries — post-Tier 1
+- Native iOS/Android app — post-MVP validation
+- Social or community features — not in roadmap
+
+## Build Rules
+
+- Build Tier 1 screens only — reject any feature request that is Out of Scope above
+- One component per file
+- No inline styles — use Tailwind utility classes only, no arbitrary values like `p-[13px]`
+- No hardcoded hex values — use design token class names from design-system
+- All API calls must match endpoint contracts in FitWell_TechSpec
+- Absolute imports from `@/` — never relative imports going up more than one level
+- JWT must never be stored in localStorage or sessionStorage — in-memory only
+- Refresh token must be set as httpOnly cookie by the server — never by client code
+- All API error responses must be normalized — never expose raw database errors to client
+- After every Supabase migration call, write the same SQL to `supabase/migrations/YYYYMMDDHHmmss_description.sql`
+
+## LLM Usage
+
+- Default to SQL and templates for all deterministic logic — no LLM for structured data retrieval
+- LLM calls approved only for:
+  - Symptom intake → protocol assignment (Claude Sonnet)
+  - Daily check-in response generation (Claude Haiku)
+  - Pain score interpretation (Claude Haiku)
+- All other logic (scheduling, notification dispatch, progress calculation) must use SQL or templates
+- Monthly inference cost ceiling: $60/month
+
+## Auth Rules
+
+- Anonymous sessions are supported — do not require login to start onboarding
+- JWT access token: 15-minute TTL, stored in-memory only
+- Refresh token: 7-day TTL, httpOnly cookie
+- Never call Supabase with anon key for authenticated operations — use service_role key via backend only
+
+## Payment Rules
+
+- PayOS has two separate flows — never merge them:
+  - Desktop: QR code generation + polling for payment confirmation
+  - Mobile: redirect to PayOS payment URL, return via callback
+- Never store credit card data — PayOS handles all PCI-sensitive data
+- Payment confirmation must be verified server-side — never trust client-side payment status
+
+## Copy Rules
+
+- All UI copy in Vietnamese — no English copy visible to users
+- Use "bạn" throughout — never "anh", "chị", or gendered pronouns
+- No exclamation marks in any UI copy
+- No emoji in any UI copy
+- No motivational filler phrases ("Tuyệt vời!", "Bạn đang làm rất tốt!")
+- Every copy slot must contain real data variables — never lorem ipsum or placeholder strings
+- Sentences max 20 words
+- Protocol format: `[Tên bài] · [Thời lượng] · [Địa điểm]`

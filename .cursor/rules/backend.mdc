@@ -1,0 +1,84 @@
+---
+description: Backend, database, and API rules — enforced on all API route and lib files
+globs:
+  - src/**/*.ts
+  - crons/**/*.ts
+alwaysApply: false
+---
+
+## Security — Non-Negotiable
+- Supabase RLS is DISABLED on all tables by design — all DB access via `service_role` key in Fastify only
+- `SUPABASE_SERVICE_ROLE_KEY` is server-side env only — never in Vercel env vars, never in frontend bundle
+- `@supabase/supabase-js` in frontend: Google OAuth redirect only — never direct DB access
+- `anon` key: not used — not in frontend bundle
+- JWT access token stored in-memory client-side — never `localStorage`, never `sessionStorage`
+- Refresh token set as `httpOnly` cookie by server — never by client code
+- `apple_sub` column: reserved for native app — return `501 NOT_IMPLEMENTED` on web MVP
+
+## Database Access
+- All DB queries via `src/shared/db.ts` Supabase client with `service_role` key
+- Never import Supabase client in route files — use service modules only
+- Row ownership enforced by `auth-guard.ts` middleware + explicit `user_id` checks in every query
+- Never skip `user_id` filter on any user-data table — every query must be scoped to the authenticated user
+- After every Supabase MCP `apply_migration` call: write the same SQL to `migrations/YYYYMMDDHHmmss_description.sql` — remote DB and local repo must never drift
+
+## API Conventions
+- URL pattern: `/api/v1/{resource}[/{id}][/{action}]`
+- Correct: `/api/v1/checkins`, `/api/v1/sessions/:id/complete`
+- Wrong: `/api/v1/generateProtocol`, `/api/v1/getUserProgress`
+- All successful responses: `{ success: true, data: T, meta?: {...} }`
+- All error responses: `{ success: false, code: 'SCREAMING_SNAKE_CASE', message: string, details?: object }`
+- Never expose raw database errors to client — always normalize to standard error shape
+- Error codes from consolidated registry in tech spec Section 1.4 — never invent new codes mid-build
+
+## Auth
+- Anonymous session header: `Authorization: Anonymous <anonymous_id>`
+- Claimed session header: `Authorization: Bearer <jwt>`
+- JWT TTL: 15 minutes access / 7 days refresh (httpOnly cookie `fw_refresh`)
+- `auth-guard.ts` validates both anonymous and claimed sessions — apply to all protected routes
+- Rate limits enforced in `rate-limit.ts`: login 10/15min, register 5/1h, forgot-password 3/1h
+
+## LLM Usage (Fastify backend only)
+- Default to SQL and rule-based templates for all deterministic logic
+- LLM calls approved only for:
+  - `symptom-map.service.ts` — symptom text → condition mapping (Claude Haiku, target < 400ms)
+  - `protocol.service.ts` — first protocol assignment and adaptation (Claude Sonnet for assignment, Haiku for check-in responses)
+  - `checkin.service.ts` — daily check-in AI response generation (Claude Haiku, target < 1.5s P95)
+- Monthly inference cost ceiling: $60/month — log token usage per call in production
+- All other logic (scheduling, notification dispatch, progress calculation, phase gate): SQL or templates only
+
+## Third-Party SDK Wrapper Rule
+- Import `@payos/node` only in `src/modules/billing/billing.service.ts` — never in routes, components, or hooks
+- Import Resend SDK only in `src/shared/email.ts`
+- Import VAPID/web-push only in `src/modules/notifications/vapid.config.ts`
+- Import Claude SDK only in `src/modules/protocol-engine/ai-provider.ts`
+- Never import third-party SDKs directly in route handlers
+
+## PayOS Rules
+- Two separate flows — never merge:
+  - Desktop: QR code generation → poll `GET /api/v1/billing/payment-status/:orderId` every 3s
+  - Mobile: redirect to PayOS URL → return via `GET /api/v1/billing/payos-return`
+- PayOS credentials (`PAYOS_CLIENT_ID`, `PAYOS_API_KEY`, `PAYOS_CHECKSUM_KEY`): server-side only — never in Vercel
+- Payment confirmation must be verified server-side via webhook — never trust client-side payment status
+- Webhook URL: `https://api.fitwell.vn/api/v1/billing/payos-webhook` — must be registered in PayOS dashboard
+
+## Notifications
+- Quiet hours: 22:00–06:50 VN time — no notifications outside this window
+- Exception: `morning_critical_655` type bypasses quiet hours — only for `timing_critical = TRUE` conditions
+- Max 2 notifications per user per day — enforced in `dispatch.service.ts`
+- Min gap between notifications: 4 hours
+- iOS Safari: no OS-level web push — use in-app banner via `GET /api/v1/notifications/pending` polling
+- Push subscription stored in `push_subscriptions` table — one active subscription per user per device
+
+## Cron Jobs (Vietnam time)
+- `protocol-adapt.ts`: 2am VN — adaptive protocol switching after 10+ days no progress
+- `pattern-detect.ts`: 3am VN — pattern observation generation (14+ days data required)
+- `email-sequence.ts`: every hour — retention email dispatch
+- `phase-gate-check.ts`: async after each check-in — phase unlock evaluation
+- `morning-critical-send.ts`: 06:50 daily — timing_critical conditions only
+
+## Protocol Rules
+- Protocols are immutable (append-only) — never UPDATE or DELETE protocol records
+- When adapting protocol: create new protocol record with `version` incremented, set previous `is_current = FALSE`
+- `createConditionWithPhaseGate()` must be called for every new condition — never create condition without phase gate
+- `filterProhibitedExercises()` must run before every protocol assignment — frozen shoulder Phase 1 must never receive stretch exercises

@@ -1,0 +1,92 @@
+---
+description: Brand voice and copy standards from FitWell Emotional Design System — enforced on all TSX files
+globs: src/**/*.tsx
+alwaysApply: false
+---
+
+## Core Rule
+All UI copy in Vietnamese. No English visible to users. All dynamic text uses real data variables — never lorem ipsum or placeholder strings.
+
+## Protocol Format (mandatory)
+Exercise copy always follows: `[Tên bài] · [Thời lượng] · [Địa điểm/tư thế]`
+- Correct: `Kích hoạt cơ hông · 5 phút · Nằm trên giường`
+- Wrong: `Bài kích hoạt cơ hông trong 5 phút`
+
+## Sentence Rules
+- Max 20 từ/câu — hầu hết câu 8–14 từ — nếu dài hơn, tách hoặc bỏ bớt
+- No `!` anywhere — ever
+- `?` only when genuinely asking a question
+- Dấu chấm `.` và gạch ngang `—` là dấu câu chính
+
+## Response Length by Context
+- Standard check-in response: 3–5 câu
+- Pain 5 response: 4–6 câu (4-part mandatory: acknowledge → rest → red flag → no protocol)
+- Completion acknowledgment: 1–2 câu (standard daily = 1 câu; milestone day 7/30 = 2 câu)
+- Pattern insight: 2–3 câu
+- First insight (onboarding): 3 blocks × max 2–3 câu mỗi block
+
+## Opening Rules (AI responses)
+Never start with:
+- `Tôi hiểu rằng...`
+- `Chào bạn`
+- `Cảm ơn đã chia sẻ`
+- `Cảm ơn bạn đã...`
+Always go straight to content.
+
+## Closing Rules (AI responses)
+Never end with:
+- `Chúc bạn mau khỏe!`
+- `Cố lên nhé!`
+- `Hãy tiếp tục cố gắng!`
+- Any exclamation-based encouragement
+Always end with action (tên bài cụ thể) or information (red flag check).
+
+## Forbidden Words and Phrases
+- `Tuyệt vời` — never
+- `Xuất sắc` — never
+- `Kiên trì` — never as praise
+- `Hành trình sức khoẻ` — never
+- `Yêu thương bản thân` — never
+- `Healing journey` — never
+- `Bạn đang làm rất tốt` — never
+- `Cơ thể cần được yêu thương` — never
+- Any emoji in UI copy — never
+
+## Xưng hô
+- `bạn` khi cần rõ ràng — drop pronoun khi câu vẫn tự nhiên
+- Never `mình` or `tôi` for FitWell voice
+- Never gendered pronouns (`anh`, `chị`) in generated copy
+
+## Tone by Pain Score
+- Pain 1–2: casual, direct, sarcastic nhẹ được phép
+- Pain 3: neutral, business-as-usual, không drama
+- Pain 4: warmth required — add `okay không?` before protocol assignment
+- Pain 5: warmth + honest — acknowledge first, no protocol, no cheerfulness
+- Re-engagement after skip: zero-guilt — `Cơ thể vẫn nhớ.` required
+
+## Pattern Insight Ending
+Pattern observations always end with: `Bạn quyết định làm gì với thông tin đó.`
+Never ends with prescription, suggestion, or imperative.
+
+## Masculine Encouragement (milestones only)
+- Use understatement: `7 ngày liên tiếp. Không phải ai cũng làm được.`
+- Never theatrical: `Tuyệt vời! Bạn thật kiên trì!`
+- Acknowledge difficulty, not personal qualities
+- Peer framing: `Pattern này ai ngồi văn phòng lâu cũng gặp`
+
+## Sarcastic Tone Gate
+Sarcastic copy (`Cổ đang kêu cứu rồi đấy`) only when user's recent `pain_score ≤ 2`.
+Pain score ≥ 3 → neutral/direct tone only. Enforce in notification dispatch logic.
+
+## Completion Copy
+- Standard daily: `Xong rồi — đúng hướng đấy.` — max 6 từ, never more
+- Milestone (day 7): `Được đấy — 7 ngày liên tiếp. Không phải ai cũng làm được.` — 2 câu maximum
+- Never: `Tuyệt vời!`, `Bạn đã hoàn thành!`, confetti language
+
+## Numbers and Specifics
+- Always specific: `5 phút` not `vài phút` — `7–10 ngày` not `một thời gian` — `3 động tác` not `một số động tác`
+- Pain scores always as digit: `Mức 3` not `mức vừa`
+- Dates and streaks: `5/7 ngày` not `5 ngày liên tiếp trong tuần`
+
+## Copy Slots Must Be Populated
+All copy slots defined in the screen spec must be populated with real data variables before committing. No screen ships with placeholder copy.

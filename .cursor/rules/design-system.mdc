@@ -1,0 +1,46 @@
+---
+description: Design system token and component rules — enforced on all component files
+globs: src/components/**/*
+alwaysApply: false
+---
+
+## Token Approach
+Approach A — inline token refs. No Tailwind arbitrary values.
+
+## Color Rules
+- Use tokens from `design-system.tsx` only — never raw hex values in component files
+- Semantic color tokens: `colors.bg0`–`colors.bg4` for backgrounds, `colors.t0`–`colors.t3` for text, `colors.teal` / `colors.amber` / `colors.risk` for semantic states
+- Pain score color: always use `painColor(score)` helper from `design-system.tsx` — never inline pain color logic
+- Never use `colors.teal` as a background fill on large surfaces — teal is accent only
+- `colors.bgInverse` is for CTA button fills and callout backgrounds only
+
+## Spacing Rules
+- Spacing tokens from `design-system.tsx`: `spacing[4]`, `spacing[8]`, `spacing[12]`, etc.
+- Never raw pixel values in style props — no `padding: '13px'`, `gap: '7px'`
+- Touch targets: `touchTarget.lg` (46px) for standard buttons, `touchTarget.xl` (52px) for onboarding/paywall CTAs only, `touchTarget.sm` (32px) for icon buttons
+
+## Typography Rules
+- Font families: `typography.fontPrimary` (Be Vietnam Pro), `typography.fontDisplay` (Figtree), `typography.fontMono` (DM Mono)
+- Font size tokens: `typography.size09` through `typography.size26` — never raw rem or px values
+- Font weight tokens: `typography.w400` through `typography.w800` — never raw numbers
+
+## Border and Radius Rules
+- All borders: `1px solid ${colors.border}` — never vary border width or colour except active/error states
+- Active border: `1.5px solid ${colors.t0}` for selected rows, `1.5px solid ${colors.risk}` for error states
+- Radius tokens: `radius.r4` through `radius.full` — never raw values like `borderRadius: '5px'`
+- No drop shadows — depth via background color steps only (`bg0` → `bg1` → `bg2` → `bg3` → `bg4`)
+- No gradients on any surface
+
+## Component Rules
+- Use exported components from `design-system.tsx` — check the Component → Screen Registry (Section 12) before creating any new component
+- Never create a one-off component in a screen file if an equivalent exists in `design-system.tsx`
+- Every interactive component must implement all applicable states: default / loading / error / empty / disabled
+- Loading state: use `SkeletonBlock` or `SkeletonText` — never return null or hide the container
+- Empty state: use `EmptyState` component — never blank space
+- Error state: use `ErrorBanner` component — never raw text
+
+## Animation Rules
+- Animation tokens only: `animation.micro` (120ms), `animation.standard` (200ms), `animation.progress` (700ms with 400ms delay)
+- No spring physics, no bounce, no scale > 2%
+- Typing indicator: always `TypingIndicator` component — 800ms minimum display even if response arrives faster
+- Progress bar fill: always 400ms delay after mount, 700ms fill — use `ProgressBar` with `delay={400}` prop

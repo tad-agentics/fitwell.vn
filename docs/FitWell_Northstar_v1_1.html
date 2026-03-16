@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitWell — Northstar v1.1</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 0 auto; padding: 2rem; line-height: 1.6; color: #1a1a1a; }
+    h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.125rem; font-weight: 600; margin-top: 2.5rem; color: #444; text-transform: uppercase; letter-spacing: 0.05em; }
+    h3 { font-size: 1rem; font-weight: 600; margin-top: 1.5rem; color: #1a1a1a; }
+    p { margin: 0.5rem 0 1rem; }
+    ul { margin: 0.5rem 0 1rem; padding-left: 1.25rem; }
+    li { margin-bottom: 0.25rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid #e5e5e5; }
+    th { font-weight: 600; background: #f9f9f9; }
+    .meta { color: #666; font-size: 0.875rem; margin-bottom: 2rem; }
+    .value-prop { font-size: 1.125rem; font-style: italic; padding: 1rem; background: #f5f5f5; border-left: 3px solid #333; margin: 0.5rem 0 1rem; }
+    .divider { border: none; border-top: 1px solid #e5e5e5; margin: 2rem 0; }
+    .internal { background: #fafafa; border: 1px solid #e5e5e5; border-radius: 4px; padding: 1.5rem 1.5rem 0.5rem; margin-top: 3rem; }
+    .internal-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #999; margin-bottom: 1rem; }
+    code { font-family: monospace; background: #f0f0f0; padding: 0.125rem 0.375rem; border-radius: 3px; font-size: 0.875rem; }
+    pre { background: #f0f0f0; padding: 1rem; border-radius: 4px; font-size: 0.875rem; overflow-x: auto; line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+  <h1>FitWell</h1>
+  <p class="meta">Northstar v1.1 — March 2026</p>
+
+  <h2>1. The Problem</h2>
+  <p>Nam giới văn phòng 35–50 tuổi tại Hà Nội và TP.HCM sống với đau MSK mãn tính hàng ngày — lưng dưới, cổ vai gáy, đầu gối, cân gan bàn chân — nhưng không có thứ gì thật sự giải quyết được. Họ biết cơ thể đang có vấn đề. Họ đã thử: gym, YouTube, dầu nóng, vật lý trị liệu. Không thiếu nỗ lực. Thiếu đúng bài cho đúng cơ thể — và thiếu thứ nhắc họ làm mỗi ngày vào đúng lúc cần nhất. Kết quả là một vòng lặp: đau → chịu đựng → đau lại. Mỗi buổi sáng bước chân xuống sàn là một lần nhắc nhở rằng hôm nay sẽ y hệt hôm qua.</p>
+
+  <h2>2. Primary User (Named Archetype)</h2>
+  <p><strong>Minh, 42 tuổi, Senior Manager tại một công ty logistics, Hà Nội.</strong></p>
+  <p>Minh có 3 cuộc họp trước 10 giờ sáng. Ngồi 7–9 tiếng mỗi ngày, đi công tác mỗi quý 2–3 lần. Lưng dưới đau mãn tính từ năm 38 — không nặng đến mức nghỉ làm, nhưng đủ để ngại cúi xuống nhặt thứ gì đó trước mặt con. Đã thử PT gym 3 tháng — bỏ vì lịch không ổn định. Đã xem YouTube — bài chung, không biết bài nào đúng cho mình. Đang dùng dầu nóng tối trước khi ngủ.</p>
+  <p>Lúc 6:45 sáng, chân chạm sàn — đó là moment Minh nhận ra hôm nay sẽ lại như hôm qua. Cảm giác không phải sợ hãi, là mệt mỏi vì đã quen.</p>
+
+  <h2>3. The Solution</h2>
+  <p>Minh mô tả chỗ đang khó chịu trong 30 giây. FitWell đọc pattern, giao ngay bài đầu tiên — không phải template chung, là bài cho đúng tình trạng của anh hôm nay, kèm video tự chạy. Mỗi ngày, FitWell nhắc Minh đúng lúc anh cần nhất: 6:45 sáng khi còn trên giường, 2 giờ chiều sau 3 tiếng họp, 10 giờ tối sau khi làm việc xong. Check-in 1 phút — FitWell phản hồi ngay, theo dõi tiến triển, tự điều chỉnh bài nếu không có kết quả sau 10 ngày. Theo thời gian, FitWell nhớ cơ thể Minh: biết lưng hay tệ hơn trước deadline, biết bài nào đã giúp lần trước, biết khi nào nên chuyển focus. Dữ liệu này không thể bắt đầu lại từ đầu ở chỗ khác.</p>
+
+  <h2>4. Revenue Model</h2>
+  <p><strong>Mô hình:</strong> Upfront subscription — không recurring hàng tháng. Hai lựa chọn: 6 tháng (790,000 VND) và 1 năm (990,000 VND). Blended ARPU ~900,000 VND với mix 40/60.</p>
+  <p><strong>Payment trigger:</strong> Ngày 7 của trial miễn phí — FitWell trình bày lại toàn bộ tiến triển 7 ngày (điểm đau, số ngày hoàn thành bài, so sánh với tuần trước) trước khi hỏi tiếp tục.</p>
+  <p><strong>Lý do upfront:</strong> Người Việt ngại recurring — không phải ngại trả nhiều. 990,000 VND một lần = "đầu tư sức khoẻ năm nay", không phải "subscription đang charge mãi".</p>
+  <p><strong>Revenue math:</strong> 1,000 paying users × 900,000 VND blended ARPU = ~900 triệu VND/năm. Year 2 target: 4,000 users → ~3.6 tỷ VND. Break-even tại ~400 paying users với gross margin ~80%.</p>
+
+  <h2>5. Core Value Proposition</h2>
+  <p class="value-prop">FitWell giúp Minh biết đúng bài cần làm hôm nay — và nhắc anh làm mỗi ngày — để đau MSK mãn tính giảm dần và kiểm soát được, mà không cần tìm hiểu, không cần lịch cố định, không cần nhớ.</p>
+
+  <h2>6. Competitive Moat</h2>
+  <p><strong>Moat type:</strong> Switching cost moat (longitudinal personal data)</p>
+  <p>Mỗi ngày check-in, FitWell tích luỹ pattern data về một cơ thể cụ thể: điểm đau theo giờ, bài nào hiệu quả với điều kiện nào, khi nào flare xảy ra và tại sao. Sau 6 tháng, FitWell biết cơ thể Minh qua deadline, qua công tác, qua thay đổi thời tiết. Không app mới nào có thể replicate dữ liệu đó — switching cost tăng tự nhiên, không cần lock-in nhân tạo. Đây cũng là basis để mở rộng sang condition mới (hypertension, metabolic) mà không cần onboarding lại từ đầu.</p>
+
+  <h2>7. Build Scope</h2>
+  <p>FitWell là một product hoàn chỉnh, không phải MVP. Toàn bộ core loop được build trong một lần duy nhất:</p>
+  <p><strong>Onboarding:</strong> User mô tả triệu chứng — FitWell nhận diện tình trạng, giao protocol đầu tiên ngay, kèm video hướng dẫn.</p>
+  <p><strong>Daily loop:</strong> Check-in hàng ngày — FitWell phản hồi theo pain score, tự điều chỉnh bài theo tiến triển, nhắc đúng lúc qua web push (Android/Chrome) hoặc in-app banner (iOS).</p>
+  <p><strong>Pattern intelligence:</strong> Sau 14 ngày, FitWell nhận ra pattern — lưng hay tệ hơn trước deadline, flare theo thời tiết — và phản hồi proactively.</p>
+  <p><strong>Progress:</strong> Người dùng thấy điểm đau, consistency, và pattern của chính mình theo thời gian thực.</p>
+  <p><strong>Monetisation:</strong> 7 ngày trial đầy đủ tính năng — ngày 7 FitWell trình bày lại tiến triển thật của người dùng và hỏi tiếp tục. Upfront subscription: 6 tháng (790,000 VND) hoặc 1 năm (990,000 VND).</p>
+
+  <hr class="divider">
+
+  <div class="internal">
+    <p class="internal-label">Internal — Business Case</p>
+
+    <h3>Market Focus</h3>
+    <p>Nam giới văn phòng 30–50 tuổi tại Hà Nội và TP.HCM. TAM: ~700k–1M người. SAM (smartphone, thu nhập trung lưu+): ~200k–300k. SOM Year 1: 1,000–3,000 paying users.</p>
+    <ul>
+      <li>65%+ người văn phòng mắc ít nhất một hội chứng MSK <em>(Vinmec, CarePlus 2024)</em></li>
+      <li>55% chưa điều trị — đang chịu đựng <em>(CarePlus 2024)</em></li>
+      <li>30%+ người trên 35 tuổi bị thoái hoá khớp <em>(Hội Cơ Xương Khớp VN)</em></li>
+    </ul>
+
+    <h3>Positioning</h3>
+    <p>Góc phần tư trống: <strong>clinical depth của Hinge Health, tone của Wakeout.</strong> Clinical knowledge ẩn trong logic chọn bài — không phải trong ngôn ngữ giao tiếp với user.</p>
+    <table>
+      <tr><th>Tránh</th><th>Dùng</th></tr>
+      <tr><td>"Thoát vị L4-L5"</td><td>"Lưng đang kêu cứu sau 8 tiếng ngồi"</td></tr>
+      <tr><td>"Kinetic chain dysfunction"</td><td>"Đầu gối đau không phải lỗi của đầu gối"</td></tr>
+      <tr><td>"Protocol cá nhân hoá"</td><td>"Bài của bạn — không phải của ai khác"</td></tr>
+      <tr><td>"Kiểm soát bệnh mãn tính"</td><td>"Tốt hơn mỗi ngày"</td></tr>
+      <tr><td>"Hội chứng ống cổ tay"</td><td>"Tay tê ban đêm — 2 phút trước khi ngủ sẽ khác"</td></tr>
+    </table>
+
+    <h3>Acquisition Channels</h3>
+    <table>
+      <tr><th>Channel</th><th>CAC estimate</th><th>Ghi chú</th></tr>
+      <tr><td>SEO symptom keywords</td><td>30–80k VND</td><td>Mỗi keyword = một entry point vào đúng pain moment</td></tr>
+      <tr><td>Cộng đồng FB / Zalo</td><td>20–50k VND</td><td>Group đau lưng, cổ vai gáy — seeding organic</td></tr>
+      <tr><td>Facebook/Zalo ads</td><td>150–300k VND</td><td>Creative: before/after pain score</td></tr>
+      <tr><td>Phòng khám / vật lý trị liệu</td><td>0 nếu incentive đúng</td><td>Highest trust — validate trước</td></tr>
+      <tr><td>Vợ research cho chồng</td><td>Organic</td><td>Landing page riêng cho segment này</td></tr>
+    </table>
+
+    <h3>Key Assumptions — Validate trong 60 ngày</h3>
+    <ul>
+      <li>Day 7 retention → target 40%+</li>
+      <li>Conversion tại paywall ngày 7 → target 20–30%</li>
+      <li>CAC thực tế → target &lt;150k VND</li>
+      <li>Split 6-tháng vs 1-năm → target 40/60</li>
+      <li>Re-engagement sau churn → target 35%+ trong 12 tháng</li>
+      <li>Multi-condition onboarding (2+ điểm đau) → tăng hay giảm conversion? Cần test</li>
+    </ul>
+
+    <h3>Psychology Models</h3>
+    <table>
+      <tr><th>Mechanism</th><th>Application</th></tr>
+      <tr><td>Activation Energy</td><td>Bài 90 giây trên giường — barrier gần bằng 0</td></tr>
+      <tr><td>BJ Fogg Behavior Model</td><td>Motivation (đang đau) + Ability (90 giây) + Prompt (đúng lúc)</td></tr>
+      <tr><td>Hyperbolic Discounting</td><td>"3 ngày sẽ thấy khác" — ngay, cụ thể, đủ nhỏ</td></tr>
+      <tr><td>Endowment Effect</td><td>7-day trial full access = user "sở hữu" FitWell trước khi trả tiền</td></tr>
+      <tr><td>IKEA Effect</td><td>3 câu onboarding = user đầu tư vào plan của mình</td></tr>
+      <tr><td>Loss Aversion</td><td>Sai bài có thể làm nặng hơn — cost của inaction</td></tr>
+      <tr><td>Mental Accounting</td><td>990k "đầu tư sức khoẻ năm nay" ≠ subscription hàng tháng</td></tr>
+      <tr><td>Anchoring</td><td>PT gym 2–5 triệu/tháng vs FitWell 82k/tháng</td></tr>
+      <tr><td>Switching Costs</td><td>Pattern data tích luỹ — tăng tự nhiên theo thời gian</td></tr>
+      <tr><td>Identity-Based Habits</td><td>"Người hiểu cơ thể mình" — không phải "người đang điều trị bệnh"</td></tr>
+      <tr><td>Zeigarnik Effect</td><td>Consistency % (không phải streak) — không phạt flare-up days</td></tr>
+    </table>
+
+  </div>
+
+</body>
+</html>

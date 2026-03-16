@@ -1,0 +1,62 @@
+---
+description: Frontend code structure, naming, reuse, and data fetching rules — enforced on all TSX/TS files
+globs:
+  - src/**/*.tsx
+  - src/**/*.ts
+alwaysApply: false
+---
+
+## Component Reuse
+- Before creating any component, check `design-system.tsx` Section 12 (Component → Screen Registry) — if an equivalent exists, import it
+- Before creating any utility function, check `src/lib/` — if an equivalent exists, import it
+- Never duplicate logic that exists in a shared component or hook — extract and import instead
+- `InAppBanner.tsx` is `client:load` on every page — never re-implement notification banner logic
+
+## Naming
+- Components: PascalCase, one per file, filename matches export — `PainScoreSelector.tsx` exports `PainScoreSelector`
+- Hooks: camelCase prefixed with `use` — `useCheckin.ts`, `useProtocol.ts`
+- Utility functions: camelCase in `src/lib/` — `formatDuration.ts`, `detectPlatform.ts`
+- Astro pages: kebab-case matching URL segment — `onboarding/index.astro`, `checkin.astro`
+- React islands: PascalCase `.tsx` in `src/components/`
+
+## File Structure
+- Shared components (used on ≥ 2 screens): `src/components/shared/`
+- Feature components (used on 1 screen only): `src/components/{feature}/`
+- If a feature component is imported by a second screen, move it to `src/components/shared/`
+- Hooks: `src/hooks/` — no business logic in components that can be extracted to a hook
+- API calls: `src/lib/api.ts` — never call `fetch()` directly in a component, always use the api module
+- Constants and magic values: `src/lib/constants.ts` — never hardcode strings or numbers in components
+- Types: `src/lib/types.ts` — shared; co-locate component-specific types in the component file
+
+## Astro Island Architecture
+- Astro pages (`.astro`): zero JS, static HTML, server-rendered
+- `client:load` — interactive immediately on load: `CheckinForm.tsx`, `ExercisePlayer.tsx`, `InAppBanner.tsx`, `PaywallCard.tsx`
+- `client:visible` — lazy hydrate on scroll: `PainChart.tsx`, `ConsistencyDotGrid.tsx`
+- `NavBar.astro`, `BottomNav.astro` — static HTML, no hydration
+- Never add `client:load` to a component that doesn't need interactivity on first paint
+
+## State Management
+- Zustand store (`src/lib/store.ts`) for cross-page state only
+- JWT access token: Zustand in-memory only — never `localStorage`, never `sessionStorage`
+- Anonymous ID (`fw_anonymous_id`): `localStorage` is the one permitted exception
+- Notification flag (`fw_notif_asked`): `localStorage` — write once, never clear
+- Local UI state (form values, selected score): React `useState` in the component — never Zustand
+
+## Data Fetching
+- Initial page data: fetch server-side in Astro page — no `useEffect` for data available at render time
+- Interactive updates (check-in submit, session patch): client-side via `src/lib/api.ts`
+- Never fetch the same data in two components on the same page — fetch once at page level, pass as props
+- All API calls use the base URL from `PUBLIC_API_URL` env var — never hardcode `localhost` or production URL
+- Fire-and-forget updates (step progress, feedback): call without `await`, do not block UI on response
+
+## Auth
+- JWT access token TTL: 15 minutes — always refresh via httpOnly cookie before expiry
+- `auth-guard.ts` middleware handles all token validation server-side — never replicate auth logic client-side
+- Anonymous session: `Authorization: Anonymous <anonymous_id>` header — use `src/lib/auth.ts` helpers
+- Claimed session: `Authorization: Bearer <jwt>` header — use `src/lib/auth.ts` helpers
+- Never import `@supabase/supabase-js` in component files or hooks — Supabase is backend only
+
+## Imports
+- Absolute imports from `@/` — never relative imports going up more than one level (no `../../..`)
+- Import groups (in order): React/Astro → third-party libs → `@/components` → `@/lib` → types
+- `design-system.tsx` imports: named imports only — `import { PrimaryButton, colors } from '@/design-system'`
