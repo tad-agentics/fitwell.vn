@@ -1,0 +1,12 @@
+---
+/**
+ * Exercise player — load protocol, start session, show first exercise, complete.
+ */
+import Layout from '../layouts/Layout.astro';
+import ExercisePlayer from '../components/exercise/ExercisePlayer';
+---
+<Layout title="Bài tập — FitWell">
+  <main class="min-h-screen bg-bg0 text-t0">
+    <ExercisePlayer client:load />
+  </main>
+</Layout>

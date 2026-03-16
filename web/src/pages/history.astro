@@ -1,0 +1,10 @@
+---
+/**
+ * S16 Lịch sử Tab — route /history. Session and check-in history list. BottomNav.
+ */
+import Layout from '../layouts/Layout.astro';
+import { HistoryWithNav } from '../components/shared/AppShell';
+---
+<Layout title="Lịch sử — FitWell">
+  <HistoryWithNav client:load />
+</Layout>

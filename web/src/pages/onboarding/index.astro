@@ -1,0 +1,12 @@
+---
+/**
+ * S03b Path Chooser — route /onboarding. RadioRow × 2, CTA "Tiếp theo →".
+ */
+import Layout from '../../layouts/Layout.astro';
+import S03bPathChooser from '../../components/screens/S03bPathChooser';
+---
+<Layout title="Bắt đầu — FitWell">
+  <main class="min-h-screen p-6 bg-bg0 text-t0 flex flex-col justify-center">
+    <S03bPathChooser client:load />
+  </main>
+</Layout>

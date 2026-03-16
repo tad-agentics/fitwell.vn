@@ -1,0 +1,12 @@
+---
+/**
+ * S04A Condition Search — route /onboarding/condition. TabToggle, search, multi-select, Xác nhận → S04C.
+ */
+import Layout from '../../layouts/Layout.astro';
+import S04AConditionSearch from '../../components/onboarding/S04AConditionSearch';
+---
+<Layout title="Chọn tình trạng — FitWell">
+  <main class="min-h-screen p-6 bg-bg0 text-t0">
+    <S04AConditionSearch client:load />
+  </main>
+</Layout>

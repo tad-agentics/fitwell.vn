@@ -21,29 +21,30 @@ FitWell là ứng dụng phục hồi cơ xương khớp (MSK) dành cho nam gi�
 
 ## Tier Scope — Active Sprint
 
-**Tier 1 only.** Do not build Tier 2 or Tier 3 features.
+**Tier 1 = full MVP.** There is no Tier 2 or Tier 3; pack everything into Tier 1.
 
-Tier 1 screens:
+Tier 1 includes:
 - Symptom intake (3-question onboarding)
 - Protocol assignment (AI response + first exercise)
 - Daily check-in
 - Progress tracking (pain score timeline)
 - Exercise video player (Cloudflare Stream)
+- Pattern memory and proactive nudges
+- Adaptive protocol switching (phase gate, pattern detection)
+- Paywall and billing screens (PayOS)
+- 7-day trial conversion flow
+- Re-engagement flow after churn
+- Add-condition flow (S29, multi-condition)
 
 ## Out of Scope — Do Not Build
 
-- Pattern memory and proactive nudges — Tier 2
-- Adaptive protocol switching — Tier 2
-- Paywall and billing screens — Tier 3
-- 7-day trial conversion flow — Tier 3
-- Re-engagement flow after churn — Tier 3
-- Condition expansion beyond initial 5 MSK entries — post-Tier 1
+- Condition expansion beyond initial MSK catalog in spec — unless spec updated
 - Native iOS/Android app — post-MVP validation
 - Social or community features — not in roadmap
 
 ## Build Rules
 
-- Build Tier 1 screens only — reject any feature request that is Out of Scope above
+- Build all Tier 1 features above; reject only requests that are Out of Scope
 - One component per file
 - No inline styles — use Tailwind utility classes only, no arbitrary values like `p-[13px]`
 - No hardcoded hex values — use design token class names from design-system

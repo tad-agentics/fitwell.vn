@@ -1,0 +1,11 @@
+{
+  "name": "fitwell",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev:api": "npm run dev --prefix api",
+    "dev:web": "npm run dev --prefix web",
+    "build:api": "npm run build --prefix api",
+    "build:web": "npm run build --prefix web"
+  }
+}

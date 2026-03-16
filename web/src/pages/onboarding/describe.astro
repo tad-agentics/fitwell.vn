@@ -1,0 +1,13 @@
+---
+/**
+ * S04 describe path — ?q= from S02/S03b. Symptom-map with q, then select condition → intake.
+ */
+import Layout from '../../layouts/Layout.astro';
+import OnboardingDescribe from '../../components/onboarding/OnboardingDescribe';
+---
+<Layout title="Mô tả triệu chứng — FitWell">
+  <main class="min-h-screen p-6 bg-bg0 text-t0">
+    <h1 class="font-display text-lg font-semibold text-t0">Mô tả triệu chứng</h1>
+    <OnboardingDescribe client:load />
+  </main>
+</Layout>

@@ -1,0 +1,17 @@
+---
+/**
+ * S01 Splash — route /. Screen spec: logo, tagline, CTA "Bắt đầu ngay", Ghost "Đăng nhập".
+ * Redirect to S15 Home if valid session (handled in S01Splash client island).
+ */
+import Layout from '../layouts/Layout.astro';
+import S01Splash from '../components/screens/S01Splash';
+---
+<Layout title="FitWell">
+  <main class="min-h-screen flex flex-col items-center justify-center p-6 bg-bg0 text-t0" style="animation: fadeUp 200ms ease-out;">
+    <h1 class="font-display text-2xl font-semibold text-t0">FitWell</h1>
+    <p class="mt-2 text-t1 text-sm">Đúng bài. Mỗi ngày. Tốt hơn dần.</p>
+    <div class="mt-8 w-full max-w-[320px]">
+      <S01Splash client:load />
+    </div>
+  </main>
+</Layout>

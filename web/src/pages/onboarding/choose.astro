@@ -1,0 +1,13 @@
+---
+/**
+ * S04A Tab: Chọn condition từ catalog (rule-based list for P1)
+ */
+import Layout from '../../layouts/Layout.astro';
+import ConditionSelect from '../../components/onboarding/ConditionSelect';
+---
+<Layout title="Chọn tình trạng — FitWell">
+  <main class="min-h-screen p-6 bg-bg0 text-t0">
+    <h1 class="font-display text-lg font-semibold text-t0">Chọn tình trạng của bạn</h1>
+    <ConditionSelect client:load />
+  </main>
+</Layout>

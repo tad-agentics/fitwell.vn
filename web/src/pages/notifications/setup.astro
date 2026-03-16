@@ -1,0 +1,12 @@
+---
+/**
+ * S30 Notification Permission — route /notifications/setup (modal overlay). Copy: benefits, CTA "Đồng ý — bật thông báo", Ghost "Để sau".
+ */
+import Layout from '../../layouts/Layout.astro';
+import S30NotificationSetup from '../../components/notifications/S30NotificationSetup';
+---
+<Layout title="Thông báo — FitWell">
+  <main class="min-h-screen p-6 bg-bg0 text-t0 flex flex-col justify-center">
+    <S30NotificationSetup client:load />
+  </main>
+</Layout>

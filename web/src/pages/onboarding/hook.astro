@@ -1,0 +1,12 @@
+---
+/**
+ * S03 Hook — route /onboarding/hook. Free-text path only. CTA → S03b (/onboarding?q=).
+ */
+import Layout from '../../layouts/Layout.astro';
+import S03Hook from '../../components/screens/S03Hook';
+---
+<Layout title="Bắt đầu — FitWell">
+  <main class="min-h-screen p-6 bg-bg0 text-t0 flex flex-col justify-center">
+    <S03Hook client:load />
+  </main>
+</Layout>

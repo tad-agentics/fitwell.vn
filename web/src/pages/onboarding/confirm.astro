@@ -1,0 +1,12 @@
+---
+/**
+ * S04C Condition Confirm — route /onboarding/confirm. Path A or B → anonymous + conditions → S07 or SMSK08.
+ */
+import Layout from '../../layouts/Layout.astro';
+import S04CConfirm from '../../components/onboarding/S04CConfirm';
+---
+<Layout title="Xác nhận — FitWell">
+  <main class="min-h-screen p-6 bg-bg0 text-t0">
+    <S04CConfirm client:load />
+  </main>
+</Layout>

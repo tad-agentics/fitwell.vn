@@ -1,0 +1,10 @@
+---
+/**
+ * S14 Home / Hôm nay — route /home. ConsistencyGrid, TodayExerciseCard, check-in link. BottomNav.
+ */
+import Layout from '../layouts/Layout.astro';
+import { HomeWithNav } from '../components/shared/AppShell';
+---
+<Layout title="Trang chủ — FitWell">
+  <HomeWithNav client:load />
+</Layout>

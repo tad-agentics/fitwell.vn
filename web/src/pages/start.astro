@@ -1,0 +1,12 @@
+---
+/**
+ * S02 Pain Entry — route /start. Text input + suggestion chips (top 5 msk_conditions). CTA "Tiếp tục" → S03 (?q=) or S03b.
+ */
+import Layout from '../layouts/Layout.astro';
+import S02PainEntry from '../components/screens/S02PainEntry';
+---
+<Layout title="Bắt đầu — FitWell">
+  <main class="min-h-screen p-6 bg-bg0 text-t0">
+    <S02PainEntry client:load />
+  </main>
+</Layout>

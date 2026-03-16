@@ -1,0 +1,12 @@
+---
+/**
+ * S06 Onboard Q3 — route /onboarding/current-treatment. Progress 3/4. Exits to S04C confirm.
+ */
+import Layout from '../../layouts/Layout.astro';
+import S06CurrentTreatment from '../../components/onboarding/S06CurrentTreatment';
+---
+<Layout title="Bắt đầu — FitWell">
+  <main class="min-h-screen p-6 bg-bg0 text-t0">
+    <S06CurrentTreatment client:load />
+  </main>
+</Layout>

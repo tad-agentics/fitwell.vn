@@ -1,0 +1,12 @@
+---
+/**
+ * S07 First Insight — route /onboarding/insight. No back. CTA → assessment or first-exercise.
+ */
+import Layout from '../../layouts/Layout.astro';
+import S07FirstInsight from '../../components/onboarding/S07FirstInsight';
+---
+<Layout title="Bài đầu tiên — FitWell">
+  <main class="min-h-screen p-6 bg-bg0 text-t0">
+    <S07FirstInsight client:load />
+  </main>
+</Layout>

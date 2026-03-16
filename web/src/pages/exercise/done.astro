@@ -1,0 +1,12 @@
+---
+/**
+ * S10 Post-Exercise — route /exercise/done?session_id=. Feedback, notification CTA.
+ */
+import Layout from '../../layouts/Layout.astro';
+import S10PostExercise from '../../components/exercise/S10PostExercise';
+---
+<Layout title="Hoàn thành — FitWell">
+  <main class="min-h-screen p-6 bg-bg0 text-t0">
+    <S10PostExercise client:load sessionId="" />
+  </main>
+</Layout>

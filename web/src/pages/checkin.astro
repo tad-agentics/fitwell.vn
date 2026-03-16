@@ -1,0 +1,13 @@
+---
+/**
+ * S12/S13 Check-in — route /checkin or /checkin?condition_id=. Pain score, POST checkins.
+ */
+import Layout from '../layouts/Layout.astro';
+import CheckInForm from '../components/checkin/CheckInForm';
+---
+<Layout title="Check-in — FitWell">
+  <main class="min-h-screen p-6 bg-bg0 text-t0">
+    <h1 class="font-display text-lg font-semibold text-t0">Check-in hôm nay</h1>
+    <CheckInForm client:load />
+  </main>
+</Layout>

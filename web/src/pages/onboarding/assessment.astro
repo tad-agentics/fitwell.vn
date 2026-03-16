@@ -1,0 +1,12 @@
+---
+/**
+ * SMSK07 Assessment Fork — route /onboarding/assessment. Exits to S08 first-exercise.
+ */
+import Layout from '../../layouts/Layout.astro';
+import SMSK07Assessment from '../../components/onboarding/SMSK07Assessment';
+---
+<Layout title="Bài test — FitWell">
+  <main class="min-h-screen p-6 bg-bg0 text-t0">
+    <SMSK07Assessment client:load />
+  </main>
+</Layout>

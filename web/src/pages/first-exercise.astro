@@ -1,0 +1,12 @@
+---
+/**
+ * S08 AI First Response — route /first-exercise?condition_id=. CTA → /exercise/{session_id}.
+ */
+import Layout from '../layouts/Layout.astro';
+import S08FirstExercise from '../components/onboarding/S08FirstExercise';
+---
+<Layout title="Làm bài — FitWell">
+  <main class="min-h-screen p-6 bg-bg0 text-t0">
+    <S08FirstExercise client:load />
+  </main>
+</Layout>

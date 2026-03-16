@@ -1,0 +1,52 @@
+/* FitWell — design tokens + Tailwind. Emotional Design: no exclamation, no emoji. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global keyframes — design-system Section 11 + Emotional Design */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes typingDot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+@keyframes progIn {
+  from { width: 0; }
+  to { width: var(--w, 100%); }
+}
+@keyframes playPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@layer base {
+  :root {
+    --color-bg0: #0E0E0C;
+    --color-bg1: #161614;
+    --color-bg2: #1E1E1A;
+    --color-t0: #F0EFE9;
+    --color-t1: #B8B7B0;
+    --color-teal: #2EC4A0;
+    --color-amber: #D4820A;
+    --color-risk: #C0392B;
+  }
+  html {
+    @apply bg-bg0 text-t0 font-primary antialiased;
+  }
+  body {
+    min-height: 100vh;
+  }
+}
