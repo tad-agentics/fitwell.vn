@@ -1,5 +1,5 @@
 /**
- * Describe flow — ensure anonymous, POST symptom-map with ?q=, show suggestions, on select call intake → exercise.
+ * Describe flow — ensure anonymous, POST symptom-map with ?q=, show suggestions, on select call intake → assessment or insight.
  */
 
 import { useState, useEffect } from 'react';
@@ -7,6 +7,18 @@ import { PrimaryButton } from '@/design-system';
 import { getApiBase, getAnonymousId, setAnonymousId } from '@/lib/auth';
 
 const API_BASE = getApiBase();
+
+function routeAfterIntake(data: { condition_id?: string; assessment_required?: boolean; safety_warning?: { content_vi: string } | null }) {
+  if (!data.condition_id) return;
+  if (data.assessment_required) {
+    window.location.href = '/onboarding/assessment';
+    return;
+  }
+  if (data.safety_warning?.content_vi) {
+    try { sessionStorage.setItem('fw_safety_warning', JSON.stringify(data.safety_warning)); } catch { /* ignore */ }
+  }
+  window.location.href = '/onboarding/insight';
+}
 
 async function ensureAnonymous(): Promise<string> {
   let anonId = getAnonymousId();
@@ -66,7 +78,7 @@ export default function OnboardingDescribe() {
     });
     const data = await res.json();
     if (data.success && data.data?.condition_id) {
-      window.location.href = `/exercise?condition_id=${data.data.condition_id}`;
+      routeAfterIntake(data.data);
     }
   };
 

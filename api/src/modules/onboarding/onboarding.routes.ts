@@ -20,7 +20,7 @@ export async function onboardingRoutes(app: FastifyInstance): Promise<void> {
 
     const mskRes = await pool.query<MskConditionRow>(
       `SELECT id, slug, name_vi, body_region, pain_track, phase_count, assessment_required, assessment_test_slug, safety_warning_vi FROM msk_conditions WHERE slug = $1 AND is_active = TRUE`,
-      [typeof slug === 'string' ? slug : slug]
+      [slug]
     );
     if (mskRes.rows.length === 0) throw new AppError('NOT_FOUND', 404);
     const msk = mskRes.rows[0];

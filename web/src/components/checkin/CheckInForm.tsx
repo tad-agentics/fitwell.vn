@@ -50,7 +50,7 @@ export default function CheckInForm(_props: CheckInFormProps = {}) {
     fetch(`${getApiBase()}/api/v1/me`, { headers: { Authorization: auth } })
       .then((r) => r.json())
       .then((d) => {
-        const at = d?.success?.data?.onboarding_completed_at;
+        const at = d?.success && d?.data?.onboarding_completed_at;
         if (at) {
           const base = new Date(at).getTime();
           const today = new Date();
@@ -71,7 +71,7 @@ export default function CheckInForm(_props: CheckInFormProps = {}) {
       })
       .then((r) => (r && r.ok ? r.json() : null))
       .then((d) => {
-        if (d?.success?.data) {
+        if (d?.success && d?.data) {
           setAlreadyCheckedIn(true);
           setResponse({
             response_type: d.data.response_type ?? 'standard',
@@ -102,7 +102,7 @@ export default function CheckInForm(_props: CheckInFormProps = {}) {
       if (res.status === 409 && data?.code === 'CHECKIN_ALREADY_EXISTS') {
         const todayRes = await fetch(`${getApiBase()}/api/v1/checkins/today?condition_id=${encodeURIComponent(conditionId)}`, { headers: { Authorization: auth } });
         const todayData = await todayRes.json();
-        if (todayData?.success?.data) {
+        if (todayData?.success && todayData?.data) {
           setPainScore(todayData.data.pain_score ?? null);
           setResponse({
             response_type: todayData.data.response_type ?? 'standard',
@@ -112,7 +112,7 @@ export default function CheckInForm(_props: CheckInFormProps = {}) {
           });
           setAlreadyCheckedIn(true);
         }
-      } else if (data?.success?.data) {
+      } else if (data?.success && data?.data) {
         const elapsed = Date.now() - start;
         const wait = Math.max(0, TYPING_INDICATOR_MS - elapsed);
         await new Promise((r) => setTimeout(r, wait));
@@ -129,15 +129,15 @@ export default function CheckInForm(_props: CheckInFormProps = {}) {
   };
 
   const startExercise = async () => {
-    const anonId = typeof localStorage !== 'undefined' ? localStorage.getItem('fw_anonymous_id') : null;
-    if (!anonId || !response?.protocol_id) return;
+    const auth = getAuthHeader();
+    if (!auth || !response?.protocol_id) return;
     const res = await fetch(`${getApiBase()}/api/v1/sessions`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Anonymous ${anonId}` },
+      headers: { 'Content-Type': 'application/json', Authorization: auth },
       body: JSON.stringify({ protocol_id: response.protocol_id, source: 'checkin' }),
     });
     const data = await res.json();
-    if (data?.success?.data?.session_id) {
+    if (data?.success && data?.data?.session_id) {
       window.location.href = `/exercise?session_id=${encodeURIComponent(data.data.session_id)}`;
     }
   };

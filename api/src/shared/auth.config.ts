@@ -4,7 +4,7 @@
 
 export const JWT_CONFIG = {
   accessTokenTTL: '15m',
-  refreshTokenTTL: '30d',
+  refreshTokenTTL: '7d',
   algorithm: 'HS256' as const,
   get secret(): string {
     const s = process.env.JWT_SECRET;
@@ -18,6 +18,6 @@ export const REFRESH_COOKIE_CONFIG = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'strict' as const,
-  maxAge: 30 * 24 * 60 * 60, // 30 days
+  maxAge: 7 * 24 * 60 * 60, // 7 days
   path: '/api/v1/auth',
 };

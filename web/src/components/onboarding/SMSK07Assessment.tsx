@@ -29,11 +29,11 @@ export default function SMSK07Assessment() {
     fetch(`${getApiBase()}/api/v1/conditions`, { headers: { Authorization: auth } })
       .then((r) => r.json())
       .then((d) => {
-        if (d?.success?.data) {
-          const needAssessment = (d.data as Array<{ id: string; display_name_vi: string; assessment_required?: boolean }>).filter(
+        if (d?.success && d?.data) {
+          const needAssessment = (d.data as Array<{ id: string; display_name_vi: string; assessment_required?: boolean; assessment_test_slug?: string | null }>).filter(
             (c) => c.assessment_required
           );
-          setConditions(needAssessment.map((c) => ({ ...c, assessment_test_slug: 'prone_press_up' })));
+          setConditions(needAssessment.map((c) => ({ ...c, assessment_test_slug: c.assessment_test_slug ?? 'prone_press_up' })));
         }
         setLoading(false);
       })

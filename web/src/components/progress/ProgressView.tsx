@@ -42,7 +42,7 @@ export default function ProgressView() {
     fetch(`${base}/api/v1/conditions`, { headers: { Authorization: auth } })
       .then((r) => r.json())
       .then((d) => {
-        const cid = d?.success?.data?.[0]?.id ?? null;
+        const cid = (d?.success && d?.data?.[0]?.id) ? d.data[0].id : null;
         setConditionId(cid);
         const q = cid ? `?condition_id=${cid}` : '';
         return Promise.all([
@@ -53,22 +53,22 @@ export default function ProgressView() {
       })
       .then(([trendRes, calRes, patternRes]) => Promise.all([trendRes?.json(), calRes?.json(), patternRes?.json()]))
       .then(([trendData, calData, patternData]) => {
-        const points = (trendData?.success?.data?.points ?? []) as Array<{ pain_score: number; created_at: string }>;
+        const points = ((trendData?.success && trendData?.data?.points) ?? []) as Array<{ pain_score: number; created_at: string }>;
         setChartData(
           points.map((p) => ({
             day: new Date(p.created_at).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }),
             score: p.pain_score,
           }))
         );
-        if (calData?.success?.data) {
+        if (calData?.success && calData?.data) {
           setStats(calData.data.stats as Stats);
           setCalendarDays((calData.data.days ?? []) as CalendarDay[]);
         }
-        const obs = patternData?.success?.data?.observation;
+        const obs = patternData?.success && patternData?.data?.observation;
         if (obs && typeof obs === 'string') {
           setPatternObservation({
             description_vi: obs,
-            is_first_pattern: patternData?.success?.data?.is_first_pattern === true,
+            is_first_pattern: patternData?.success && patternData?.data?.is_first_pattern === true,
           });
         }
         setLoading(false);

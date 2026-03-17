@@ -82,6 +82,13 @@ export async function createConditionWithPhaseGate(
     [userId]
   );
 
+  await pool.query(
+    `INSERT INTO subscriptions (user_id, plan_type, status, expires_at)
+     VALUES ($1, 'trial', 'trial', NOW() + INTERVAL '7 days')
+     ON CONFLICT DO NOTHING`,
+    [userId]
+  );
+
   const safetyWarning = mskCondition.safety_warning_vi
     ? { content_vi: mskCondition.safety_warning_vi, show_once: true }
     : null;

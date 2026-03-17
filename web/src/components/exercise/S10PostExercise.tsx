@@ -29,7 +29,7 @@ export default function S10PostExercise({ sessionId: propSessionId }: S10PostExe
     fetch(`${base}/api/v1/conditions`, { headers: { Authorization: auth } })
       .then((r) => r.json())
       .then((d) => {
-        if (d?.success?.data?.[0]) {
+        if (d?.success && d?.data?.[0]) {
           const first = d.data[0];
           if (first.display_name_vi) setConditionName(first.display_name_vi);
           const cid = first.id;
@@ -40,7 +40,7 @@ export default function S10PostExercise({ sessionId: propSessionId }: S10PostExe
       })
       .then((r) => (r && r.ok ? r.json() : null))
       .then((d) => {
-        const ex = d?.success?.data?.exercises?.[0];
+        const ex = (d?.success && d?.data?.exercises?.[0]) ? d.data.exercises[0] : null;
         if (ex?.name_vi != null) {
           setNextExercise({
             name_vi: ex.name_vi,

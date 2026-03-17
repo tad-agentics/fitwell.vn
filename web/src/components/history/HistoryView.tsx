@@ -34,14 +34,14 @@ export default function HistoryView() {
     fetch(`${base}/api/v1/conditions`, { headers: { Authorization: auth } })
       .then((r) => r.json())
       .then((d) => {
-        const cid = d?.success?.data?.[0]?.id ?? null;
+        const cid = (d?.success && d?.data?.[0]?.id) ? d.data[0].id : null;
         setConditionId(cid);
         const q = cid ? `?condition_id=${cid}` : '';
         return fetch(`${base}/api/v1/progress/calendar${q}`, { headers: { Authorization: auth } });
       })
       .then((r) => (r?.ok ? r.json() : null))
       .then((d) => {
-        if (d?.success?.data) setData(d.data);
+        if (d?.success && d?.data) setData(d.data);
         setLoading(false);
       })
       .catch(() => setLoading(false));

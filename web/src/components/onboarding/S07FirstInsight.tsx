@@ -12,7 +12,44 @@ interface Condition {
   id: string;
   display_name_vi: string;
   assessment_required?: boolean;
+  msk_slug?: string;
+  pain_track?: string;
 }
+
+const INSIGHT_COPY: Record<string, { fear: string; insight: string }> = {
+  lumbar_disc: {
+    fear: 'Pattern này rất phổ biến với người ngồi 8 tiếng — không phải dấu hiệu bệnh nặng.',
+    insight: 'Đau cải thiện khi vận động đúng hướng — không phải nghỉ nhiều. Bài đầu phù hợp với pattern của bạn.',
+  },
+  neck_pain: {
+    fear: 'Pattern này rất phổ biến với người làm việc màn hình — không phải dấu hiệu bệnh nặng.',
+    insight: 'Cổ phục hồi tốt với bài nhẹ đúng cách — không phải nghỉ ngơi hoàn toàn.',
+  },
+  frozen_shoulder: {
+    fear: 'Frozen shoulder thường gặp — không phải vĩnh viễn.',
+    insight: 'Giai đoạn đầu: không kéo căng mạnh. Bài nhẹ giúp giảm viêm và duy trì range of motion.',
+  },
+  rotator_cuff: {
+    fear: 'Đau vai khi giơ tay — rất phổ biến, không phải rách hoàn toàn.',
+    insight: 'Cơ vòng bít cần tập lại sau đau. Bài nhẹ giúp phục hồi chức năng vai.',
+  },
+  knee_osteoarthritis: {
+    fear: 'Đau khớp gối khi vận động rất phổ biến — không có nghĩa là phải nghỉ hẳn.',
+    insight: 'Cơ đùi khỏe giúp giảm tải khớp. Bài nhẹ mỗi ngày hiệu quả hơn nghỉ ngơi.',
+  },
+  plantar_fasciitis: {
+    fear: 'Đau gót chân buổi sáng rất phổ biến — không phải rách gân.',
+    insight: 'Bước đầu cần giảm tải, không phải dừng đứng. Bài ngắn đúng kỹ thuật sẽ giảm đau.',
+  },
+  achilles_tendinopathy: {
+    fear: 'Gân Achilles đau khi hoạt động — không cần nghỉ hoàn toàn.',
+    insight: 'Gân cần tải có kiểm soát để phục hồi. Bài eccentric đúng cách là hiệu quả nhất.',
+  },
+  default: {
+    fear: 'Pattern này rất phổ biến — không phải dấu hiệu bệnh nặng.',
+    insight: 'Đau cải thiện khi vận động đúng hướng — không phải nghỉ nhiều. Bài đầu phù hợp với pattern của bạn.',
+  },
+};
 
 interface ProtocolData {
   protocol_id: string;
@@ -59,7 +96,7 @@ export default function S07FirstInsight() {
       })
       .then((r) => (r && r.ok ? r.json() : null))
       .then((d) => {
-        if (d?.success?.data) setProtocol(d.data);
+        if (d?.success && d?.data) setProtocol(d.data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -111,15 +148,16 @@ export default function S07FirstInsight() {
   const firstEx = protocol?.exercises?.[0];
   const durationStr = firstEx ? `${Math.round((firstEx.duration_sec || 0) / 60)} phút` : '—';
   const locationStr = 'Tại nhà';
+  const copy = INSIGHT_COPY[condition.msk_slug ?? ''] ?? INSIGHT_COPY.default;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 400 }}>
       <StepProgressBar total={4} current={4} />
       <ProtocolBlock variant="fear">
-        Pattern này rất phổ biến với người ngồi 8 tiếng — không phải dấu hiệu bệnh nặng.
+        {copy.fear}
       </ProtocolBlock>
       <ProtocolBlock variant="insight">
-        Đau cải thiện khi vận động đúng hướng — không phải nghỉ nhiều. Bài đầu phù hợp với pattern của bạn.
+        {copy.insight}
       </ProtocolBlock>
       <ProtocolBlock variant="protocol">
         {firstEx ? `${firstEx.name_vi} · ${durationStr} · ${locationStr}` : 'Bài đầu tiên'}

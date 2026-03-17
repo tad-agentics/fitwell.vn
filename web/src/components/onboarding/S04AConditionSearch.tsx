@@ -24,7 +24,7 @@ async function ensureAnonymous(): Promise<string | null> {
   try {
     const res = await fetch(`${getApiBase()}/api/v1/auth/anonymous/init`, { method: 'POST', headers: { 'Content-Type': 'application/json' } });
     const data = await res.json();
-    if (data?.success?.data?.anonymous_id) {
+    if (data?.success && data?.data?.anonymous_id) {
       anon = data.data.anonymous_id;
       setAnonymousId(anon);
       return anon;
@@ -132,7 +132,7 @@ export default function S04AConditionSearch() {
       });
       await minDelay;
       const data = await res.json();
-      if (!data?.success?.data) {
+      if (!data?.success || !data?.data) {
         setTabBError('Không kết nối được — thử lại hoặc dùng Tab Tên bệnh.');
         setTabBLoading(false);
         return;

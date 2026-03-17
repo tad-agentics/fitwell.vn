@@ -1,17 +1,21 @@
 /**
- * GET /api/v1/conditions — list user conditions; GET /api/v1/protocols/current for first exercise.
+ * GET /api/v1/conditions — list user conditions; GET/PATCH /api/v1/conditions/:id; GET /api/v1/protocols/current.
  */
 
 import type { FastifyInstance } from 'fastify';
 import { authGuard } from '../../shared/middleware/auth-guard.js';
 import { pool } from '../../shared/db.js';
+import { AppError } from '../../shared/errors.js';
 
 export async function conditionsRoutes(app: FastifyInstance): Promise<void> {
   app.get('/api/v1/conditions', { preHandler: [authGuard] }, async (request, reply) => {
     const userId = request.user!.id;
     const res = await pool.query(
-      `SELECT c.id, c.display_name_vi, c.primary_region, c.pain_track, c.assessment_required, c.assessment_completed, m.safety_warning_vi
-       FROM conditions c LEFT JOIN msk_conditions m ON m.id = c.msk_condition_id WHERE c.user_id = $1 AND c.is_active = TRUE`,
+      `SELECT c.id, c.display_name_vi, c.primary_region, c.pain_track,
+              m.assessment_required, m.assessment_test_slug, c.assessment_completed,
+              c.msk_condition_id, m.slug AS msk_slug, m.safety_warning_vi
+       FROM conditions c LEFT JOIN msk_conditions m ON m.id = c.msk_condition_id
+       WHERE c.user_id = $1 AND c.is_active = TRUE`,
       [userId]
     );
     return reply.status(200).send({
@@ -21,6 +25,36 @@ export async function conditionsRoutes(app: FastifyInstance): Promise<void> {
         safety_warning: r.safety_warning_vi ? { content_vi: r.safety_warning_vi, show_once: true } : null,
       })),
     });
+  });
+
+  app.get<{ Params: { id: string } }>('/api/v1/conditions/:id', { preHandler: [authGuard] }, async (request, reply) => {
+    const userId = request.user!.id;
+    const res = await pool.query(
+      `SELECT c.id, c.display_name_vi, c.primary_region, c.pain_track, c.is_active,
+              m.assessment_required, m.assessment_test_slug, c.assessment_completed,
+              c.msk_condition_id, m.slug AS msk_slug, m.safety_warning_vi
+       FROM conditions c LEFT JOIN msk_conditions m ON m.id = c.msk_condition_id
+       WHERE c.id = $1 AND c.user_id = $2`,
+      [request.params.id, userId]
+    );
+    if (res.rows.length === 0) throw new AppError('NOT_FOUND', 404);
+    const r = res.rows[0] as { safety_warning_vi: string | null };
+    return reply.status(200).send({
+      success: true,
+      data: { ...r, safety_warning: r.safety_warning_vi ? { content_vi: r.safety_warning_vi, show_once: true } : null },
+    });
+  });
+
+  app.patch<{ Params: { id: string }; Body: { is_active?: boolean } }>('/api/v1/conditions/:id', { preHandler: [authGuard] }, async (request, reply) => {
+    const userId = request.user!.id;
+    const { is_active } = request.body ?? {};
+    if (is_active === undefined) throw new AppError('VALIDATION_ERROR', 400, { details: { is_active: 'required' } });
+    const res = await pool.query(
+      `UPDATE conditions SET is_active = $1, updated_at = NOW() WHERE id = $2 AND user_id = $3 RETURNING id`,
+      [is_active, request.params.id, userId]
+    );
+    if (res.rowCount === 0) throw new AppError('NOT_FOUND', 404);
+    return reply.status(200).send({ success: true, data: { id: request.params.id, is_active } });
   });
 
   app.get<{ Querystring: { condition_id: string } }>('/api/v1/protocols/current', { preHandler: [authGuard] }, async (request, reply) => {

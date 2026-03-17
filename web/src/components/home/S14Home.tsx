@@ -56,7 +56,7 @@ export default function S14Home() {
     fetch(`${base}/api/v1/conditions`, { headers: { Authorization: auth } })
       .then((r) => r.json())
       .then((d) => {
-        if (d?.success?.data?.length) {
+        if (d?.success && d?.data?.length) {
           setConditions(d.data);
           const cid = d.data[0].id;
           return Promise.all([
@@ -74,7 +74,7 @@ export default function S14Home() {
         const [meRes, protRes, trendRes, calRes, patternRes] = arr;
         return Promise.all([meRes?.json(), protRes?.json(), trendRes?.json(), calRes?.json(), patternRes?.json()]).then(
           ([meData, protData, trendData, calData, patternData]) => {
-            const at = meData?.success?.data?.onboarding_completed_at;
+            const at = meData?.success && meData?.data?.onboarding_completed_at;
             if (at) {
               setOnboardingDateStr(at.slice(0, 10));
               const baseDate = new Date(at).getTime();
@@ -82,8 +82,8 @@ export default function S14Home() {
               today.setHours(0, 0, 0, 0);
               setDayNumber(Math.max(1, Math.floor((today.getTime() - baseDate) / 86400000) + 1));
             }
-            if (protData?.success?.data) setProtocol(protData.data);
-            const points = (trendData?.success?.data?.points ?? []) as Array<{ pain_score: number; created_at: string }>;
+            if (protData?.success && protData?.data) setProtocol(protData.data);
+            const points = ((trendData?.success && trendData?.data?.points) ?? []) as Array<{ pain_score: number; created_at: string }>;
             if (points.length > 0) {
               const scores = points.slice(-5).map((p) => p.pain_score);
               setPainScores(scores);
@@ -95,7 +95,7 @@ export default function S14Home() {
               last.setHours(0, 0, 0, 0);
               setDaysSinceCheckin(Math.floor((today.getTime() - last.getTime()) / 86400000));
             }
-            const days = (calData?.success?.data?.days ?? []) as CalendarDay[];
+            const days = ((calData?.success && calData?.data?.days) ?? []) as CalendarDay[];
             if (days.length > 0) {
               setCalendarDays(days);
               setCompletedDays(days.filter((d) => d.session_completed).length);
@@ -104,11 +104,11 @@ export default function S14Home() {
               setCheckinToday(todayDay ? todayDay.pain_score != null : false);
               setSessionDoneToday(todayDay?.session_completed ?? false);
             }
-            const obs = patternData?.success?.data?.observation;
+            const obs = patternData?.success && patternData?.data?.observation;
             if (obs && typeof obs === 'string') {
               setPatternObservation({
                 description_vi: obs,
-                is_first_pattern: patternData?.success?.data?.is_first_pattern === true,
+                is_first_pattern: patternData?.success && patternData?.data?.is_first_pattern === true,
               });
             }
           }
@@ -163,7 +163,7 @@ export default function S14Home() {
         body: JSON.stringify({ condition_id: cid, pain_score: score }),
       });
       const data = await res.json();
-      if (data?.success?.data) {
+      if (data?.success && data?.data) {
         setReengagementResponse({
           response_type: data.data.response_type ?? 'standard',
           ai_response: data.data.ai_response ?? {},
@@ -186,7 +186,7 @@ export default function S14Home() {
     })
       .then((r) => r.json())
       .then((d) => {
-        if (d?.success?.data?.session_id) window.location.href = `/exercise?session_id=${encodeURIComponent(d.data.session_id)}`;
+        if (d?.success && d?.data?.session_id) window.location.href = `/exercise?session_id=${encodeURIComponent(d.data.session_id)}`;
       });
   };
 
@@ -369,7 +369,7 @@ export default function S14Home() {
                 })
                   .then((r) => r.json())
                   .then((d) => {
-                    if (d?.success?.data?.session_id) window.location.href = `/exercise?session_id=${encodeURIComponent(d.data.session_id)}`;
+                    if (d?.success && d?.data?.session_id) window.location.href = `/exercise?session_id=${encodeURIComponent(d.data.session_id)}`;
                   });
               }}
             />

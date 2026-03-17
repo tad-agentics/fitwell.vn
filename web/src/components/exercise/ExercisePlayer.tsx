@@ -115,7 +115,7 @@ export default function ExercisePlayer({ sessionId: propSessionId }: ExercisePla
       fetch(`${apiBase}/api/v1/sessions/${sid}`, { headers: { Authorization: authHeader } })
         .then((r) => r.json())
         .then((d) => {
-          if (d?.success?.data) {
+          if (d?.success && d?.data) {
             setProtocol({
               protocol_id: d.data.protocol_id,
               exercises: d.data.exercises ?? [],
@@ -150,7 +150,7 @@ export default function ExercisePlayer({ sessionId: propSessionId }: ExercisePla
       })
       .then((r) => (r && r.ok ? r.json() : null))
       .then((d) => {
-        if (d?.success?.data?.session_id) setSessionId(d.data.session_id);
+        if (d?.success && d?.data?.session_id) setSessionId(d.data.session_id);
         setLoading(false);
       })
       .catch(() => setLoading(false));
