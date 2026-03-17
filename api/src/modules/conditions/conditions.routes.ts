@@ -6,6 +6,7 @@ import type { FastifyInstance } from 'fastify';
 import { authGuard } from '../../shared/middleware/auth-guard.js';
 import { pool } from '../../shared/db.js';
 import { AppError } from '../../shared/errors.js';
+import { getSubscriptionStatus, requireActiveSubscription } from '../billing/subscription.service.js';
 
 export async function conditionsRoutes(app: FastifyInstance): Promise<void> {
   app.get('/api/v1/conditions', { preHandler: [authGuard] }, async (request, reply) => {
@@ -13,7 +14,7 @@ export async function conditionsRoutes(app: FastifyInstance): Promise<void> {
     const res = await pool.query(
       `SELECT c.id, c.display_name_vi, c.primary_region, c.pain_track,
               m.assessment_required, m.assessment_test_slug, c.assessment_completed,
-              c.msk_condition_id, m.slug AS msk_slug, m.safety_warning_vi
+              c.msk_condition_id, c.show_safety_warning, m.slug AS msk_slug, m.safety_warning_vi
        FROM conditions c LEFT JOIN msk_conditions m ON m.id = c.msk_condition_id
        WHERE c.user_id = $1 AND c.is_active = TRUE`,
       [userId]
@@ -32,7 +33,7 @@ export async function conditionsRoutes(app: FastifyInstance): Promise<void> {
     const res = await pool.query(
       `SELECT c.id, c.display_name_vi, c.primary_region, c.pain_track, c.is_active,
               m.assessment_required, m.assessment_test_slug, c.assessment_completed,
-              c.msk_condition_id, m.slug AS msk_slug, m.safety_warning_vi
+              c.msk_condition_id, c.show_safety_warning, m.slug AS msk_slug, m.safety_warning_vi
        FROM conditions c LEFT JOIN msk_conditions m ON m.id = c.msk_condition_id
        WHERE c.id = $1 AND c.user_id = $2`,
       [request.params.id, userId]
@@ -45,22 +46,52 @@ export async function conditionsRoutes(app: FastifyInstance): Promise<void> {
     });
   });
 
-  app.patch<{ Params: { id: string }; Body: { is_active?: boolean } }>('/api/v1/conditions/:id', { preHandler: [authGuard] }, async (request, reply) => {
+  app.patch<{ Params: { id: string }; Body: { is_active?: boolean; safety_warning_acknowledged?: boolean } }>('/api/v1/conditions/:id', {
+    preHandler: [authGuard],
+    schema: {
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      body: {
+        type: 'object',
+        properties: {
+          is_active: { type: 'boolean' },
+          safety_warning_acknowledged: { type: 'boolean' },
+        },
+      },
+    },
+  }, async (request, reply) => {
     const userId = request.user!.id;
-    const { is_active } = request.body ?? {};
-    if (is_active === undefined) throw new AppError('VALIDATION_ERROR', 400, { details: { is_active: 'required' } });
+    const body = request.body ?? {};
+    const { is_active, safety_warning_acknowledged } = body;
+    if (is_active === undefined && safety_warning_acknowledged === undefined) {
+      throw new AppError('VALIDATION_ERROR', 400, { details: { body: 'require at least one of is_active, safety_warning_acknowledged' } });
+    }
+    const updates: string[] = ['updated_at = NOW()'];
+    const values: unknown[] = [];
+    let idx = 1;
+    if (is_active !== undefined) {
+      updates.push(`is_active = $${idx}`);
+      values.push(is_active);
+      idx += 1;
+    }
+    if (safety_warning_acknowledged === true) {
+      updates.push('show_safety_warning = FALSE');
+    }
+    values.push(request.params.id, userId);
     const res = await pool.query(
-      `UPDATE conditions SET is_active = $1, updated_at = NOW() WHERE id = $2 AND user_id = $3 RETURNING id`,
-      [is_active, request.params.id, userId]
+      `UPDATE conditions SET ${updates.join(', ')} WHERE id = $${idx} AND user_id = $${idx + 1} RETURNING id`,
+      values
     );
     if (res.rowCount === 0) throw new AppError('NOT_FOUND', 404);
-    return reply.status(200).send({ success: true, data: { id: request.params.id, is_active } });
+    return reply.status(200).send({ success: true, data: { id: request.params.id, ...(is_active !== undefined && { is_active }), ...(safety_warning_acknowledged === true && { safety_warning_acknowledged: true }) } });
   });
 
   app.get<{ Querystring: { condition_id: string } }>('/api/v1/protocols/current', { preHandler: [authGuard] }, async (request, reply) => {
     const userId = request.user!.id;
+    const sub = await getSubscriptionStatus(userId);
+    requireActiveSubscription(sub);
+
     const conditionId = request.query.condition_id;
-    if (!conditionId) return reply.status(400).send({ success: false, code: 'VALIDATION_ERROR', message: 'condition_id required' });
+    if (!conditionId || typeof conditionId !== 'string') return reply.status(400).send({ success: false, code: 'VALIDATION_ERROR', message: 'condition_id required' });
     const res = await pool.query(
       `SELECT p.id, p.exercises, p.total_duration FROM protocols p
        JOIN conditions c ON c.id = p.condition_id AND c.user_id = $1

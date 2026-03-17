@@ -35,9 +35,17 @@ export async function assessmentRoutes(app: FastifyInstance): Promise<void> {
       [assessmentResult, conditionId]
     );
 
-    const exRes = await pool.query(
-      `SELECT id, name_vi, duration_sec FROM exercises WHERE body_region = $1 AND is_published = TRUE LIMIT 1`,
-      [cond.body_region]
+    // R-H3: Prefer exercises tagged mcKenzie for protocol_a, lateral_shift for protocol_b; fallback to first by body_region
+    const exRes = await pool.query<{ id: string; name_vi: string; duration_sec: number }>(
+      `SELECT id, name_vi, duration_sec FROM exercises
+       WHERE body_region = $1 AND is_published = TRUE
+       ORDER BY CASE
+         WHEN $2 = 'protocol_a' AND 'mcKenzie' = ANY(COALESCE(clinical_tags, ARRAY[]::TEXT[])) THEN 0
+         WHEN $2 = 'protocol_b' AND 'lateral_shift' = ANY(COALESCE(clinical_tags, ARRAY[]::TEXT[])) THEN 0
+         ELSE 1
+       END
+       LIMIT 1`,
+      [cond.body_region, assessmentResult]
     );
     let protocol: { exercises: Array<{ exercise_id: string; order: number; duration_sec: number; name_vi: string }>; total_duration: number } | null = null;
     if (exRes.rows.length > 0) {

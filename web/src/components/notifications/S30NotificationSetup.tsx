@@ -1,9 +1,11 @@
 /**
  * S30 Notification Permission — Modal/BottomSheet. iOS message, denied fallback. Spec: screen-spec-S30-S12-S13.
+ * R-C4: On grant — pushManager.subscribe, POST to /api/v1/push-subscriptions.
  */
 
 import { useState, useEffect } from 'react';
 import { ProtocolBlock, PrimaryButton, GhostButton, colors } from '@/design-system';
+import { getApiBase, getAuthHeader } from '@/lib/auth';
 
 function isIosSafari(): boolean {
   if (typeof navigator === 'undefined') return false;
@@ -13,6 +15,40 @@ function isIosSafari(): boolean {
 
 function isNotificationSupported(): boolean {
   return typeof window !== 'undefined' && 'Notification' in window;
+}
+
+function urlBase64ToUint8Array(base64: string): Uint8Array {
+  const padding = '='.repeat((4 - (base64.length % 4)) % 4);
+  const raw = (base64 + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const bin = atob(raw);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return arr;
+}
+
+async function subscribeAndPersist(): Promise<boolean> {
+  const base = getApiBase();
+  const auth = getAuthHeader();
+  if (!auth) return false;
+  const keyRes = await fetch(`${base}/api/v1/config/push-key`);
+  const keyData = await keyRes.json();
+  const vapidKey = keyData?.success && keyData?.data?.vapid_public_key;
+  if (!vapidKey || !keyRes.ok) return false;
+  const reg = await navigator.serviceWorker.ready;
+  const sub = await reg.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(vapidKey),
+  });
+  const j = (sub as unknown as { toJSON?: () => { endpoint: string; keys?: { p256dh?: string; auth?: string } } }).toJSON?.() ?? { endpoint: sub.endpoint, keys: {} };
+  const keys = j.keys ?? {};
+  const authKey = typeof keys.auth === 'string' ? keys.auth : '';
+  const p256Key = typeof keys.p256dh === 'string' ? keys.p256dh : '';
+  const postRes = await fetch(`${base}/api/v1/push-subscriptions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: auth },
+    body: JSON.stringify({ endpoint: j.endpoint, keys: { auth: authKey, p256dh: p256Key }, platform: 'web' }),
+  });
+  return postRes.ok;
 }
 
 export default function S30NotificationSetup() {
@@ -28,7 +64,7 @@ export default function S30NotificationSetup() {
   }, [outcome]);
 
   const handleAllow = async () => {
-    if (typeof localStorage !== 'undefined') localStorage.setItem('fw_notif_asked', 'true');
+    if (typeof window !== 'undefined' && window.localStorage) localStorage.setItem('fw_notif_asked', 'true');
     if (ios) {
       setOutcome('granted');
       return;
@@ -39,8 +75,15 @@ export default function S30NotificationSetup() {
     }
     try {
       const perm = await Notification.requestPermission();
-      if (perm === 'granted') setOutcome('granted');
-      else setOutcome('denied');
+      if (perm === 'granted') {
+        if ('serviceWorker' in navigator && navigator.serviceWorker) {
+          await navigator.serviceWorker.register('/sw.js').catch(() => {});
+          await subscribeAndPersist();
+        }
+        setOutcome('granted');
+      } else {
+        setOutcome('denied');
+      }
     } catch {
       setOutcome('denied');
     }

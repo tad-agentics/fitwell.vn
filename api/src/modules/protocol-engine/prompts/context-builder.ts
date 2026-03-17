@@ -1,6 +1,6 @@
 /**
  * buildAIContext — TechSpec 3.2. Used by check-in AI and protocol engine.
- * P2: stub; wire to Claude when ANTHROPIC_API_KEY set.
+ * P2: wired; checkin uses OpenRouter (OPENROUTER_API_KEY) for standard-branch AI.
  */
 
 import { pool } from '../../../shared/db.js';

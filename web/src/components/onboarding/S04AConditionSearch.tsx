@@ -17,6 +17,7 @@ import {
   TypingIndicator,
 } from '@/design-system';
 import { getApiBase, getAuthHeader, getAnonymousId, setAnonymousId } from '@/lib/auth';
+import { CONFIRM_SLUGS_KEY } from '@/lib/session-keys';
 
 async function ensureAnonymous(): Promise<string | null> {
   let anon = getAnonymousId();
@@ -35,7 +36,6 @@ async function ensureAnonymous(): Promise<string | null> {
   return null;
 }
 
-const CONFIRM_SLUGS_KEY = 'fw_confirm_slugs';
 const MAX_SELECT = 5;
 
 interface MskItem {

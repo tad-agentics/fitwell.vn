@@ -5,6 +5,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ConsistencyDotGrid, PrimaryButton, GhostButton, Sparkline, ProtocolBlock, PainScoreSelector, ExerciseCard, SkeletonBlock, colors } from '@/design-system';
 import { getApiBase, getAuthHeader } from '@/lib/auth';
+import { getReanchorShown, setReanchorShown } from '@/lib/prefs';
 
 const PULL_THRESHOLD = 72;
 
@@ -23,6 +24,7 @@ interface CheckinResponseData {
 
 export default function S14Home() {
   const [conditions, setConditions] = useState<Array<{ id: string; display_name_vi: string }>>([]);
+  const [selectedConditionId, setSelectedConditionId] = useState<string | null>(null);
   const [protocol, setProtocol] = useState<{ protocol_id: string; exercises: Array<{ name_vi: string; duration_sec: number }> } | null>(null);
   const [painScores, setPainScores] = useState<number[]>([]);
   const [daysSinceCheckin, setDaysSinceCheckin] = useState<number | null>(null);
@@ -41,10 +43,15 @@ export default function S14Home() {
   const [error, setError] = useState<string | null>(null);
   const [pullY, setPullY] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
+  const [reanchorShown, setReanchorShownState] = useState(false);
   const touchStartY = useRef(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const loadData = useCallback(() => {
+  useEffect(() => {
+    if (typeof window !== 'undefined') setReanchorShownState(getReanchorShown());
+  }, []);
+
+  const loadData = useCallback((conditionId?: string | null) => {
     const auth = getAuthHeader();
     if (!auth) {
       setLoading(false);
@@ -57,8 +64,10 @@ export default function S14Home() {
       .then((r) => r.json())
       .then((d) => {
         if (d?.success && d?.data?.length) {
-          setConditions(d.data);
-          const cid = d.data[0].id;
+          const conds = d.data as Array<{ id: string; display_name_vi: string }>;
+          setConditions(conds);
+          const cid = conditionId && conds.some((c) => c.id === conditionId) ? conditionId : conds[0].id;
+          if (!conditionId && conds.length) setSelectedConditionId(conds[0].id);
           return Promise.all([
             fetch(`${base}/api/v1/me`, { headers: { Authorization: auth } }),
             fetch(`${base}/api/v1/protocols/current?condition_id=${cid}`, { headers: { Authorization: auth } }),
@@ -141,6 +150,12 @@ export default function S14Home() {
 
   useEffect(() => { loadData(); }, [loadData]);
 
+  const currentConditionId = selectedConditionId ?? conditions[0]?.id;
+  const switchCondition = (id: string) => {
+    setSelectedConditionId(id);
+    loadData(id);
+  };
+
   const dayLabel = (() => {
     const d = new Date();
     const days = ['Chủ nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
@@ -149,10 +164,10 @@ export default function S14Home() {
   const firstEx = protocol?.exercises?.[0];
   const durationStr = firstEx ? `${Math.round((firstEx.duration_sec || 0) / 60)} phút` : '';
   const showReengagement = daysSinceCheckin != null && daysSinceCheckin > 2;
-  const conditionName = conditions[0]?.display_name_vi ?? '';
+  const conditionName = conditions.find((c) => c.id === currentConditionId)?.display_name_vi ?? conditions[0]?.display_name_vi ?? '';
 
   const submitReengagementCheckin = async (score: number) => {
-    const cid = conditions[0]?.id;
+    const cid = currentConditionId ?? conditions[0]?.id;
     const auth = getAuthHeader();
     if (!cid || !auth) return;
     setReengagementSubmitting(true);
@@ -202,7 +217,6 @@ export default function S14Home() {
           return Math.min(100, Math.round((completed / Math.max(1, dayNumber)) * 100));
         })()
       : null;
-  const reanchorShown = typeof localStorage !== 'undefined' && localStorage.getItem('fw_reanchor_shown') === 'true';
   const showReanchor =
     dayNumber >= 26 &&
     dayNumber <= 30 &&
@@ -213,7 +227,7 @@ export default function S14Home() {
     !reanchorShown;
 
   useEffect(() => {
-    if (showReanchor && typeof localStorage !== 'undefined') localStorage.setItem('fw_reanchor_shown', 'true');
+    if (showReanchor) setReanchorShown(true);
   }, [showReanchor]);
 
   if (loading && !conditions.length) {
@@ -242,6 +256,28 @@ export default function S14Home() {
       onTouchEnd={handleTouchEnd}
       style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 400, position: 'relative' }}
     >
+      {conditions.length > 1 && (
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+          {conditions.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => switchCondition(c.id)}
+              style={{
+                padding: '6px 12px',
+                borderRadius: 8,
+                border: `1px solid ${currentConditionId === c.id ? colors.amber : colors.border}`,
+                background: currentConditionId === c.id ? colors.bg2 : 'transparent',
+                color: currentConditionId === c.id ? colors.t0 : colors.t2,
+                fontSize: 13,
+                fontWeight: currentConditionId === c.id ? 600 : 400,
+              }}
+            >
+              {c.display_name_vi}
+            </button>
+          ))}
+        </div>
+      )}
       {(pullY > 0 || refreshing) && (
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '8px 0', textAlign: 'center', color: colors.t2, fontSize: 12, zIndex: 1 }}>
           {refreshing ? 'Đang làm mới...' : pullY >= PULL_THRESHOLD ? 'Thả để làm mới' : 'Kéo để làm mới'}
@@ -349,19 +385,23 @@ export default function S14Home() {
           {sessionDoneToday && (
             <p style={{ color: colors.teal, fontSize: 14, marginBottom: 4 }}>Đã xong hôm nay ✓</p>
           )}
-          {checkinToday === false && conditions[0] && (
-            <a href={`/checkin?condition_id=${encodeURIComponent(conditions[0].id)}`} style={{ color: colors.amber, fontSize: 14, display: 'block', marginBottom: 4 }}>
-              Chưa check-in hôm nay
-            </a>
+          {checkinToday === false && currentConditionId && (
+            <GhostButton
+              label="Chưa check-in hôm nay"
+              onClick={() => { window.location.href = `/checkin?condition_id=${encodeURIComponent(currentConditionId)}`; }}
+              fullWidth={false}
+            />
           )}
           <p className="font-display text-sm font-semibold text-t0">{firstEx.name_vi}</p>
           <p className="text-t2 text-sm">{durationStr} · Tại nhà</p>
           <div style={sessionDoneToday ? { opacity: 0.7 } : undefined}>
             <PrimaryButton
               label="Làm bài ▶"
+              disabled={sessionDoneToday}
               onClick={() => {
+                if (sessionDoneToday) return;
                 const auth = getAuthHeader();
-                if (!auth || !conditions[0]) return;
+                if (!auth || !currentConditionId) return;
                 fetch(`${getApiBase()}/api/v1/sessions`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json', Authorization: auth },
@@ -378,10 +418,12 @@ export default function S14Home() {
       ) : (
         <p className="text-t2 text-sm">Bài của bạn đang được chuẩn bị — quay lại sau.</p>
       )}
-      {conditions[0] && (
-        <a href={`/checkin?condition_id=${encodeURIComponent(conditions[0].id)}`} className="text-teal text-sm">
-          Check-in hôm nay
-        </a>
+      {currentConditionId && (
+        <GhostButton
+          label="Check-in hôm nay"
+          onClick={() => { window.location.href = `/checkin?condition_id=${encodeURIComponent(currentConditionId)}`; }}
+          fullWidth={false}
+        />
       )}
       </>
       )}

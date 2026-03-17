@@ -41,19 +41,47 @@ export async function onboardingRoutes(app: FastifyInstance): Promise<void> {
     return reply.status(201).send({ success: true, data: { ...result, ai_message: aiMessage } });
   });
 
-  app.post<{ Body: { symptom_text: string } }>('/api/v1/onboarding/symptom-map', { preHandler: [authGuard] }, async (request, reply) => {
-    const text = (request.body?.symptom_text ?? '').slice(0, 500);
-    const res = await pool.query(
+  app.post<{ Body: { symptom_text?: unknown } }>('/api/v1/onboarding/symptom-map', { preHandler: [authGuard] }, async (request, reply) => {
+    const raw = request.body?.symptom_text;
+    if (typeof raw !== 'string') throw new AppError('VALIDATION_ERROR', 400, { details: { symptom_text: 'must be a string' } });
+    const text = raw.slice(0, 500).trim();
+    const words = text.length >= 2 ? text.split(/\s+/).filter((w) => w.length >= 1) : [];
+    const res = await pool.query<{ id: string; slug: string; name_vi: string; body_region: string; insight_hook_vi: string | null }>(
       `SELECT id, slug, name_vi, body_region, insight_hook_vi FROM msk_conditions WHERE is_active = TRUE`
     );
-    const suggestions = res.rows.slice(0, 5).map((r: { id: string; slug: string; name_vi: string; body_region: string }) => ({
-      msk_condition_id: r.id,
-      slug: r.slug,
-      name_vi: r.name_vi,
-      body_region: r.body_region,
-      confidence: 0.7,
-      match_reason_vi: 'Gợi ý theo catalog',
-    }));
+    let suggestions: Array<{ msk_condition_id: string; slug: string; name_vi: string; body_region: string; confidence: number; match_reason_vi: string }>;
+    if (words.length === 0) {
+      suggestions = res.rows.slice(0, 5).map((r) => ({
+        msk_condition_id: r.id,
+        slug: r.slug,
+        name_vi: r.name_vi,
+        body_region: r.body_region,
+        confidence: 0.5,
+        match_reason_vi: 'Gợi ý theo catalog',
+      }));
+    } else {
+      const scored = res.rows.map((r) => {
+        const nameVi = (r.name_vi ?? '').toLowerCase();
+        const bodyRegion = (r.body_region ?? '').toLowerCase();
+        const hook = (r.insight_hook_vi ?? '').toLowerCase();
+        let hits = 0;
+        for (const w of words) {
+          const term = w.toLowerCase();
+          if (nameVi.includes(term) || bodyRegion.includes(term) || hook.includes(term)) hits += 1;
+        }
+        return { row: r, score: hits };
+      });
+      scored.sort((a, b) => b.score - a.score);
+      const top = scored.slice(0, 5);
+      suggestions = top.map(({ row, score }) => ({
+        msk_condition_id: row.id,
+        slug: row.slug,
+        name_vi: row.name_vi,
+        body_region: row.body_region,
+        confidence: Math.min(0.95, 0.5 + score * 0.15),
+        match_reason_vi: score > 0 ? 'Khớp với mô tả của bạn' : 'Gợi ý theo catalog',
+      }));
+    }
     return reply.status(200).send({ success: true, data: { suggestions, below_threshold: text.length < 10 } });
   });
 }

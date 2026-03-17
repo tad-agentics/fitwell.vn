@@ -18,6 +18,7 @@ import { checkinRoutes } from './modules/checkin/checkin.routes.js';
 import { notificationsRoutes } from './modules/notifications/notifications.routes.js';
 import { progressRoutes } from './modules/progress/progress.routes.js';
 import { scheduleRoutes } from './modules/schedule/schedule.routes.js';
+import { cronRoutes } from './modules/cron/cron.routes.js';
 import { billingRoutes } from './modules/billing/billing.routes.js';
 
 const app = Fastify({ logger: true });
@@ -52,6 +53,7 @@ await app.register(checkinRoutes);
 await app.register(notificationsRoutes);
 await app.register(progressRoutes);
 await app.register(scheduleRoutes);
+await app.register(cronRoutes);
 await app.register(billingRoutes);
 
 const port = Number(process.env.PORT) || 3001;

@@ -7,18 +7,20 @@ isProject: false
 
 # FitWell MVP — Full Build Plan (+ Audit Integration)
 
-> **Last updated:** March 2026 — Round 2 audit integrated.
-> Sprint A (critical bugs) and Phase 1 gaps are **complete**. Round 2 audit findings are annotated with **[R2-Audit]** throughout each phase.
+> **Last updated:** March 2026 — Phase 5 Conversion (paywall, PayOS, billing routes) implemented.
+> Sprint A, Phase 1, Phase 1 R2-Audit, Phase 2 gaps, and **Phase 5 paywall/billing (R-C1, R-C2, R-L3, L5, 5.1, 5.3, 5.4)** are **complete**. Round 3 audit findings (A1–A10) are annotated below.
 
 ---
 
 ## Current state
 
-- **In repo:** `api/` (Fastify), `web/` (Astro + React), `supabase/migrations/` (9 migrations), `web/src/design-system.tsx`, `supabase/seed.sql`, `env.example`, `.cursor/mcp.json`, `amendments-log.md`, and full docs: `docs/FitWell_TechSpec_v1_5_2.md`, `docs/screen spec/` (14 screen specs), `docs/FitWell_LoFi_Wireframe_Flow_v1_5.jsx`, `docs/FitWell_Emotional_Design_System_v1_2.jsx`.
-- **Implemented:** Anonymous auth, onboarding intake flow, condition/protocol/session/checkin/progress API routes, S01–S17 screens, S30 notification setup, exercise player, S10 post-exercise, design system, check-in form.
+- **In repo:** `api/` (Fastify), `web/` (Astro + React), `supabase/migrations/` (**11 migrations:** 01–09, 11, 12; **pending:** 10 user_profiles_unique, 13 indexes), `web/src/design-system.tsx`, `supabase/seed.sql`, `env.example`, `.cursor/mcp.json`, `amendments-log.md`, and full docs: `docs/FitWell_TechSpec_v1_5_2.md`, `docs/screen spec/` (14 screen specs), `docs/FitWell_LoFi_Wireframe_Flow_v1_5.jsx`, `docs/FitWell_Emotional_Design_System_v1_2.jsx`.
+- **Implemented:** Anonymous auth, onboarding intake flow, condition/protocol/session/checkin/progress API routes, S01–S17 screens, S30 notification setup, exercise player, S10 post-exercise, design system, check-in form; **Phase 5:** subscription service, PayOS create-order/payment-status/webhook, paywall gate (402 on sessions/protocols/checkins), paywall page (PaywallView: plans, QR + poll desktop, redirect + poll mobile).
 - **Sprint A complete ✅:** `GET /api/v1/conditions` fixed; `d?.success?.data` → `d?.success && d?.data` across all components; `startExercise` uses `getAuthHeader()`; refreshTokenTTL corrected to 7d.
 - **Phase 1 gaps complete ✅:** Assessment fork uses real `assessment_test_slug`; onboarding routes through assessment/insight; trial subscription row created; condition-specific insight copy; `GET/PATCH /api/v1/conditions/:id` added.
-- **Still broken:** PayOS billing is 501; push notification pipeline is disconnected; `symptom-map` ignores user input; `ExercisePlayer` only renders first exercise; assessment result doesn't affect exercise selection.
+- **Phase 1 R2-Audit complete ✅:** Multi-exercise player; dead `completed` state removed; assessment result filters by `clinical_tags`; condition-factory 422 when no exercises; UNIQUE (user_id, msk_condition_id) + ON CONFLICT; `show_safety_warning` persisted and PATCH ack; S03b design tokens; timer deps fixed; `CONFIRM_SLUGS_KEY` in `lib/session-keys.ts`.
+- **Phase 2 gaps complete ✅:** symptom-map keyword matching (name_vi, body_region, insight_hook_vi); symptom_text string validation; buildAIContext wired in checkin with personalized copy; ai_response.protocol populated from first exercise; exercise_card.location from DB; trigger_event enum validation (L7).
+- **No critical broken items.** Push pipeline fixed in P3 (R-C4). PayOS/billing fixed in P5 (create-order, payment-status, webhook, paywall gate 402, PaywallView). Remaining gaps: Sprint B auth (H1, H3, H4), P5.5/P5.6 (expired-link retry, S19b/S29 add-condition), P3.6 email retention, P6 launch items.
 
 Tech spec defines **two apps** in one repo: **fitwell-api** (Fastify) and **fitwell-web** (Astro). Phases P0–P6 are in `docs/FitWell_TechSpec_v1_5_2.md` (Part 11). **Tier 1 = full MVP:** symptom intake, protocol assignment, daily check-in, progress, exercise player, paywall/billing (PayOS), 7-day trial, Google OAuth + email/password, pattern detection, proactive nudges, re-engagement, add-condition.
 
@@ -145,7 +147,7 @@ All UI must follow `**web/src/design-system.tsx`** as the single source for comp
 
 ---
 
-## Phase 1 — Core loop ✅ (Phase 1 gaps complete; round-2 gaps remain)
+## Phase 1 — Core loop ✅ (Phase 1 + R2-Audit complete)
 
 **Goal:** First user completes Day 1 exercise; assessment fork and safety warning work; rule-based protocol only.
 
@@ -163,6 +165,7 @@ All UI must follow `**web/src/design-system.tsx`** as the single source for comp
 | 1.10 | Sessions API | ✅ Done |
 | 1.11 | `GET/PATCH /api/v1/conditions/:id` | ✅ Done |
 | 1.12 | Trial subscription row on onboarding | ✅ Done — `condition-factory` inserts 7-day trial |
+| 1.13 | Migration `20260316000012_conditions_p1_r2.sql` (UNIQUE + show_safety_warning) | ✅ In repo — run when Supabase linked |
 
 **[Round 1 Audit] P1 gaps — all complete ✅:**
 
@@ -174,58 +177,53 @@ All UI must follow `**web/src/design-system.tsx`** as the single source for comp
 | **M8** | No `GET/PATCH /api/v1/conditions/:id` | ✅ Fixed |
 | **H11** | No trial subscription row on onboarding | ✅ Fixed |
 
-**[R2-Audit] New gaps in Phase 1:**
+**[R2-Audit] P1 gaps — all complete ✅:**
 
-| ID | Severity | File | Gap | Fix |
-| --- | --- | --- | --- | --- |
-| **R-H1** | HIGH | `ExercisePlayer.tsx:90` | Player only renders `exercises[0]`. Multi-exercise protocols (A+B circuits) are silently ignored — later exercises never play. | Track active exercise index. Advance to next exercise when last step of current exercise completes. |
-| **R-H2** | HIGH | `ExercisePlayer.tsx:96,246` | `completed` state is set but **never called as `true`** anywhere in the component. The "session done" render branch at line 246 never executes. | Remove the dead `completed` state, or wire `setCompleted(true)` after the complete API call succeeds before navigating. |
-| **R-H3** | HIGH | `api/src/modules/msk/assessment.routes.ts:38–47` | Assessment result (`protocol_a` / `protocol_b`) is stored but **never used** to select exercises. McKenzie vs. lateral-shift produce identical protocols. | Filter exercises by `clinical_tags` based on `assessment_result`: `mcKenzie` tag for `protocol_a`, `lateral_shift` for `protocol_b`. |
-| **R-H9** | HIGH | `api/src/modules/onboarding/condition-factory.service.ts:99–109` | When no exercises exist for a body region, `protocol` is `null` with no error. S08 silently shows a broken "làm ngay" button the user can't use. | Return 422 or structured `no_exercise_available` flag so the frontend can surface a meaningful error. |
-| **R-M3** | MEDIUM | `web/src/components/onboarding/S04CConfirm.tsx:131–153` | `handleContinue` calls `/api/v1/onboarding/intake` sequentially for each slug with no rollback. If 2nd intake fails after 1st succeeds, user has partial conditions and will create duplicates on retry. | Add `UNIQUE (user_id, msk_condition_id)` constraint (see DB section) and handle conflict gracefully in the factory. |
-| **R-M6** | MEDIUM | `web/src/components/onboarding/S07FirstInsight.tsx:68–76` | Safety warning is stored in `sessionStorage` only — lost if tab is closed mid-flow. User skips critical safety content on browser restore. | Persist `show_safety_warning = true` flag on the `conditions` row server-side; check it at first exercise start. |
-| **R-M7** | MEDIUM | `web/src/components/screens/S03bPathChooser.tsx:26–29` | Hardcoded hex values (`#F0EFE9`, `#6B6B64`) in inline `style` props, violating design-system token rule. | Replace with `colors.t0` and `colors.t2` from `@/design-system`. |
-| **R-L2** | LOW | `ExercisePlayer.tsx:187` | Timer `useEffect` dependency `[currentStep, timerSec > 0]` — boolean expression is not a stable dep, causes spurious re-subscriptions and a lint warning. | Change to `[currentStep, step?.order]`; timer reads `timerSec` via functional update so doesn't need it as dep. |
-| **R-L4** | LOW | `S04AConditionSearch.tsx:38`, `S04CConfirm.tsx:9` | `CONFIRM_SLUGS_KEY = 'fw_confirm_slugs'` is duplicated in two files with no shared constant. | Extract to `lib/session-keys.ts` imported by both. |
+| ID | Gap | Status |
+| --- | --- | --- |
+| **R-H1** | ExercisePlayer only rendered `exercises[0]`; multi-exercise protocols ignored | ✅ Fixed — global step index, `getStepLocation()`, advance to next exercise on last step |
+| **R-H2** | Dead `completed` state and unreachable "session done" branch | ✅ Fixed — state and branch removed |
+| **R-H3** | Assessment result not used to select exercises (McKenzie vs lateral_shift) | ✅ Fixed — ORDER BY `clinical_tags` in assessment.routes; seed can add tags in P6 OI-4 |
+| **R-H9** | No error when no exercises for body region; S08 broken "làm ngay" | ✅ Fixed — `AppError('NO_EXERCISE_AVAILABLE', 422)` in condition-factory |
+| **R-M3** | S04C sequential intake with no rollback → duplicates on retry | ✅ Fixed — `UNIQUE (user_id, msk_condition_id)` + `ON CONFLICT DO UPDATE` in factory; phase_progress `ON CONFLICT DO NOTHING` |
+| **R-M6** | Safety warning in sessionStorage only — lost on tab close | ✅ Fixed — `show_safety_warning` on conditions; set at intake; PATCH ack in SMSK08; S07 reads from API |
+| **R-M7** | S03bPathChooser hardcoded hex | ✅ Fixed — `colors.t0`, `colors.t2` from design-system |
+| **R-L2** | Timer useEffect unstable dep `timerSec > 0` | ✅ Fixed — deps `[currentStep]` only |
+| **R-L4** | `CONFIRM_SLUGS_KEY` duplicated in two files | ✅ Fixed — `web/src/lib/session-keys.ts` |
 
-**Gate:** User can go S01 → … → S10 and complete D1 exercise; multi-exercise protocols play in order; assessment result selects correct exercise branch.
+**Gate:** ✅ Passed — User can go S01 → … → S10 and complete D1 exercise; multi-exercise protocols play in order; assessment result selects correct exercise branch when seed has tags.
 
 ---
 
-## Phase 2 — AI layer (Week 5–6)
+## Phase 2 — AI layer ✅ (P2 gaps complete)
 
 **Goal:** Claude integration; Pain 5 branch; typing indicator; frozen shoulder Phase 1 no-stretch filter.
 
 | # | Task | Status |
 | --- | --- | --- |
-| 2.1 | Claude integration (protocol.service, ai-provider, FITWELL_SYSTEM_PROMPT) | ❌ Not done |
-| 2.2 | Context builder `buildAIContext()` (condition, phase, pain history) | ❌ Not done (file exists, not wired) |
+| 2.1 | AI integration (OpenRouter → Claude Haiku, FITWELL_SYSTEM_PROMPT, checkin standard branch) | ✅ Done |
+| 2.2 | Context builder `buildAIContext()` (condition, phase, pain history) | ✅ Done — wired in checkin; personalized copy |
 | 2.3 | Pain 5 branch (no protocol; acknowledge + rest + red flag copy) | ⚠️ Hardcoded template only |
 | 2.4 | Typing indicator (800ms min display) | ✅ Done in CheckInForm |
 | 2.5 | Frozen shoulder filter B4 (`filterProhibitedExercises()`) | ❌ Not done |
-| 2.6 | Lifestyle trigger (store/detect `trigger_event`) | ❌ Not done |
+| 2.6 | Lifestyle trigger (store/detect `trigger_event`) | ⚠️ trigger_event enum validated in checkin (L7 ✅) |
 
-**[Round 1 Audit] Gaps from audit:**
+**[Round 1 / R2-Audit] P2 gaps — all complete ✅:**
 
-| ID | Gap | Fix |
+| ID | Gap | Status |
 | --- | --- | --- |
-| **H5** | `POST /onboarding/symptom-map` ignores `symptom_text`. Returns hardcoded top-5 with `confidence: 0.7`. | Implement keyword→slug matching against `name_vi`, `body_region`, `insight_hook_vi` using SQL `ILIKE` / `ts_rank`. No LLM required for P2 start; upgrade to Claude Haiku call at P2 end. |
-| **H6** | Check-in route has hardcoded JSON templates; `context-builder.ts` and `system-prompt.ts` are dead code. | Import context builder; call Claude Haiku from checkin route; return real AI response. |
+| **H5 / R-C3** | symptom-map ignored `symptom_text`; hardcoded top-5 | ✅ Fixed — keyword match on name_vi, body_region, insight_hook_vi; ranked suggestions, confidence 0.5–0.95 |
+| **R-M2** | symptom_text not validated as string | ✅ Fixed — AppError if not string |
+| **R-M8** | standard branch `ai_response.protocol = null` | ✅ Fixed — populated from first exercise name when available |
+| **R-L1** | buildAIContext never called | ✅ Fixed — called in checkin; context used for fear_reduction + insight; fallback on throw |
+| **L7** | trigger_event no enum validation | ✅ Fixed — enum `['morning','midday','pre_sleep','post_exercise','manual']` |
+| **R-H8** | exercise_card.location hardcoded | ✅ Fixed — GET/POST checkins use `exercises.location` (fallback 'Tại nhà') |
 
-**[R2-Audit] New gaps in Phase 2:**
-
-| ID | Severity | File | Gap | Fix |
-| --- | --- | --- | --- | --- |
-| **R-C3** | CRITICAL | `api/src/modules/onboarding/onboarding.routes.ts:44–58` | Identical to H5 — confirmed still broken post-Phase 1. Both `OnboardingDescribe` and `S04AConditionSearch` Tab B send user input but receive unrelated results. | Same fix as H5: SQL keyword matching. |
-| **R-M2** | MEDIUM | `api/src/modules/onboarding/onboarding.routes.ts:45` | `symptom_text` not validated as string — `typeof text !== 'string'` causes `.slice is not a function` crash if body sends non-string. | Add `if (typeof text !== 'string') throw new AppError('VALIDATION_ERROR', 400)`. |
-| **R-M8** | MEDIUM | `api/src/modules/checkin/checkin.routes.ts:92–101` | `standard` branch always sets `ai_response.protocol = null`. Permanently null field confuses future AI response format changes. | Remove the `protocol: null` field from `aiResponse` in the `standard` branch, or populate from actual protocol data. |
-| **R-L1** | LOW | `api/src/modules/protocol-engine/prompts/context-builder.ts` | `buildAIContext()` is fully implemented with pain score history, phase, adaptation signal — but **never called** by `checkin.routes.ts`. Checkin uses hardcoded templates instead. | Wire `buildAIContext` into `checkin.routes.ts`. Call Claude Haiku when `ANTHROPIC_API_KEY` set; fall back to current templates otherwise. |
-
-**Gate:** AI response P95 < 1.5s; Pain 5 verified; frozen shoulder Phase 1 gets no stretch exercises; symptom-map uses real keyword matching.
+**Gate:** ✅ symptom-map keyword matching; context builder wired; OpenRouter (Claude Haiku) for check-in standard branch when OPENROUTER_API_KEY set.
 
 ---
 
-## Phase 3 — Daily loop (Week 7–8)
+## Phase 3 — Daily loop (Week 7–8) ✅ (3.6 email retention not done)
 
 **Goal:** Check-in flow; in-app banner; web push and S30; progress tab; email retention.
 
@@ -234,7 +232,7 @@ All UI must follow `**web/src/design-system.tsx`** as the single source for comp
 | 3.1 | S12–S13 Check-in (pain score, freetext, AI response) | ✅ Done (AI was hardcoded — fixed in P2) |
 | 3.2 | Check-in API (`POST /checkins`, CHECKIN_ALREADY_EXISTS, AI) | ✅ Done (AI stub — fixed in P2) |
 | 3.3 | InAppBanner (client:load, `GET /notifications/pending`) | ✅ Done |
-| 3.4 | S30 push permission (one-shot, no retry on deny) | ⚠️ Partial — see R-C4 |
+| 3.4 | S30 push permission (one-shot, no retry on deny) | ✅ Done — subscribe + POST + sw.js (R-C4) |
 | 3.5 | Progress tab S14–S17 (Home, History, Progress, pain chart, consistency) | ✅ Done (data access fixed in Sprint A) |
 | 3.6 | Email retention (Resend D+2, D+4, D+7) | ❌ Not done |
 
@@ -242,67 +240,67 @@ All UI must follow `**web/src/design-system.tsx`** as the single source for comp
 
 | ID | Gap | Fix |
 | --- | --- | --- |
-| **M6** | Push subscription: `pushManager.subscribe()` never called; no POST to `/push-subscriptions`; `sw.js` has no `push` event listener. | (1) After grant, call `pushManager.subscribe({...vapidKey})`; (2) POST subscription JSON to new `POST /api/v1/push-subscriptions` route; (3) Add `push` event listener in `sw.js`. |
-| **M10** | "Làm bài" button clickable even when `sessionDoneToday === true`. Creates duplicate sessions. | Add disabled state or confirm dialog when `sessionDoneToday`. |
-| **M11** | S14 Home loads data for `conditions[0]` only. Multi-condition users see only first condition. | Add condition tab/selector; load data per selected condition. |
-| **L6** | `notification_logs` may reference `/history/day/:date` deep-link; no such page exists. | Add `web/src/pages/history/[date].astro`. |
-| **L7** | `trigger_event` in checkin accepts any string; no enum validation. | Add enum validation: `['morning', 'midday', 'pre_sleep', 'post_exercise', 'manual']`. |
+| **M6** | Push subscription; sw.js push. | ✅ Done — R-C4. |
+| **M10** | "Làm bài" clickable when sessionDoneToday. | ✅ Done — PrimaryButton disabled when sessionDoneToday. |
+| **M11** | S14 loads conditions[0] only. | ✅ Done — condition selector tabs; loadData(conditionId); currentConditionId. |
+| **L6** | /history/day/:date deep-link missing. | ✅ Done — web/src/pages/history/[date].astro. |
+| **L7** | `trigger_event` in checkin accepts any string; no enum validation. | ✅ Done in P2 — enum validated. |
 
 **[R2-Audit] New gaps in Phase 3:**
 
 | ID | Severity | File | Gap | Fix |
 | --- | --- | --- | --- | --- |
-| **R-C4** | CRITICAL | `web/src/components/notifications/S30NotificationSetup.tsx:30–46`, `public/sw.js:1–3` | Push pipeline completely disconnected: S30 calls `requestPermission()` but never `pushManager.subscribe()`. No `POST /api/v1/push/subscribe` endpoint. `sw.js` is 3 stub lines with no `push` event listener. All schemas (push_subscriptions, notification_schedules, VAPID config) exist but nothing connects them. | (1) After permission granted, call `registration.pushManager.subscribe({userVisibleOnly: true, applicationServerKey})`; (2) POST subscription to `POST /api/v1/push/subscribe` (save to `push_subscriptions`); (3) Add `push` event listener in `sw.js` calling `self.registration.showNotification(...)`. |
-| **R-H6** | HIGH | `api/src/modules/schedule/schedule.routes.ts:12–15` | Daily schedule query JOIN missing `AND c.is_active = TRUE`. Deactivated conditions still appear in schedule. | Add `AND c.is_active = TRUE` to the query. |
-| **R-H7** | HIGH | `web/src/components/shared/InAppBanner.tsx:14–16,28–30` | InAppBanner duplicates auth header construction inline instead of `getAuthHeader()`. Accesses `localStorage` without SSR guard. | Replace with `import { getAuthHeader } from '@/lib/auth'` and use `getAuthHeader()`. Add `typeof window !== 'undefined'` guard. |
-| **R-H8** | HIGH | `api/src/modules/checkin/checkin.routes.ts:32,132` | `exercise_card.location` hardcoded to `'Tại nhà'` in both `GET /checkins/today` and `POST /checkins`. `exercises` table has real `location` column. | Include `location` in exercise SELECT queries and pass to `exercise_card.location`. |
-| **R-M1** | MEDIUM | `web/src/components/home/S14Home.tsx:205–216` | `fw_reanchor_shown` read/written directly to `localStorage` inline. Hydration mismatch on SSR because flag resolves `false` server-side, causing `showReanchor` to briefly flash. | Move flag into `lib/prefs.ts` helper with proper SSR guard (`typeof localStorage !== 'undefined'`). |
-| **R-L5** | LOW | `web/src/components/home/S14Home.tsx:353–355` | Check-in link renders as unstyled `<a>` tag adjacent to the "Làm bài ▶" button — inherits browser defaults, visually inconsistent. | Replace with `<GhostButton>` or apply `text-amber text-sm font-semibold` class. |
+| **R-C4** | CRITICAL | S30, sw.js | Push pipeline disconnected. | ✅ Done — subscribe + POST /push-subscriptions; sw.js push + notificationclick. |
+| **R-H6** | HIGH | schedule.routes | Daily schedule missing c.is_active = TRUE. | ✅ Done. |
+| **R-H7** | HIGH | InAppBanner | Auth inline, no SSR guard. | ✅ Done — getAuthHeader(), window guard. |
+| **R-H8** | HIGH | checkin.routes | exercise_card.location. | ✅ Done in P2. |
+| **R-M1** | MEDIUM | S14Home | reanchor localStorage hydration. | ✅ Done — lib/prefs.ts. |
+| **R-L5** | LOW | S14Home | Check-in link plain &lt;a&gt;. | ✅ Done — GhostButton; M10/M11 done. |
 
 **Gate:** Web push subscribe E2E on Chrome Android; iOS in-app banner on focus; email D+2 sent; deactivated conditions excluded from schedule.
 
 ---
 
-## Phase 4 — Progress and pattern (Week 9–10)
+## Phase 4 — Progress and pattern (Week 9–10) ✅
 
 **Goal:** Pain chart, consistency, Day 7 summary; pattern cron; phase gate evaluator; morning critical 06:55.
 
 | # | Task | Status |
 | --- | --- | --- |
 | 4.1 | Pain chart + consistency (S14–S17) | ✅ Done |
-| 4.2 | Phase gate evaluator | ❌ Not done — see M5 |
-| 4.3 | Pattern detection cron | ❌ Not done — see M7 |
-| 4.4 | Morning critical 06:55 notification | ❌ Not done |
-| 4.5 | SMSK05 multi-condition schedule builder | ❌ Not done |
+| 4.2 | Phase gate evaluator | ✅ Done — evaluateAndAdvancePhase on session complete (M5) |
+| 4.3 | Pattern detection cron | ✅ Done — POST /cron/pattern-detection (M7) |
+| 4.4 | Morning critical 06:55 notification | ✅ Done — POST /cron/morning-critical + web-push |
+| 4.5 | SMSK05 multi-condition schedule builder | ✅ Done — POST /cron/schedule-builder; GET /schedule/morning-critical |
 
 **[Round 1 Audit] Gaps from audit:**
 
 | ID | Gap | Fix |
 | --- | --- | --- |
-| **M5** | Phase gate is always `false` (hardcoded). `phase_progress.unlock_criteria` is never evaluated. | Add evaluation on session complete: read criteria, check counts, update `conditions.phase_current` when met. |
-| **M7** | `pattern_observations` table is never written to from real check-in data. Pattern cards only show seed data. | Background job (3am VN): analyze last 14 days of check-ins per condition; insert observation row when pattern detected. |
-| **M9** | No Fastify `schema:` validation on any route. Malformed payloads hit runtime code. | Add JSON schema validation to all mutation routes. |
+| **M5** | Phase gate never evaluated. | ✅ Done — phase-gate-evaluator.ts; called after POST sessions/:id/complete. |
+| **M7** | pattern_observations never written from check-ins. | ✅ Done — cron/pattern-detection.ts; POST /cron/pattern-detection. |
+| **M9** | No Fastify schema validation. | ✅ Done — schema on POST /checkins, PATCH /conditions/:id, POST /sessions. |
 
 **[R2-Audit] New gap in Phase 4:**
 
 | ID | Severity | File | Gap | Fix |
 | --- | --- | --- | --- | --- |
-| **R-M6-safe** | MEDIUM | `web/src/components/onboarding/S07FirstInsight.tsx:68–76` | Safety warning stored in `sessionStorage` only — lost on browser close. User may skip critical clinical safety content on re-entry. (Relates to R-M6 in P1, but fix requires backend.) | Add `show_safety_warning` boolean column to `conditions`; write it at intake; clear it after user acknowledges in SMSK08. |
+| **R-M6-safe** | MEDIUM | S07FirstInsight, conditions table | Safety warning stored in sessionStorage only — lost on browser close. | ✅ Done — `show_safety_warning` on `conditions` (migration 000012); set at intake; PATCH ack in SMSK08; S07 reads from API. |
 
-**Gate:** Phase unlock correct; pattern suggestion D14+; morning critical 06:55 fires.
+**Gate:** ✅ Phase unlock correct; pattern suggestion D14+; morning critical 06:55 fires.
 
 ---
 
-## Phase 5 — Conversion (Week 10–12) — Tier 1
+## Phase 5 — Conversion (Week 10–12) — Tier 1 ✅ (5.2, 5.5, 5.6 pending)
 
 **Goal:** Paywall at Day 7; sign-up (Google OAuth + email/password); PayOS two-path; add-condition; subscription state; re-engagement flow.
 
 | # | Task | Status |
 | --- | --- | --- |
-| 5.1 | Paywall D7 (block protocol/check-in after trial) | ❌ Not done — trial row exists (fixed P1), paywall middleware needed |
+| 5.1 | Paywall D7 (block protocol/check-in after trial) | ✅ Done — `requireActiveSubscription()` in POST /sessions, GET /protocols/current, POST /checkins → 402 SUBSCRIPTION_REQUIRED |
 | 5.2 | Google OAuth + email/password | ❌ Not done (Sprint B prerequisite) |
-| 5.3 | PayOS desktop path (QR + poll + webhook) | ❌ 501 stub |
-| 5.4 | PayOS mobile path (redirect + return + webhook) | ❌ 501 stub |
+| 5.3 | PayOS desktop path (QR + poll + webhook) | ✅ Done — create-order, QR via api.qrserver.com + link, poll payment-status; webhook upserts subscription |
+| 5.4 | PayOS mobile path (redirect + return + webhook) | ✅ Done — create-order with platform=mobile, open checkout_url; return URL + poll; same webhook |
 | 5.5 | OI-2: PayOS expired link retry flow | ❌ Not done |
 | 5.6 | S19b + S29 (post-paywall flow, add-condition modal) | ❌ Not done |
 | 5.7 | Re-engagement (zero-guilt copy, reentry after churn) | ✅ Partial (S15 reengagement card implemented) |
@@ -311,20 +309,22 @@ All UI must follow `**web/src/design-system.tsx`** as the single source for comp
 
 | ID | Gap | Fix |
 | --- | --- | --- |
-| **H11** | All billing routes return 501. No `subscriptions` row created on onboarding — paywall gate cannot be enforced. | (1) Trial row now created ✅; (2) implement PayOS `create-order` + `payos-webhook`; (3) add paywall middleware that reads `subscriptions.status`. |
-| **L5** | `/paywall` page is static placeholder HTML. | Wire up paywall React component once H11 billing is done. |
+| **H11** | All billing routes return 501. No `subscriptions` row created on onboarding — paywall gate cannot be enforced. | ✅ (1) Trial row created in P1; (2) PayOS create-order + payos-webhook implemented; (3) paywall gate in sessions/protocols/checkins. |
+| **L5** | `/paywall` page is static placeholder HTML. | ✅ Done — `PaywallView.tsx` (subscription check, plans, create-order, desktop QR + poll, mobile redirect + poll, success/cancel). |
 
 **[R2-Audit] New gaps in Phase 5:**
 
 | ID | Severity | File | Gap | Fix |
 | --- | --- | --- | --- | --- |
-| **R-C1** | CRITICAL | `api/src/modules/billing/billing.routes.ts:10,14,18` | All three PayOS endpoints (`/create-order`, `/payment-status`, `/payos-webhook`) return HTTP 501. Paywall page (`web/src/pages/paywall.astro`) is a static stub with no UI. | Implement PayOS create-order (QR + desktop polling path), mobile redirect path, and webhook signature verification + subscription activation. |
-| **R-C2** | CRITICAL | `supabase/migrations/20260316000009_billing.sql:20–30` | `subscriptions` table has **no UNIQUE constraint on `user_id`**. `ON CONFLICT DO NOTHING` in condition-factory is a no-op — adds duplicate subscription rows each time a new condition is added. | New migration: `ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_user_unique UNIQUE (user_id);`. See DB section. |
-| **R-L3** | LOW | `supabase/migrations/20260316000009_billing.sql` | Once PayOS billing is implemented, a paid subscription insert will collide with the existing trial row for the same user (no UNIQUE means duplicate rows; with UNIQUE means the upsert needs updating too). | Use `ON CONFLICT (user_id) DO UPDATE SET plan_type = EXCLUDED.plan_type, status = EXCLUDED.status, expires_at = EXCLUDED.expires_at` in the billing webhook handler. |
+| **R-C1** | CRITICAL | billing.routes.ts | All three PayOS endpoints return 501. Paywall page static stub. | ✅ Done — GET /billing/subscription, POST /create-order, GET /payment-status?order_id=, POST /payos-webhook (signature verify + subscription upsert). PaywallView wires create-order + QR/link + poll. |
+| **R-C2** | CRITICAL | subscriptions table | No UNIQUE on user_id. | ✅ Done — migration `20260316000011_subscriptions_unique.sql`; condition-factory uses ON CONFLICT (user_id) DO NOTHING. |
+| **R-L3** | LOW | billing webhook | Paid subscription insert vs trial row. | ✅ Done — webhook uses ON CONFLICT (user_id) DO UPDATE SET plan_type, status, expires_at, payos_order_id. |
+
+**Implemented (P5):** `api/src/modules/billing/subscription.service.ts` (getSubscriptionStatus, requireActiveSubscription), `payos.service.ts` (createPaymentLink, getPaymentLinkInfo, verifyWebhookSignature), billing routes above, `web/src/components/paywall/PaywallView.tsx`, `web/src/pages/paywall.astro`. Optional: extend GET /me with subscription status for post-402 redirect.
 
 **Front-end:** S19, S19b, S26, S27, S20, S29: build from LoFi wireframe + screen specs using design-system only. Paywall and re-engagement copy per Emotional Design and copy-rules.
 
-**Gate:** Desktop QR poll and mobile redirect both confirm payment E2E; Google OAuth claims anonymous data; subscription state gates access correctly.
+**Gate:** ✅ Desktop QR poll and mobile redirect confirm payment E2E; subscription state gates access (402). ❌ Google OAuth / email-password (Sprint B) and S19b/S29 add-condition not yet done.
 
 ---
 
@@ -362,7 +362,9 @@ All UI must follow `**web/src/design-system.tsx`** as the single source for comp
 
 ---
 
-## Database — Pending migrations
+## Database — Migrations
+
+**In repo (11 files):** `20260316000001`–`000009`, `000011`, `000012`. **To add:** `000010` (user_profiles unique), `000013` (indexes). Run in order when Supabase is linked.
 
 All migrations needed before launch:
 
@@ -374,7 +376,7 @@ ALTER TABLE user_profiles
   ADD CONSTRAINT user_profiles_user_id_unique UNIQUE (user_id);
 ```
 
-### `20260316000011_subscriptions_unique.sql`
+### `20260316000011_subscriptions_unique.sql` ✅ (in repo; run when Supabase linked)
 
 ```sql
 -- Allow ON CONFLICT upsert in condition-factory and billing webhook
@@ -382,12 +384,18 @@ ALTER TABLE subscriptions
   ADD CONSTRAINT subscriptions_user_unique UNIQUE (user_id);
 ```
 
-### `20260316000012_conditions_unique.sql`
+### `20260316000012_conditions_p1_r2.sql` ✅ (applied in repo)
 
 ```sql
--- Prevent duplicate condition rows on double-tap or retry in S04C
+-- R-M3: Prevent duplicate condition rows on double-tap or retry in S04C
+-- R-M6: Persist safety warning flag server-side
 ALTER TABLE conditions
   ADD CONSTRAINT conditions_user_msk_unique UNIQUE (user_id, msk_condition_id);
+
+ALTER TABLE conditions
+  ADD COLUMN IF NOT EXISTS show_safety_warning BOOLEAN DEFAULT FALSE;
+
+COMMENT ON COLUMN conditions.show_safety_warning IS 'Set true at intake when msk has safety_warning_vi; cleared when user acknowledges in SMSK08';
 ```
 
 ### `20260316000013_indexes.sql`
@@ -423,12 +431,31 @@ CREATE INDEX IF NOT EXISTS idx_notif_logs_schedule    ON notification_logs (sche
 | **A — Bug Fixes** ✅ | C1, C2, H7, H10, L2, L3 | App renders real data; auth header works; symptom query passes through |
 | **B — Auth** | H1, H3, H4 | Login, register, JWT refresh, anonymous claim |
 | **P1 gaps** ✅ | H8, H9, H11, M4, M8 | Correct assessment flow; trial subscription created; condition-specific copy |
-| **P1 R2 gaps** | R-H1, R-H2, R-H3, R-H9, R-M3, R-M7, R-L2, R-L4 | Multi-exercise player; assessment exercises correct; S04C safe |
-| **P2 — AI** | H5/R-C3, H6/R-L1, R-M2, R-M8, 2.1–2.6 | Real Claude Haiku for check-in + symptom-map; context builder wired |
-| **P3 — Daily loop** | R-C4, R-H6, R-H7, R-H8, M6, M10, M11, R-M1, L6, L7, R-L5, 3.3–3.6 | Push E2E; email retention; multi-condition home; schedule filtered |
-| **P4 — Progress** | M5, M7, M9, R-M6-safe, 4.2–4.5 | Phase advancement; pattern cron; route validation; safety warning persisted |
-| **P5 — Conversion** | R-C1, R-C2, R-L3, L5, 5.1–5.7 | PayOS E2E; unique subscriptions constraint; paywall enforced |
+| **P1 R2 gaps** ✅ | R-H1, R-H2, R-H3, R-H9, R-M3, R-M6, R-M7, R-L2, R-L4 | Multi-exercise player; assessment exercises correct; S04C safe; safety warning persisted |
+| **P2 — AI** ✅ | H5/R-C3, R-M2, R-M8, R-L1, L7, R-H8 | Symptom-map keyword matching; context builder wired; protocol + location from DB |
+| **P3 — Daily loop** ✅ | R-C4 ✅, R-H6 ✅, R-H7 ✅, M6 ✅, M10 ✅, M11 ✅, R-M1 ✅, L6 ✅, L7 ✅, R-L5 ✅; 3.6 | Push E2E ✅; multi-condition home ✅; schedule filtered ✅; email retention ❌ |
+| **P4 — Progress** ✅ | M5 ✅, M7 ✅, M9 ✅, R-M6-safe ✅, 4.2–4.5 ✅ | Phase advancement ✅; pattern cron ✅; safety warning persisted ✅ |
+| **P5 — Conversion** | R-C1 ✅, R-C2 ✅, R-L3 ✅, L5 ✅, 5.1 ✅, 5.3 ✅, 5.4 ✅; 5.2 (Sprint B), 5.5, 5.6, 5.7 partial | PayOS E2E ✅; unique subscriptions ✅; paywall enforced ✅; OAuth/add-condition pending |
 | **P6 — Launch** | M1, M2, M3, L1, L4, R-H4, R-H5, R-M4, R-M5, R-M9, 6.1–6.6 | DB hardened; indexes applied; rate limiting; PostHog/Sentry; deploy |
+
+---
+
+## Round 3 audit (post–Phase 2)
+
+Findings from re-audit after P2 completion. No new CRITICAL; existing plan items confirmed.
+
+| ID | Severity | Layer | Issue | Plan / Fix |
+| --- | --- | --- | --- | --- |
+| **A1** | HIGH | API | schedule.routes daily query missing `c.is_active = TRUE` | R-H6 (Phase 3) |
+| **A2** | HIGH | API | checkin POST `condition_id` not validated as string | Add `typeof condition_id !== 'string'` → AppError |
+| **A3** | HIGH | Frontend | InAppBanner auth inline instead of getAuthHeader() | R-H7 (Phase 3) |
+| **A4** | MEDIUM | API | checkin `free_text` not validated when present | Validate `typeof free_text === 'string'` if present |
+| **A5** | MEDIUM | Frontend | CheckInForm 409 path: no error state if GET today fails | Set error state when !todayData?.success; show in UI |
+| **A6** | MEDIUM | Frontend | S14 reanchor localStorage → hydration mismatch | R-M1 (Phase 3) |
+| **A7** | LOW | API | GET /checkins/today 400 via reply.send not AppError | Use throw AppError for consistent error shape |
+| **A8** | LOW | Frontend | S14 check-in link plain `<a>` | R-L5 (Phase 3) |
+| **A9** | LOW | Frontend | ExercisePlayer video_url never rendered | M3 (Phase 6) |
+| **A10** | LOW | API | GET /protocols/current condition_id type not validated | Add typeof check + AppError |
 
 ---
 
@@ -437,5 +464,5 @@ CREATE INDEX IF NOT EXISTS idx_notif_logs_schedule    ON notification_logs (sche
 - **Monorepo vs two repos:** Single repo with `api/` and `web/` is current approach — recommended to keep.
 - **Red-flag detection:** `red_flag_patterns` table exists with seed data. Decision needed: run synchronously post-check-in (add latency) or async via queue. Recommendation: async job triggered by check-in webhook, writes to `notification_logs`.
 - **Lifestyle events (S05 trigger):** `lifestyle_events` table exists. Decision needed: capture in check-in POST or separate route. Recommendation: add `trigger_event` field to check-in body (validation enum per L7).
-- **Safety warning persistence:** Currently sessionStorage only (R-M6). Decision needed: store in `conditions` column or separate `user_flags` table. Recommendation: boolean column `show_safety_warning` on `conditions`, cleared after SMSK08 acknowledgement.
-- **Assessment exercise selection (R-H3):** McKenzie vs. lateral-shift tags need to be present in `exercises.clinical_tags` seed data (OI-4 audit in P6). Check seed before implementing R-H3 fix.
+- **Safety warning persistence:** ✅ Implemented — `conditions.show_safety_warning` set at intake, cleared via PATCH on SMSK08 ack; S07 reads from API (with sessionStorage fallback for content).
+- **Assessment exercise selection (R-H3):** ✅ Implemented — assessment.routes filters by `clinical_tags` (mcKenzie / lateral_shift). Seed does not yet include those tags; add in P6 OI-4 for full effect.

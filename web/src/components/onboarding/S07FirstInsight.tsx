@@ -14,6 +14,8 @@ interface Condition {
   assessment_required?: boolean;
   msk_slug?: string;
   pain_track?: string;
+  show_safety_warning?: boolean;
+  safety_warning?: { content_vi: string; show_once?: boolean } | null;
 }
 
 const INSIGHT_COPY: Record<string, { fear: string; insight: string }> = {
@@ -65,18 +67,6 @@ export default function S07FirstInsight() {
   const [safetyWarning, setSafetyWarning] = useState<{ title: string; content_vi: string } | null>(null);
 
   useEffect(() => {
-    try {
-      const raw = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('fw_safety_warning') : null;
-      if (raw) {
-        const w = JSON.parse(raw) as { content_vi: string };
-        setSafetyWarning({ title: 'Lưu ý trước khi bắt đầu', content_vi: w.content_vi });
-      }
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  useEffect(() => {
     const auth = getAuthHeader();
     if (!auth) {
       setLoading(false);
@@ -90,8 +80,18 @@ export default function S07FirstInsight() {
           setLoading(false);
           return;
         }
-        const first = d.data[0];
+        const first = d.data[0] as Condition;
         setCondition(first);
+        if (first.show_safety_warning) {
+          let content = first.safety_warning?.content_vi ?? null;
+          if (!content && typeof sessionStorage !== 'undefined') {
+            try {
+              const raw = sessionStorage.getItem('fw_safety_warning');
+              if (raw) content = (JSON.parse(raw) as { content_vi: string }).content_vi;
+            } catch { /* ignore */ }
+          }
+          if (content) setSafetyWarning({ title: 'Lưu ý trước khi bắt đầu', content_vi: content });
+        }
         return fetch(`${getApiBase()}/api/v1/protocols/current?condition_id=${first.id}`, { headers: { Authorization: auth } });
       })
       .then((r) => (r && r.ok ? r.json() : null))
@@ -121,12 +121,20 @@ export default function S07FirstInsight() {
       </div>
     );
   }
-  if (safetyWarning) {
+  if (safetyWarning && condition) {
     return (
       <SMSK08SafetyWarning
         title={safetyWarning.title}
         body={safetyWarning.content_vi}
         onAck={() => {
+          const auth = getAuthHeader();
+          if (auth) {
+            fetch(`${getApiBase()}/api/v1/conditions/${condition.id}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json', Authorization: auth },
+              body: JSON.stringify({ safety_warning_acknowledged: true }),
+            }).catch(() => {});
+          }
           try {
             sessionStorage.removeItem('fw_safety_warning');
           } catch {

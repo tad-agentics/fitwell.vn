@@ -1,35 +1,31 @@
 /**
  * InAppBanner — client:load, every page. GET /notifications/pending, dismiss.
- * P3 Daily Loop.
+ * P3 Daily Loop. R-H7: use getAuthHeader() and SSR-safe fetch.
  */
 
 import { useState, useEffect } from 'react';
-
-const API_URL = (typeof import.meta !== 'undefined' && (import.meta as unknown as { env?: { PUBLIC_API_URL?: string } }).env?.PUBLIC_API_URL) || 'http://localhost:3001';
+import { getApiBase, getAuthHeader } from '@/lib/auth';
 
 export default function InAppBanner() {
   const [item, setItem] = useState<{ id: string; body: string } | null>(null);
 
   useEffect(() => {
-    const anonId = typeof localStorage !== 'undefined' ? localStorage.getItem('fw_anonymous_id') : null;
-    const token = (typeof window !== 'undefined' && (window as unknown as { __fw_access_token?: string }).__fw_access_token) || null;
-    const auth = token ? `Bearer ${token}` : anonId ? `Anonymous ${anonId}` : null;
+    if (typeof window === 'undefined') return;
+    const auth = getAuthHeader();
     if (!auth) return;
-    fetch(`${API_URL}/api/v1/notifications/pending`, { headers: { Authorization: auth } })
+    fetch(`${getApiBase()}/api/v1/notifications/pending`, { headers: { Authorization: auth } })
       .then((r) => r.json())
       .then((d) => {
-        if (d.success && d.data?.length > 0) setItem(d.data[0]);
+        if (d?.success && d?.data?.length > 0) setItem(d.data[0]);
       })
       .catch(() => {});
   }, []);
 
   const dismiss = async () => {
-    if (!item) return;
-    const anonId = typeof localStorage !== 'undefined' ? localStorage.getItem('fw_anonymous_id') : null;
-    const token = (typeof window !== 'undefined' && (window as unknown as { __fw_access_token?: string }).__fw_access_token) || null;
-    const auth = token ? `Bearer ${token}` : anonId ? `Anonymous ${anonId}` : null;
+    if (!item || typeof window === 'undefined') return;
+    const auth = getAuthHeader();
     if (!auth) return;
-    await fetch(`${API_URL}/api/v1/notifications/${item.id}/dismiss`, { method: 'POST', headers: { Authorization: auth } });
+    await fetch(`${getApiBase()}/api/v1/notifications/${item.id}/dismiss`, { method: 'POST', headers: { Authorization: auth } });
     setItem(null);
   };
 

@@ -5,8 +5,7 @@
 import { useState, useEffect } from 'react';
 import { StepProgressBar, CheckRow, SecondaryButton, PrimaryButton } from '@/design-system';
 import { getApiBase, getAnonymousId, setAnonymousId } from '@/lib/auth';
-
-const CONFIRM_SLUGS_KEY = 'fw_confirm_slugs';
+import { CONFIRM_SLUGS_KEY } from '@/lib/session-keys';
 const REGION_TO_BODY: Record<string, string> = {
   'Lưng dưới': 'low_back',
   'Cổ vai gáy': 'neck',

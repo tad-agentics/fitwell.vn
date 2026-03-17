@@ -1,9 +1,13 @@
 /**
  * createConditionWithPhaseGate — shared by intake, add-region, add-from-suggestion.
  * TechSpec 6.1, 6.2.
+ * R-M3: ON CONFLICT (user_id, msk_condition_id) to avoid duplicate conditions on retry.
+ * R-H9: Throws when no exercises for body region (non-assessment flow).
+ * R-M6: Sets show_safety_warning when msk has safety_warning_vi.
  */
 
 import { pool } from '../../shared/db.js';
+import { AppError } from '../../shared/errors.js';
 
 export interface MskConditionRow {
   id: string;
@@ -50,9 +54,11 @@ export async function createConditionWithPhaseGate(
   intake: ConditionIntakeData
 ): Promise<ConditionCreatedResponse> {
   const primaryRegion = intake.primary_region ?? intake.body_regions?.[0] ?? mskCondition.body_region;
+  const showSafetyWarning = Boolean(mskCondition.safety_warning_vi);
   const res = await pool.query(
-    `INSERT INTO conditions (user_id, msk_condition_id, body_regions, trigger_pattern, current_treatments, primary_region, pain_track, display_name_vi, phase_current, assessment_completed)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 1, FALSE)
+    `INSERT INTO conditions (user_id, msk_condition_id, body_regions, trigger_pattern, current_treatments, primary_region, pain_track, display_name_vi, phase_current, assessment_completed, show_safety_warning)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 1, FALSE, $9)
+     ON CONFLICT (user_id, msk_condition_id) DO UPDATE SET updated_at = NOW()
      RETURNING id`,
     [
       userId,
@@ -63,13 +69,15 @@ export async function createConditionWithPhaseGate(
       primaryRegion,
       mskCondition.pain_track,
       intake.display_name_vi ?? mskCondition.name_vi,
+      showSafetyWarning,
     ]
   );
   const conditionId = res.rows[0].id;
 
   await pool.query(
     `INSERT INTO phase_progress (user_id, condition_id, phase_number, status, unlock_criteria)
-     VALUES ($1, $2, 1, 'active', $3)`,
+     VALUES ($1, $2, 1, 'active', $3)
+     ON CONFLICT (user_id, condition_id, phase_number) DO NOTHING`,
     [userId, conditionId, JSON.stringify(buildUnlockCriteria(mskCondition))]
   );
 
@@ -85,7 +93,7 @@ export async function createConditionWithPhaseGate(
   await pool.query(
     `INSERT INTO subscriptions (user_id, plan_type, status, expires_at)
      VALUES ($1, 'trial', 'trial', NOW() + INTERVAL '7 days')
-     ON CONFLICT DO NOTHING`,
+     ON CONFLICT (user_id) DO NOTHING`,
     [userId]
   );
 
@@ -107,18 +115,22 @@ export async function createConditionWithPhaseGate(
       };
     }
     exRes.rows = exRes.rows.slice(0, 1);
-    if (exRes.rows.length > 0) {
-      const ex = exRes.rows[0];
-      const protocolRes = await pool.query(
-        `INSERT INTO protocols (condition_id, user_id, exercises, generation_type, total_duration, is_current)
-         VALUES ($1, $2, $3, 'rule_based', $4, TRUE) RETURNING id`,
-        [conditionId, userId, JSON.stringify([{ exercise_id: ex.id, order: 1, duration_sec: ex.duration_sec, reps: null, notes: null }]), ex.duration_sec]
-      );
-      protocol = {
-        exercises: [{ exercise_id: ex.id, order: 1, duration_sec: ex.duration_sec, name_vi: ex.name_vi }],
-        total_duration: ex.duration_sec,
-      };
+    if (exRes.rows.length === 0) {
+      throw new AppError('NO_EXERCISE_AVAILABLE', 422, {
+        details: { body_region: mskCondition.body_region },
+        message: 'Chưa có bài tập cho vùng này. Vui lòng chọn vùng khác hoặc liên hệ hỗ trợ.',
+      });
     }
+    const ex = exRes.rows[0];
+    await pool.query(
+      `INSERT INTO protocols (condition_id, user_id, exercises, generation_type, total_duration, is_current)
+       VALUES ($1, $2, $3, 'rule_based', $4, TRUE) RETURNING id`,
+      [conditionId, userId, JSON.stringify([{ exercise_id: ex.id, order: 1, duration_sec: ex.duration_sec, reps: null, notes: null }]), ex.duration_sec]
+    );
+    protocol = {
+      exercises: [{ exercise_id: ex.id, order: 1, duration_sec: ex.duration_sec, name_vi: ex.name_vi }],
+      total_duration: ex.duration_sec,
+    };
   }
 
   return {

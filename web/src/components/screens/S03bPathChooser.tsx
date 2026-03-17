@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import { RadioRow, PrimaryButton } from '@/design-system';
+import { RadioRow, PrimaryButton, colors } from '@/design-system';
 
 type Path = 'know' | 'unsure' | null;
 
@@ -23,10 +23,10 @@ export default function S03bPathChooser() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 400 }}>
-      <h1 style={{ fontFamily: 'var(--font-display, Figtree)', fontSize: 14, fontWeight: 700, color: '#F0EFE9' }}>
+      <h1 style={{ fontFamily: 'var(--font-display, Figtree)', fontSize: 14, fontWeight: 700, color: colors.t0 }}>
         Bạn đã biết tên bệnh của mình chưa?
       </h1>
-      <p style={{ fontSize: 10, color: '#6B6B64' }}>Từng đi khám, hoặc đã tự xác định được</p>
+      <p style={{ fontSize: 10, color: colors.t2 }}>Từng đi khám, hoặc đã tự xác định được</p>
       <RadioRow
         label="Biết rồi — tôi đã từng đi khám hoặc tự xác định được"
         subLabel="Ví dụ: thoát vị đĩa đệm, viêm cân gan chân, đau cổ vai gáy..."

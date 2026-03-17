@@ -6,6 +6,8 @@ import type { FastifyInstance } from 'fastify';
 import { authGuard } from '../../shared/middleware/auth-guard.js';
 import { pool } from '../../shared/db.js';
 import { AppError } from '../../shared/errors.js';
+import { evaluateAndAdvancePhase } from '../protocol-engine/phase-gate-evaluator.js';
+import { getSubscriptionStatus, requireActiveSubscription } from '../billing/subscription.service.js';
 
 export async function sessionsRoutes(app: FastifyInstance): Promise<void> {
   app.get<{ Params: { id: string } }>('/api/v1/sessions/:id', { preHandler: [authGuard] }, async (request, reply) => {
@@ -83,8 +85,23 @@ export async function sessionsRoutes(app: FastifyInstance): Promise<void> {
     return reply.status(200).send({ success: true, data: { session_id: id } });
   });
 
-  app.post<{ Body: { protocol_id: string; source?: string } }>('/api/v1/sessions', { preHandler: [authGuard] }, async (request, reply) => {
+  app.post<{ Body: { protocol_id: string; source?: string } }>('/api/v1/sessions', {
+    preHandler: [authGuard],
+    schema: {
+      body: {
+        type: 'object',
+        required: ['protocol_id'],
+        properties: {
+          protocol_id: { type: 'string' },
+          source: { type: 'string' },
+        },
+      },
+    },
+  }, async (request, reply) => {
     const userId = request.user!.id;
+    const sub = await getSubscriptionStatus(userId);
+    requireActiveSubscription(sub);
+
     const { protocol_id, source = 'manual' } = request.body || {};
     if (!protocol_id) throw new AppError('VALIDATION_ERROR', 400);
 
@@ -104,10 +121,16 @@ export async function sessionsRoutes(app: FastifyInstance): Promise<void> {
       const { completion_pct = 100, feedback } = request.body || {};
 
       const res = await pool.query(
-        `UPDATE sessions SET status = 'completed', completed_at = NOW(), completion_pct = $1, feedback = $2 WHERE id = $3 AND user_id = $4 RETURNING id`,
+        `UPDATE sessions SET status = 'completed', completed_at = NOW(), completion_pct = $1, feedback = $2 WHERE id = $3 AND user_id = $4 RETURNING id, protocol_id`,
         [completion_pct, feedback ?? null, id, userId]
       );
       if (res.rowCount === 0) throw new AppError('NOT_FOUND', 404);
+      const protocolId = (res.rows[0] as { protocol_id: string }).protocol_id;
+      if (protocolId) {
+        const condRes = await pool.query(`SELECT condition_id FROM protocols WHERE id = $1`, [protocolId]);
+        const conditionId = (condRes.rows[0] as { condition_id: string } | undefined)?.condition_id;
+        if (conditionId) evaluateAndAdvancePhase(userId, conditionId).catch(() => {});
+      }
       return reply.status(200).send({ success: true, data: { session_id: id } });
     }
   );

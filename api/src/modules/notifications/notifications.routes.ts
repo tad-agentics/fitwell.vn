@@ -1,12 +1,33 @@
 /**
- * GET /api/v1/notifications/pending, POST /:id/dismiss — P3.
+ * GET /api/v1/notifications/pending, POST /:id/dismiss, POST /api/v1/push-subscriptions — P3.
+ * R-C4: Push subscribe saves to push_subscriptions.
  */
 
 import type { FastifyInstance } from 'fastify';
 import { authGuard } from '../../shared/middleware/auth-guard.js';
 import { pool } from '../../shared/db.js';
+import { AppError } from '../../shared/errors.js';
 
 export async function notificationsRoutes(app: FastifyInstance): Promise<void> {
+  app.post<{
+    Body: { endpoint: string; keys: { auth: string; p256dh: string }; platform?: string };
+  }>('/api/v1/push-subscriptions', { preHandler: [authGuard] }, async (request, reply) => {
+    const userId = request.user!.id;
+    const { endpoint, keys } = request.body || {};
+    if (!endpoint || typeof endpoint !== 'string' || !keys?.auth || !keys?.p256dh) {
+      throw new AppError('VALIDATION_ERROR', 400, { details: { body: 'endpoint and keys.auth, keys.p256dh required' } });
+    }
+    const platform = (request.body as { platform?: string }).platform ?? 'web';
+    const userAgent = request.headers['user-agent'] ?? null;
+    await pool.query(
+      `INSERT INTO push_subscriptions (user_id, endpoint, auth_key, p256dh_key, platform, user_agent)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       ON CONFLICT (user_id, endpoint) DO UPDATE SET auth_key = EXCLUDED.auth_key, p256dh_key = EXCLUDED.p256dh_key, is_active = TRUE, last_used_at = NOW()`,
+      [userId, endpoint, keys.auth, keys.p256dh, platform, userAgent]
+    );
+    return reply.status(201).send({ success: true, data: { subscribed: true } });
+  });
+
   app.get('/api/v1/notifications/pending', { preHandler: [authGuard] }, async (request, reply) => {
     const userId = request.user!.id;
     const res = await pool.query(

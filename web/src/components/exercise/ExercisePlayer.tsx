@@ -85,6 +85,18 @@ function ExitModal({
   );
 }
 
+/** R-H1: Resolve global 1-based step to (exerciseIndex, stepIndexInExercise) for multi-exercise protocols. */
+function getStepLocation(exercises: Exercise[], globalStep1: number): { exIndex: number; stepIndex: number; steps: ExerciseStep[] } | null {
+  let remaining = globalStep1;
+  for (let i = 0; i < exercises.length; i++) {
+    const steps = (exercises[i].steps as ExerciseStep[]) ?? [];
+    const n = steps.length || 1;
+    if (remaining <= n) return { exIndex: i, stepIndex: remaining - 1, steps: steps.length ? steps : [] };
+    remaining -= n;
+  }
+  return null;
+}
+
 export default function ExercisePlayer({ sessionId: propSessionId }: ExercisePlayerProps = {}) {
   const [protocol, setProtocol] = useState<{
     protocol_id: string;
@@ -93,7 +105,6 @@ export default function ExercisePlayer({ sessionId: propSessionId }: ExercisePla
   } | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [completed, setCompleted] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [timerSec, setTimerSec] = useState(0);
   const [exitOpen, setExitOpen] = useState(false);
@@ -168,23 +179,26 @@ export default function ExercisePlayer({ sessionId: propSessionId }: ExercisePla
     [effectiveSessionId, authHeader, apiBase]
   );
 
-  const ex = protocol?.exercises?.[0];
-  const steps: ExerciseStep[] = (ex?.steps as ExerciseStep[]) ?? [];
-  const totalSteps = steps.length || 1;
-  const stepIndex = Math.min(currentStep - 1, steps.length - 1);
+  const exercises = protocol?.exercises ?? [];
+  const location = getStepLocation(exercises, currentStep);
+  const ex = location ? exercises[location.exIndex] : exercises[0];
+  const steps: ExerciseStep[] = location?.steps ?? (ex ? ((ex.steps as ExerciseStep[]) ?? []) : []);
+  const totalStepsInExercise = steps.length || 1;
+  const stepIndex = location ? Math.min(location.stepIndex, steps.length - 1) : 0;
   const step = steps[stepIndex];
-  const durationSec = step?.duration_sec ?? 60;
+  const totalStepsGlobal = exercises.reduce((acc, e) => acc + Math.max(1, (e.steps as ExerciseStep[])?.length ?? 0), 0);
+  const isLastStepGlobal = currentStep >= totalStepsGlobal;
 
   useEffect(() => {
-    if (!step || totalSteps === 0) return;
+    if (!step) return;
     setTimerSec(step.duration_sec);
-  }, [currentStep, step?.order, totalSteps]);
+  }, [currentStep, step?.order]);
 
   useEffect(() => {
     if (timerSec <= 0) return;
     const t = setInterval(() => setTimerSec((s) => Math.max(0, s - 1)), 1000);
     return () => clearInterval(t);
-  }, [currentStep, timerSec > 0]);
+  }, [currentStep]);
 
   useEffect(() => {
     const onPopState = () => {
@@ -203,7 +217,7 @@ export default function ExercisePlayer({ sessionId: propSessionId }: ExercisePla
   };
 
   const handleNext = async () => {
-    if (currentStep < totalSteps) {
+    if (currentStep < totalStepsGlobal) {
       const next = currentStep + 1;
       setCurrentStep(next);
       patchSession({ current_step: next });
@@ -223,7 +237,7 @@ export default function ExercisePlayer({ sessionId: propSessionId }: ExercisePla
   };
 
   const handleExitConfirm = () => {
-    const pct = totalSteps > 0 ? Math.round((currentStep / totalSteps) * 100) : 0;
+    const pct = totalStepsGlobal > 0 ? Math.round((currentStep / totalStepsGlobal) * 100) : 0;
     patchSession({ status: 'exited', completion_pct: pct });
     setExitOpen(false);
     window.location.href = '/home';
@@ -236,23 +250,16 @@ export default function ExercisePlayer({ sessionId: propSessionId }: ExercisePla
       </div>
     );
   }
-  if (!protocol) {
+  if (!protocol || !protocol.exercises?.length) {
     return (
       <div className="p-6 text-t1 text-sm" style={{ color: colors.t1, padding: 24, fontSize: 14 }}>
         Không tìm thấy bài tập. Bắt đầu từ onboarding.
       </div>
     );
   }
-  if (completed && !effectiveSessionId) {
-    return (
-      <div className="p-6 text-teal text-sm" style={{ color: colors.teal, padding: 24, fontSize: 14 }}>
-        Bạn đã hoàn thành bài tập hôm nay.
-      </div>
-    );
-  }
 
   const isFirstStep = currentStep <= 1;
-  const isLastStep = currentStep >= totalSteps;
+  const isLastStep = isLastStepGlobal;
   const instruction = step?.instruction_vi ?? ex?.name_vi ?? '';
 
   return (
@@ -270,11 +277,12 @@ export default function ExercisePlayer({ sessionId: propSessionId }: ExercisePla
         {ex?.name_vi}
       </h1>
 
-      {totalSteps > 0 && (
-        <StepProgressBar total={totalSteps} current={currentStep - 1} />
+      {totalStepsInExercise > 0 && (
+        <StepProgressBar total={totalStepsInExercise} current={stepIndex} />
       )}
       <p style={{ fontFamily: typography.fontMono, fontSize: typography.size09, color: colors.t2, marginTop: 6, marginBottom: 12 }}>
-        Bước {currentStep} / {totalSteps}
+        Bước {stepIndex + 1} / {totalStepsInExercise}
+        {exercises.length > 1 ? ` · Bài ${(location?.exIndex ?? 0) + 1}/${exercises.length}` : ''}
       </p>
 
       <p style={{ fontFamily: typography.fontPrimary, fontSize: typography.size11, color: colors.t1, marginBottom: 16 }}>

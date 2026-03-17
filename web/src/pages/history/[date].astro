@@ -1,0 +1,11 @@
+---
+/**
+ * S16 Lịch sử — deep-link by date (e.g. /history/2025-03-15). L6: notification_logs can link here.
+ */
+import Layout from '../../layouts/Layout.astro';
+import { HistoryWithNav } from '../../components/shared/AppShell';
+const { date } = Astro.params;
+---
+<Layout title={`Lịch sử ${date ?? ''} — FitWell`}>
+  <HistoryWithNav client:load />
+</Layout>

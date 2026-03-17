@@ -1,12 +1,10 @@
 ---
 /**
- * Paywall D7 — trial conversion. P5.
+ * Paywall D7 — trial conversion. P5 / L5.
  */
 import Layout from '../layouts/Layout.astro';
+import PaywallView from '../components/paywall/PaywallView';
 ---
 <Layout title="Gói — FitWell">
-  <main class="min-h-screen p-6 bg-bg0 text-t0 flex flex-col justify-center">
-    <h1 class="font-display text-lg font-semibold text-t0">Gói 6 tháng</h1>
-    <p class="mt-2 text-t1 text-sm">Thanh toán qua VietQR (PayOS). Màn hình thanh toán sẽ có trong P5.</p>
-  </main>
+  <PaywallView client:load />
 </Layout>
